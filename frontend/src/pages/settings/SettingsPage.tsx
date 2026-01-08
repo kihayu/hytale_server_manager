@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Input } from '../../components/ui';
 import { UpdateSettingsCard } from '../../components/settings/UpdateSettingsCard';
 import { Save, Bell, Check, X, ExternalLink, Lock, Eye, EyeOff, HardDrive, Server, Package } from 'lucide-react';
@@ -41,6 +42,7 @@ const ALL_EVENTS = [
 ];
 
 export const SettingsPage = () => {
+  const location = useLocation();
   const { providers, loadProviders, configureProvider } = useModProviderStore();
 
   const [settings, setSettings] = useState<DiscordSettings>({
@@ -97,6 +99,18 @@ export const SettingsPage = () => {
     loadFtpSettings();
     loadProviders();
   }, []);
+
+  // Scroll to hash section (e.g., #security)
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.querySelector(location.hash);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, [location.hash]);
 
   const loadSettings = async () => {
     setLoading(true);
@@ -395,7 +409,7 @@ export const SettingsPage = () => {
       </Card>
 
       {/* Change Password */}
-      <Card>
+      <Card id="security">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>

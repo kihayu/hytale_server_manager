@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Bell, Search, User, LogOut, ChevronDown, Sun, Moon, AlertCircle, AlertTriangle, Info, Loader2 } from 'lucide-react';
+import { Bell, Search, User, LogOut, ChevronDown, Sun, Moon, AlertCircle, AlertTriangle, Info, Loader2, KeyRound } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { useThemeStore } from '../../stores/themeStore';
 import { useAlertsStore } from '../../stores/alertsStore';
@@ -255,6 +255,14 @@ export const Header = () => {
                 className="absolute right-0 mt-2 w-48 glass-card shadow-xl z-50"
               >
                 <div className="p-2">
+                  <Link
+                    to="/settings#security"
+                    onClick={() => setShowUserMenu(false)}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-text-light-primary dark:text-text-primary hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                  >
+                    <KeyRound size={18} />
+                    <span>Change Password</span>
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-2 px-3 py-2 text-danger hover:bg-danger/10 rounded-lg transition-colors"
