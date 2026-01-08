@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Modal, ModalFooter, Button, Input, Badge } from '../ui';
 import { Network, Server, ChevronRight, ChevronLeft, Check } from 'lucide-react';
-import type { CreateNetworkDto, NetworkType } from '../../types';
+import type { CreateNetworkDto } from '../../types';
 
 interface ServerOption {
   id: string;
@@ -44,10 +44,7 @@ export const CreateNetworkModal = ({
   // Form data
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [networkType, setNetworkType] = useState<NetworkType>('logical');
   const [color, setColor] = useState(NETWORK_COLORS[0]);
-  const [proxyServerId, setProxyServerId] = useState<string | null>(null);
-  const [startOrder, setStartOrder] = useState<'proxy_first' | 'backends_first'>('proxy_first');
   const [selectedServerIds, setSelectedServerIds] = useState<Set<string>>(new Set());
 
   // Reset form when modal closes
@@ -56,10 +53,7 @@ export const CreateNetworkModal = ({
       setStep('basics');
       setName('');
       setDescription('');
-      setNetworkType('logical');
       setColor(NETWORK_COLORS[0]);
-      setProxyServerId(null);
-      setStartOrder('proxy_first');
       setSelectedServerIds(new Set());
       setErrors({});
     }
@@ -85,11 +79,7 @@ export const CreateNetworkModal = ({
   const validateServers = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (networkType === 'proxy' && !proxyServerId) {
-      newErrors.proxy = 'Please select a proxy server';
-    }
-
-    if (selectedServerIds.size === 0 && !proxyServerId) {
+    if (selectedServerIds.size === 0) {
       newErrors.servers = 'Please select at least one server';
     }
 
@@ -117,17 +107,13 @@ export const CreateNetworkModal = ({
     setLoading(true);
     try {
       const serverIds = Array.from(selectedServerIds);
-      // If proxy is selected and not in serverIds, we still don't add it here
-      // The backend will handle setting up the proxy server relationship
 
       const data: CreateNetworkDto = {
         name: name.trim(),
         description: description.trim() || undefined,
-        networkType,
+        networkType: 'logical',
         color,
         serverIds: serverIds.length > 0 ? serverIds : undefined,
-        proxyServerId: networkType === 'proxy' ? proxyServerId || undefined : undefined,
-        proxyConfig: networkType === 'proxy' ? { startOrder } : undefined,
       };
 
       await onSubmit(data);
@@ -140,18 +126,13 @@ export const CreateNetworkModal = ({
   };
 
   const selectAllServers = () => {
-    const allIds = availableServers
-      .filter(s => s.id !== proxyServerId)
-      .map(s => s.id);
+    const allIds = availableServers.map(s => s.id);
     setSelectedServerIds(new Set(allIds));
   };
 
   const clearSelection = () => {
     setSelectedServerIds(new Set());
   };
-
-  // Filter out proxy server from selectable servers
-  const selectableServers = availableServers.filter(s => s.id !== proxyServerId);
 
   return (
     <Modal
@@ -240,67 +221,6 @@ export const CreateNetworkModal = ({
             )}
           </div>
 
-          {/* Network Type */}
-          <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
-              Network Type
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setNetworkType('logical')}
-                className={`p-4 rounded-lg border-2 text-left transition-all ${
-                  networkType === 'logical'
-                    ? 'border-accent-primary bg-accent-primary/10'
-                    : 'border-gray-700 hover:border-gray-600'
-                }`}
-              >
-                <div className="font-medium text-text-light-primary dark:text-text-primary mb-1">
-                  Logical Group
-                </div>
-                <p className="text-xs text-text-light-muted dark:text-text-muted">
-                  Organize servers together for easier management
-                </p>
-              </button>
-              <button
-                type="button"
-                onClick={() => setNetworkType('proxy')}
-                className={`p-4 rounded-lg border-2 text-left transition-all ${
-                  networkType === 'proxy'
-                    ? 'border-accent-primary bg-accent-primary/10'
-                    : 'border-gray-700 hover:border-gray-600'
-                }`}
-              >
-                <div className="font-medium text-text-light-primary dark:text-text-primary mb-1">
-                  Proxy Network
-                </div>
-                <p className="text-xs text-text-light-muted dark:text-text-muted">
-                  Proxy server with backend servers (BungeeCord-style)
-                </p>
-              </button>
-            </div>
-          </div>
-
-          {/* Proxy Start Order (only for proxy networks) */}
-          {networkType === 'proxy' && (
-            <div>
-              <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
-                Start Order
-              </label>
-              <select
-                value={startOrder}
-                onChange={(e) => setStartOrder(e.target.value as 'proxy_first' | 'backends_first')}
-                className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
-              >
-                <option value="proxy_first">Start proxy first, then backends</option>
-                <option value="backends_first">Start backends first, then proxy</option>
-              </select>
-              <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
-                Determines the order servers start when using "Start All"
-              </p>
-            </div>
-          )}
-
           {/* Network Color */}
           <div>
             <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
@@ -335,53 +255,16 @@ export const CreateNetworkModal = ({
                 Select Servers
               </h3>
               <p className="text-sm text-text-light-muted dark:text-text-muted">
-                {networkType === 'proxy'
-                  ? 'Choose proxy and backend servers'
-                  : 'Choose servers to include in this network'}
+                Choose servers to include in this network
               </p>
             </div>
           </div>
-
-          {/* Proxy Server Selection (for proxy networks) */}
-          {networkType === 'proxy' && (
-            <div>
-              <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
-                Proxy Server *
-              </label>
-              <select
-                value={proxyServerId || ''}
-                onChange={(e) => {
-                  setProxyServerId(e.target.value || null);
-                  // Remove from selected servers if it was selected
-                  if (e.target.value && selectedServerIds.has(e.target.value)) {
-                    setSelectedServerIds(prev => {
-                      const next = new Set(prev);
-                      next.delete(e.target.value);
-                      return next;
-                    });
-                  }
-                  if (errors.proxy) setErrors(prev => ({ ...prev, proxy: '' }));
-                }}
-                className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
-              >
-                <option value="">Select a proxy server...</option>
-                {availableServers.map((server) => (
-                  <option key={server.id} value={server.id}>
-                    {server.name}
-                  </option>
-                ))}
-              </select>
-              {errors.proxy && (
-                <p className="text-danger text-sm mt-1">{errors.proxy}</p>
-              )}
-            </div>
-          )}
 
           {/* Server Selection */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-sm font-medium text-text-light-primary dark:text-text-primary">
-                {networkType === 'proxy' ? 'Backend Servers' : 'Member Servers'}
+                Member Servers
               </label>
               <div className="flex gap-2">
                 <Button variant="ghost" size="sm" onClick={selectAllServers}>
@@ -397,17 +280,13 @@ export const CreateNetworkModal = ({
               <div className="text-center py-8 text-text-muted">
                 Loading servers...
               </div>
-            ) : selectableServers.length === 0 ? (
+            ) : availableServers.length === 0 ? (
               <div className="text-center py-8 text-text-muted">
-                {availableServers.length === 0
-                  ? 'No servers available'
-                  : networkType === 'proxy' && proxyServerId
-                  ? 'No other servers available (all assigned as proxy)'
-                  : 'No servers available'}
+                No servers available
               </div>
             ) : (
               <div className="max-h-64 overflow-y-auto border border-gray-700 rounded-lg">
-                {selectableServers.map((server) => (
+                {availableServers.map((server) => (
                   <div
                     key={server.id}
                     onClick={() => {
