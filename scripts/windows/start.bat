@@ -37,10 +37,10 @@ echo.
 
 :: Start the application
 node dist\index.js
-set EXIT_CODE=%ERRORLEVEL%
+set EXIT_CODE=!ERRORLEVEL!
 
 :: If exit code is 100, an update is in progress - exit silently
-if %EXIT_CODE%==100 (
+if !EXIT_CODE!==100 (
     echo.
     echo Update in progress... This window will close.
     timeout /t 2 /nobreak > nul
@@ -49,5 +49,5 @@ if %EXIT_CODE%==100 (
 
 :: If we get here, the app stopped normally
 echo.
-echo Application stopped.
+echo Application stopped. Exit code: !EXIT_CODE!
 pause

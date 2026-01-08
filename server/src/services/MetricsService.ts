@@ -481,19 +481,28 @@ export class MetricsService {
       orderBy: { timestamp: 'asc' },
     });
 
-    // Create time buckets
+    // Create time buckets - timestamps represent the END of each bucket
+    // Last bucket ends at "now" so chart shows most recent data
     const timestamps: string[] = [];
     const cpuBuckets: number[][] = [];
     const memoryBuckets: number[][] = [];
     const playerBuckets: number[][] = [];
 
+    const intervalMs = interval * 60000;
+    // First bucket ENDS at (now - (pointCount-1) * interval), so it STARTS one interval before that
+    const firstBucketStart = new Date(now.getTime() - pointCount * intervalMs);
+
     for (let i = 0; i < pointCount; i++) {
-      const bucketTime = new Date(startTime.getTime() + i * interval * 60000);
-      timestamps.push(bucketTime.toISOString());
+      // Timestamp is the END of the bucket (start + interval)
+      const bucketEndTime = new Date(firstBucketStart.getTime() + (i + 1) * intervalMs);
+      timestamps.push(bucketEndTime.toISOString());
       cpuBuckets.push([]);
       memoryBuckets.push([]);
       playerBuckets.push([]);
     }
+
+    // Update startTime for bucket distribution calculation
+    startTime.setTime(firstBucketStart.getTime());
 
     // Distribute host metrics into buckets
     for (const metric of hostMetrics) {
