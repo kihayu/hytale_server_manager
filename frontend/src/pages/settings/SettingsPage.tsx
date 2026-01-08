@@ -103,14 +103,18 @@ export const SettingsPage = () => {
   // Scroll to hash section (e.g., #security)
   useEffect(() => {
     if (location.hash) {
-      const element = document.querySelector(location.hash);
-      if (element) {
-        setTimeout(() => {
+      // Use a longer timeout to ensure page content is rendered
+      const scrollToElement = () => {
+        const element = document.querySelector(location.hash);
+        if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      }
+        }
+      };
+      // Try multiple times in case content is still loading
+      setTimeout(scrollToElement, 100);
+      setTimeout(scrollToElement, 300);
     }
-  }, [location.hash]);
+  }, [location.hash, location.key]);
 
   const loadSettings = async () => {
     setLoading(true);
