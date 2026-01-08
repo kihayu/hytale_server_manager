@@ -65,7 +65,7 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const info = await api.request<UpdateInfo>('/api/system/updates/check');
+      const info = await api.get<UpdateInfo>('/api/system/updates/check');
 
       // Check if user has dismissed this version
       const dismissedVersion = localStorage.getItem(DISMISS_KEY);
