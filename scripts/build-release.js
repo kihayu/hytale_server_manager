@@ -206,6 +206,16 @@ async function createPackageBase(packageDir) {
     path.join(packageDir, 'package-lock.json')
   );
 
+  // Install production dependencies
+  logStep('Installing production dependencies...');
+  exec('npm ci --omit=dev', packageDir);
+  logSuccess('Dependencies installed');
+
+  // Generate Prisma client
+  logStep('Generating Prisma client...');
+  exec('npx prisma generate', packageDir);
+  logSuccess('Prisma client generated');
+
   logSuccess('Package base created');
 }
 
