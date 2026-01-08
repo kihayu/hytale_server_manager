@@ -134,8 +134,19 @@ jobs:
 
           echo.
           echo Setting up database...
-          node node_modules\prisma\build\index.js generate
-          node node_modules\prisma\build\index.js migrate deploy
+          echo Running Prisma generate...
+          call npx prisma generate
+          if errorlevel 1 (
+              echo ERROR: Prisma generate failed
+              pause
+              exit /b 1
+          )
+          echo Running database migrations...
+          call npx prisma migrate deploy
+          if errorlevel 1 (
+              echo WARNING: Migrations failed, trying db push...
+              call npx prisma db push --accept-data-loss
+          )
           echo.
           echo ======================================
           echo   Setup complete!
@@ -237,8 +248,18 @@ jobs:
 
           echo
           echo "Setting up database..."
-          ./node_modules/.bin/prisma generate
-          ./node_modules/.bin/prisma migrate deploy
+          echo "Running Prisma generate..."
+          npx prisma generate
+          if [ $? -ne 0 ]; then
+              echo "ERROR: Prisma generate failed"
+              exit 1
+          fi
+          echo "Running database migrations..."
+          npx prisma migrate deploy
+          if [ $? -ne 0 ]; then
+              echo "WARNING: Migrations failed, trying db push..."
+              npx prisma db push --accept-data-loss
+          fi
           echo
           echo "======================================"
           echo "  Setup complete!"

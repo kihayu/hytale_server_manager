@@ -276,8 +276,19 @@ node -e "const fs=require('fs');const crypto=require('crypto');let env=fs.readFi
 
 echo.
 echo Setting up database...
-node node_modules\\prisma\\build\\index.js generate
-node node_modules\\prisma\\build\\index.js migrate deploy
+echo Running Prisma generate...
+call npx prisma generate
+if errorlevel 1 (
+    echo ERROR: Prisma generate failed
+    pause
+    exit /b 1
+)
+echo Running database migrations...
+call npx prisma migrate deploy
+if errorlevel 1 (
+    echo WARNING: Migrations failed, trying db push...
+    call npx prisma db push --accept-data-loss
+)
 echo.
 echo ======================================
 echo   Setup complete!
