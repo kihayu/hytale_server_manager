@@ -47,8 +47,17 @@ class WebSocketService {
   }) {
     const socket = this.connectToServers();
 
-    // Subscribe to server updates
-    socket.emit('subscribe', { serverId });
+    // Function to subscribe after connection
+    const doSubscribe = () => {
+      socket.emit('subscribe', { serverId });
+    };
+
+    // Subscribe when connected (or immediately if already connected)
+    if (socket.connected) {
+      doSubscribe();
+    } else {
+      socket.once('connect', doSubscribe);
+    }
 
     // Set up event listeners
     if (callbacks.onStatus) {
@@ -98,12 +107,20 @@ class WebSocketService {
       },
     });
 
-    this.consoleSocket.on('connect', () => {});
+    this.consoleSocket.on('connect', () => {
+      console.log('[WebSocket] Connected to /console');
+    });
 
-    this.consoleSocket.on('disconnect', () => {});
+    this.consoleSocket.on('connect_error', (error) => {
+      console.error('[WebSocket] Connection error (/console):', error.message);
+    });
+
+    this.consoleSocket.on('disconnect', (reason) => {
+      console.log('[WebSocket] Disconnected from /console:', reason);
+    });
 
     this.consoleSocket.on('error', (error) => {
-      console.error('WebSocket error (/console):', error);
+      console.error('[WebSocket] Error (/console):', error);
     });
 
     return this.consoleSocket;
@@ -116,8 +133,18 @@ class WebSocketService {
   }) {
     const socket = this.connectToConsole();
 
-    // Subscribe to console logs
-    socket.emit('subscribe', { serverId });
+    // Function to subscribe after connection
+    const doSubscribe = () => {
+      console.log('[WebSocket] Subscribing to console for server:', serverId);
+      socket.emit('subscribe', { serverId });
+    };
+
+    // Subscribe when connected (or immediately if already connected)
+    if (socket.connected) {
+      doSubscribe();
+    } else {
+      socket.once('connect', doSubscribe);
+    }
 
     // Set up event listeners
     if (callbacks.onLog) {
