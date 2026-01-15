@@ -5,7 +5,7 @@ import { generateRealtimeMetrics } from '../data/mockAdvanced';
 interface RealtimeStore {
   metrics: Record<string, RealtimeMetrics>;
   isLiveMode: boolean;
-  updateInterval: number | null;
+  updateInterval: ReturnType<typeof setInterval> | null;
   toggleLiveMode: () => void;
   updateMetrics: (serverId: string) => void;
   startLiveUpdates: () => void;
