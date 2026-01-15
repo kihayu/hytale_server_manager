@@ -66,6 +66,29 @@ prompt_for_secret() {
   echo "$input_value"
 }
 
+normalize_database_url() {
+  local value="$1"
+  local server_root="$2"
+
+  if [ -z "$value" ]; then
+    echo "file:${server_root}/data/hytalepanel.db"
+    return
+  fi
+
+  if [[ "$value" == \"*\" && "$value" == *\" ]]; then
+    value="${value#\"}"
+    value="${value%\"}"
+  fi
+
+  if [[ "$value" == file:./* ]]; then
+    value="file:${server_root}/${value#file:./}"
+  elif [[ "$value" == file:* && "$value" != file:/* && "$value" != file:[A-Za-z]:/* ]]; then
+    value="file:${server_root}/${value#file:}"
+  fi
+
+  echo "$value"
+}
+
 trap 'fail "Setup failed. Check the error above."' ERR
 
 log_step "Validating prerequisites..."
@@ -106,6 +129,16 @@ set_env_value "JWT_REFRESH_SECRET" "$jwt_refresh"
 
 encryption_key="$(prompt_for_secret "SETTINGS_ENCRYPTION_KEY" 32 "$(get_env_value "SETTINGS_ENCRYPTION_KEY")")"
 set_env_value "SETTINGS_ENCRYPTION_KEY" "$encryption_key"
+
+server_root="$ROOT_DIR/packages/server"
+database_url="$(normalize_database_url "$(get_env_value "DATABASE_URL")" "$server_root")"
+set_env_value "DATABASE_URL" "$database_url"
+
+prisma_env="$server_root/prisma/.env"
+if [ -f "$prisma_env" ]; then
+  rm -f "$prisma_env"
+  echo "Removed $prisma_env to avoid Prisma env conflicts"
+fi
 
 echo "Server secrets updated"
 

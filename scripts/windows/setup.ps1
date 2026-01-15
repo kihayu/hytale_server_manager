@@ -109,6 +109,34 @@ try {
     $encryptionKey = Prompt-ForSecret -Key "SETTINGS_ENCRYPTION_KEY" -Bytes 32 -Existing (Get-EnvValue -Content $envContent -Key "SETTINGS_ENCRYPTION_KEY")
     Set-EnvValue -Content ([ref]$envContent) -Key "SETTINGS_ENCRYPTION_KEY" -Value $encryptionKey
 
+    $serverRoot = Join-Path $rootDir "packages\server"
+    $defaultDbFile = Join-Path $serverRoot "data\hytalepanel.db"
+    $defaultDbUrl = "file:$defaultDbFile"
+    $databaseUrl = Get-EnvValue -Content $envContent -Key "DATABASE_URL"
+    if ($databaseUrl) {
+        $databaseUrl = $databaseUrl.Trim()
+        if ($databaseUrl.StartsWith('"') -and $databaseUrl.EndsWith('"')) {
+            $databaseUrl = $databaseUrl.Trim('"')
+        }
+    }
+
+    if ([string]::IsNullOrWhiteSpace($databaseUrl)) {
+        $databaseUrl = $defaultDbUrl
+    } elseif ($databaseUrl -match '^file:\.(\\|/)') {
+        $relativePath = $databaseUrl.Substring(5).TrimStart('.', '\', '/')
+        $databaseUrl = "file:" + (Join-Path $serverRoot $relativePath)
+    } elseif ($databaseUrl -match '^file:[^\\/]' -and $databaseUrl -notmatch '^file:[A-Za-z]:\\') {
+        $relativePath = $databaseUrl.Substring(5)
+        $databaseUrl = "file:" + (Join-Path $serverRoot $relativePath)
+    }
+    Set-EnvValue -Content ([ref]$envContent) -Key "DATABASE_URL" -Value $databaseUrl
+
+    $prismaEnv = Join-Path $serverRoot "prisma\.env"
+    if (Test-Path $prismaEnv) {
+        Remove-Item $prismaEnv -Force
+        Write-Host "Removed $prismaEnv to avoid Prisma env conflicts" -ForegroundColor Yellow
+    }
+
     Set-Content $serverEnv $envContent.Trim()
     Write-Success "Server secrets updated"
 
