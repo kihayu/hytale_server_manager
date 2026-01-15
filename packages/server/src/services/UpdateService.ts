@@ -344,7 +344,7 @@ if exist "${tempDir}\\hytalepanel.db.backup" (
 :: Run database migrations
 echo Running database migrations...
 cd /d "${installPath}"
-node node_modules\\prisma\\build\\index.js db push --accept-data-loss --schema=prisma\\schema.prisma 2>nul
+node node_modules\\prisma\\build\\index.js db push --schema=prisma\\schema.prisma
 
 :: Start the server (cleanup happens on next update since we can't delete running script)
 echo.
@@ -410,7 +410,7 @@ fi
 # Run database migrations
 echo "Running database migrations..."
 cd "${installPath}"
-./node_modules/.bin/prisma db push --accept-data-loss --schema=prisma/schema.prisma 2>/dev/null
+./node_modules/.bin/prisma db push --schema=prisma/schema.prisma
 
 # Cleanup temp directory
 echo "Cleaning up..."

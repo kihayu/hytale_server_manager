@@ -153,7 +153,7 @@ jobs:
           )
 
           echo Configuring database path...
-          node -e "const fs=require('fs');const path=require('path');let env=fs.readFileSync('.env','utf8');const dbPath='file:'+path.join(process.cwd(),'data','hytalepanel.db').replace(/\\/g,'/');env=env.replace(/^DATABASE_URL=.*$/m,'DATABASE_URL='+dbPath);fs.writeFileSync('.env',env);console.log('Database path: '+dbPath);"
+          node -e "const fs=require('fs');const path=require('path');let env=fs.readFileSync('.env','utf8');const dbPath='file:'+path.join(process.cwd(),'prisma','data','hytalepanel.db').replace(/\\/g,'/');env=env.replace(/^DATABASE_URL=.*$/m,'DATABASE_URL='+dbPath);fs.writeFileSync('.env',env);console.log('Database path: '+dbPath);"
 
           echo Generating secrets if needed...
           node -e "const fs=require('fs');const crypto=require('crypto');let env=fs.readFileSync('.env','utf8');let changed=false;if(/^JWT_SECRET=$/m.test(env)){env=env.replace(/^JWT_SECRET=$/m,'JWT_SECRET='+crypto.randomBytes(64).toString('hex'));changed=true;}if(/^JWT_REFRESH_SECRET=$/m.test(env)){env=env.replace(/^JWT_REFRESH_SECRET=$/m,'JWT_REFRESH_SECRET='+crypto.randomBytes(64).toString('hex'));changed=true;}if(/^SETTINGS_ENCRYPTION_KEY=$/m.test(env)){env=env.replace(/^SETTINGS_ENCRYPTION_KEY=$/m,'SETTINGS_ENCRYPTION_KEY='+crypto.randomBytes(16).toString('hex'));changed=true;}if(changed){fs.writeFileSync('.env',env);console.log('Generated missing secrets in .env');}else{console.log('Secrets already configured.');}"
@@ -161,10 +161,10 @@ jobs:
           echo.
           echo Creating data directories...
           if not exist "data" mkdir data
-          if not exist "data\db" mkdir data\db
           if not exist "data\logs" mkdir data\logs
           if not exist "data\servers" mkdir data\servers
           if not exist "data\backups" mkdir data\backups
+          if not exist "prisma\data" mkdir prisma\data
           echo Data directories ready.
 
           echo.
@@ -199,10 +199,10 @@ jobs:
 
           echo.
           echo Verifying database was created...
-          if exist "data\hytalepanel.db" (
-              echo Database file created: data\hytalepanel.db
+          if exist "prisma\data\hytalepanel.db" (
+              echo Database file created: prisma\data\hytalepanel.db
           ) else (
-              echo WARNING: Database file not found at data\hytalepanel.db
+              echo WARNING: Database file not found at prisma\data\hytalepanel.db
               echo Checking alternative locations...
               dir /s /b *.db 2>nul
           )
@@ -285,7 +285,7 @@ jobs:
           const fs = require('fs');
           const path = require('path');
           let env = fs.readFileSync('.env', 'utf8');
-          const dbPath = 'file:' + path.join(process.cwd(), 'data', 'hytalepanel.db');
+          const dbPath = 'file:' + path.join(process.cwd(), 'prisma', 'data', 'hytalepanel.db');
           env = env.replace(/^DATABASE_URL=.*$/m, 'DATABASE_URL=' + dbPath);
           fs.writeFileSync('.env', env);
           console.log('Database path: ' + dbPath);
@@ -320,10 +320,10 @@ jobs:
           echo
           echo "Creating data directories..."
           mkdir -p data
-          mkdir -p data/db
           mkdir -p data/logs
           mkdir -p data/servers
           mkdir -p data/backups
+          mkdir -p prisma/data
           echo "Data directories ready."
 
           echo
@@ -355,10 +355,10 @@ jobs:
 
           echo
           echo "Verifying database was created..."
-          if [ -f "data/hytalepanel.db" ]; then
-              echo "Database file created: data/hytalepanel.db"
+          if [ -f "prisma/data/hytalepanel.db" ]; then
+              echo "Database file created: prisma/data/hytalepanel.db"
           else
-              echo "WARNING: Database file not found at data/hytalepanel.db"
+              echo "WARNING: Database file not found at prisma/data/hytalepanel.db"
               echo "Checking alternative locations..."
               find . -name "*.db" 2>/dev/null
           fi
