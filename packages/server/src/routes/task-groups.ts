@@ -69,14 +69,20 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
       });
 
       // Log activity
+      const user = authReq.user!;
+      const context = getActivityContext(req);
       const activityLogService: ActivityLogService = req.app.get('activityLogService');
       activityLogService.logAsync({
-        ...getActivityContext(authReq),
+        userId: user.id,
+        username: user.username,
+        userRole: user.role,
         action: ACTIVITY_ACTIONS.TASK_GROUP_CREATE,
         resourceType: RESOURCE_TYPES.TASK_GROUP,
         resourceId: group.id,
         resourceName: group.name,
         status: 'success',
+        ipAddress: context.ipAddress,
+        userAgent: context.userAgent,
       });
 
       return res.status(201).json(group);
@@ -96,14 +102,20 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
       const group = await taskGroupService.updateGroup(req.params.id, req.body);
 
       // Log activity
+      const user = authReq.user!;
+      const context = getActivityContext(req);
       const activityLogService: ActivityLogService = req.app.get('activityLogService');
       activityLogService.logAsync({
-        ...getActivityContext(authReq),
+        userId: user.id,
+        username: user.username,
+        userRole: user.role,
         action: ACTIVITY_ACTIONS.TASK_GROUP_UPDATE,
         resourceType: RESOURCE_TYPES.TASK_GROUP,
         resourceId: group.id,
         resourceName: group.name,
         status: 'success',
+        ipAddress: context.ipAddress,
+        userAgent: context.userAgent,
       });
 
       res.json(group);
@@ -129,14 +141,20 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
       await taskGroupService.deleteGroup(req.params.id);
 
       // Log activity
+      const user = authReq.user!;
+      const context = getActivityContext(req);
       const activityLogService: ActivityLogService = req.app.get('activityLogService');
       activityLogService.logAsync({
-        ...getActivityContext(authReq),
+        userId: user.id,
+        username: user.username,
+        userRole: user.role,
         action: ACTIVITY_ACTIONS.TASK_GROUP_DELETE,
         resourceType: RESOURCE_TYPES.TASK_GROUP,
         resourceId: req.params.id,
         resourceName: group.name,
         status: 'success',
+        ipAddress: context.ipAddress,
+        userAgent: context.userAgent,
       });
 
       return res.status(204).send();
@@ -161,14 +179,20 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
       const group = await taskGroupService.toggleGroup(req.params.id, enabled);
 
       // Log activity
+      const user = authReq.user!;
+      const context = getActivityContext(req);
       const activityLogService: ActivityLogService = req.app.get('activityLogService');
       activityLogService.logAsync({
-        ...getActivityContext(authReq),
+        userId: user.id,
+        username: user.username,
+        userRole: user.role,
         action: enabled ? ACTIVITY_ACTIONS.TASK_GROUP_ENABLE : ACTIVITY_ACTIONS.TASK_GROUP_DISABLE,
         resourceType: RESOURCE_TYPES.TASK_GROUP,
         resourceId: group.id,
         resourceName: group.name,
         status: 'success',
+        ipAddress: context.ipAddress,
+        userAgent: context.userAgent,
       });
 
       res.json(group);
@@ -193,15 +217,21 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
       const execution = await taskGroupService.executeGroup(req.params.id);
 
       // Log activity
+      const user = authReq.user!;
+      const context = getActivityContext(req);
       const activityLogService: ActivityLogService = req.app.get('activityLogService');
       activityLogService.logAsync({
-        ...getActivityContext(authReq),
+        userId: user.id,
+        username: user.username,
+        userRole: user.role,
         action: ACTIVITY_ACTIONS.TASK_GROUP_RUN,
         resourceType: RESOURCE_TYPES.TASK_GROUP,
         resourceId: group.id,
         resourceName: group.name,
         status: execution.status === 'failed' ? 'failed' : 'success',
         details: { executionId: execution.id, status: execution.status },
+        ipAddress: context.ipAddress,
+        userAgent: context.userAgent,
       });
 
       return res.json(execution);
