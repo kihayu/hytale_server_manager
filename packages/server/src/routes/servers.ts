@@ -88,6 +88,7 @@ export function createServerRoutes(
         serverPath,
         backupPath,
         backupType,
+        jvmArgs,
       } = req.body;
 
       if (!name || !address || !port || !version || !maxPlayers || !gameMode || !serverPath) {
@@ -111,6 +112,7 @@ export function createServerRoutes(
         serverPath,
         backupPath,
         backupType,
+        jvmArgs,
       });
 
       // Log activity (user is guaranteed by requirePermission middleware)

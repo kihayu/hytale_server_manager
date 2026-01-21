@@ -150,6 +150,7 @@ interface CreateServerData {
   gameMode: string;
   adapterType?: string;
   adapterConfig?: Record<string, unknown>;
+  jvmArgs?: string;
 }
 
 /**
