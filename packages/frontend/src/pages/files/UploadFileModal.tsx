@@ -249,6 +249,8 @@ export const UploadFileModal = ({
         );
       }, signal);
 
+      uploadAbortControllersRef.current.delete(id);
+
       setUploads((prev) => {
         const updated = prev.map((u) => {
           if (u.id === id) {
@@ -272,6 +274,7 @@ export const UploadFileModal = ({
           setTimeout(() => {
             onSuccess();
             setUploads([]);
+            uploadAbortControllersRef.current.clear();
             onClose();
           }, 1500);
         }
@@ -279,6 +282,8 @@ export const UploadFileModal = ({
         return updated;
       });
     } catch (error) {
+      uploadAbortControllersRef.current.delete(id);
+
       if (error instanceof Error && error.message === 'Upload cancelled') {
         setUploads((prev) =>
           prev.map((u) =>
@@ -310,6 +315,7 @@ export const UploadFileModal = ({
   };
 
   const removeUpload = (id: string) => {
+    uploadAbortControllersRef.current.delete(id);
     setUploads((prev) => prev.filter((u) => u.id !== id));
   };
 

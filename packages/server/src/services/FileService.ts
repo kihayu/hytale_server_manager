@@ -146,8 +146,9 @@ export class FileService {
     const absolutePath = path.join(serverPath, filePath);
     const normalizedPath = path.normalize(absolutePath);
 
-    // Ensure the path is within the server directory
-    if (!normalizedPath.startsWith(serverPath)) {
+    const normalizedServerPath = path.normalize(serverPath);
+    if (normalizedPath !== normalizedServerPath &&
+        !normalizedPath.startsWith(normalizedServerPath + path.sep)) {
       throw new Error('Access denied: Path is outside server directory');
     }
 
@@ -528,8 +529,9 @@ export class FileService {
 
             try {
               await Promise.all(writePromises);
+              const uniqueExtractedFiles = Array.from(new Set(extractedFiles));
 
-              for (const file of extractedFiles) {
+              for (const file of uniqueExtractedFiles) {
                 const srcPath = path.resolve(tempDir, file);
                 const destFilePath = path.resolve(destPath, file);
 
@@ -541,6 +543,10 @@ export class FileService {
                   continue;
                 }
 
+                if (!await fs.pathExists(srcPath)) {
+                  continue;
+                }
+
                 await fs.ensureDir(path.dirname(destFilePath));
                 await fs.move(srcPath, destFilePath, { overwrite: true });
 
@@ -548,7 +554,7 @@ export class FileService {
               }
 
               await fs.remove(tempDir);
-              resolve([extractedFiles, tempDir]);
+              resolve([uniqueExtractedFiles, tempDir]);
             } catch (err) {
               for (const movedFile of movedFiles) {
                 try {
