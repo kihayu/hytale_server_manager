@@ -1256,7 +1256,7 @@ export function createServerRoutes(
     },
     fileFilter: (_req, _file, cb) => {
       // Currently all file types are allowed to upload.
-      // Maybe it makes sense to only allow specific file types (.zip, .jar?).
+      // Maybe it makes sense to only allow specific file types (maybe configurable?)
       // That would need to happen here.
       cb(null, true);
     },
