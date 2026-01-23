@@ -1,6 +1,7 @@
 import express, { Express } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import multer from 'multer';
 import path from 'path';
 import { PrismaClient } from '@prisma/client';
 import { Server as HTTPServer, createServer as createHTTPServer } from 'http';
@@ -223,6 +224,20 @@ export class App {
     // Body parsing
     this.express.use(express.json());
     this.express.use(express.urlencoded({ extended: true }));
+
+    // File upload middleware (for multipart/form-data)
+    const upload = multer({
+      storage: multer.memoryStorage(),
+      limits: {
+        fileSize: config.maxFileUploadSize,
+      },
+    });
+
+    // Apply multer to the upload endpoint
+    this.express.post('/api/servers/:id/files/upload', upload.single('file'), (_req, _res, next) => {
+      // This just passes through to the route handler
+      next();
+    });
 
     // Cookie parsing
     this.express.use(cookieParser());

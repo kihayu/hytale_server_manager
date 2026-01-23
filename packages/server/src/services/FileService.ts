@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import fs from 'fs-extra';
 import path from 'path';
+import unzipper from 'unzipper';
+import { spawn } from 'child_process';
 import logger from '../utils/logger';
 
 const prisma = new PrismaClient();
@@ -13,6 +15,12 @@ export interface FileInfo {
   modified: Date;
   extension?: string;
   isEditable: boolean;
+}
+
+export interface ExtractedFileInfo {
+  fileName: string;
+  size: number;
+  extractedFiles: string[];
 }
 
 export class FileService {
@@ -350,6 +358,189 @@ export class FileService {
     return {
       total: 0, // Can be implemented with disk space check if needed
       used,
+    };
+  }
+
+  /**
+   * Extract a zip file using native system tools, with fallback to unzipper library
+   */
+  private async extractZip(zipPath: string, destPath: string): Promise<string[]> {
+    // Try native extraction first (better for large files)
+    try {
+      return await this.extractZipNative(zipPath, destPath);
+    } catch (err) {
+      const error = err as NodeJS.ErrnoException;
+      // If native tool not found, fall back to unzipper library
+      if (error.message?.includes('ENOENT') || error.message?.includes('not found')) {
+        logger.info('[FileService] Native extraction tool not available, using unzipper library');
+        return await this.extractZipWithLibrary(zipPath, destPath);
+      }
+      throw err;
+    }
+  }
+
+  /**
+   * Extract using native system tools (PowerShell on Windows, unzip on Linux/Mac)
+   */
+  private extractZipNative(zipPath: string, destPath: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      const isWindows = process.platform === 'win32';
+
+      let command: string;
+      let args: string[];
+
+      if (isWindows) {
+        // Use PowerShell's Expand-Archive for reliable extraction on Windows
+        command = 'powershell.exe';
+        args = [
+          '-NoProfile',
+          '-Command',
+          `Expand-Archive -Path "${zipPath}" -DestinationPath "${destPath}" -Force`,
+        ];
+      } else {
+        // Use unzip on Linux/Mac
+        command = 'unzip';
+        args = ['-o', zipPath, '-d', destPath];
+      }
+
+      logger.info(`[FileService] Running extraction: ${command} ${args.join(' ')}`);
+
+      const proc = spawn(command, args, {
+        stdio: ['pipe', 'pipe', 'pipe'],
+      });
+
+      let stderr = '';
+
+      proc.stderr.on('data', (data) => {
+        stderr += data.toString();
+      });
+
+      proc.on('close', async (code) => {
+        if (code === 0) {
+          // Get list of extracted files
+          const extractedFiles = await this.getExtractedFiles(destPath);
+          resolve(extractedFiles);
+        } else {
+          reject(new Error(`Extraction failed with code ${code}: ${stderr}`));
+        }
+      });
+
+      proc.on('error', (err) => {
+        reject(new Error(`Failed to start extraction: ${err.message}`));
+      });
+    });
+  }
+
+  /**
+   * Extract using unzipper library (fallback when native tools unavailable)
+   */
+  private extractZipWithLibrary(zipPath: string, destPath: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      const extractedFiles: string[] = [];
+
+      fs.createReadStream(zipPath)
+        .pipe(unzipper.Parse())
+        .on('entry', (entry) => {
+          const fileName = entry.path;
+          const filePath = path.join(destPath, fileName);
+
+          // Skip if entry is a directory
+          if (entry.type === 'Directory') {
+            entry.autodrain();
+            return;
+          }
+
+          // Track extracted files
+          if (!fileName.endsWith('/')) {
+            extractedFiles.push(fileName);
+          }
+
+          // Create parent directory if needed
+          const dir = path.dirname(filePath);
+          fs.ensureDirSync(dir);
+
+          // Extract file
+          entry.pipe(fs.createWriteStream(filePath));
+        })
+        .on('close', () => {
+          resolve(extractedFiles);
+        })
+        .on('error', reject);
+    });
+  }
+
+  /**
+   * Get list of files extracted from a zip
+   */
+  private async getExtractedFiles(destPath: string): Promise<string[]> {
+    const files: string[] = [];
+
+    const walkDir = async (dir: string, prefix = '') => {
+      const items = await fs.readdir(dir);
+
+      for (const item of items) {
+        const itemPath = path.join(dir, item);
+        const stats = await fs.stat(itemPath);
+        const relativePath = prefix ? `${prefix}/${item}` : item;
+
+        if (stats.isDirectory()) {
+          await walkDir(itemPath, relativePath);
+        } else {
+          files.push(relativePath);
+        }
+      }
+    };
+
+    await walkDir(destPath);
+    return files;
+  }
+
+  /**
+   * Upload a file with optional ZIP extraction
+   */
+  async uploadFileWithExtraction(
+    serverId: string,
+    filePath: string,
+    buffer: Buffer,
+    autoExtractZip: boolean = true
+  ): Promise<ExtractedFileInfo> {
+    const absolutePath = await this.validatePath(serverId, filePath);
+
+    // Ensure parent directory exists
+    await fs.ensureDir(path.dirname(absolutePath));
+
+    // Write the file
+    await fs.writeFile(absolutePath, buffer);
+    logger.info(`File uploaded: ${filePath} for server ${serverId}`);
+
+    // Check if it's a ZIP file and should be extracted
+    const isZipFile = filePath.toLowerCase().endsWith('.zip');
+    if (isZipFile && autoExtractZip) {
+      try {
+        const extractDir = path.dirname(absolutePath);
+        const extractedFiles = await this.extractZip(absolutePath, extractDir);
+
+        // Delete the original ZIP file after successful extraction
+        await fs.remove(absolutePath);
+        logger.info(`ZIP extracted and deleted: ${filePath} for server ${serverId}`);
+
+        return {
+          fileName: path.basename(filePath),
+          size: buffer.length,
+          extractedFiles,
+        };
+      } catch (error) {
+        logger.error(`Failed to extract ZIP file ${filePath}:`, error);
+        // Delete the uploaded file if extraction failed
+        await fs.remove(absolutePath);
+        throw new Error(`Failed to extract ZIP file: ${(error as Error).message}`);
+      }
+    }
+
+    return {
+      fileName: path.basename(filePath),
+      size: buffer.length,
+      extractedFiles: [],
     };
   }
 }

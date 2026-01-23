@@ -1243,6 +1243,44 @@ export function createServerRoutes(
     }
   });
 
+  /**
+   * POST /api/servers/:id/files/upload
+   * Upload a file with optional ZIP extraction
+   */
+  router.post('/:id/files/upload', async (req: Request, res: Response) => {
+    try {
+      const { path: filePath, autoExtractZip = true } = req.body;
+
+      if (!filePath) {
+        return res.status(400).json({ error: 'File path is required' });
+      }
+
+      if (!req.file || !req.file.buffer) {
+        return res.status(400).json({ error: 'No file provided' });
+      }
+
+      // Check file size against config limit
+      const config = require('../config').default;
+      if (req.file.size > config.maxFileUploadSize) {
+        return res.status(413).json({
+          error: `File too large. Maximum size is ${config.maxFileUploadSize / (1024 * 1024)}MB`,
+        });
+      }
+
+      const result = await fileService.uploadFileWithExtraction(
+        req.params.id,
+        filePath,
+        req.file.buffer,
+        autoExtractZip
+      );
+
+      return res.status(201).json(result);
+    } catch (error: any) {
+      logger.error('Error uploading file:', error);
+      return res.status(500).json({ error: error.message || 'Failed to upload file' });
+    }
+  });
+
   // ============================================
   // Performance Metrics
   // ============================================
