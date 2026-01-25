@@ -221,7 +221,13 @@ export class ServerService {
     if (data.version !== undefined) updateData.version = data.version;
     if (data.maxPlayers !== undefined) updateData.maxPlayers = data.maxPlayers;
     if (data.gameMode !== undefined) updateData.gameMode = data.gameMode;
-    if (data.serverPath !== undefined) updateData.serverPath = data.serverPath;
+    if (data.serverPath !== undefined) {
+      if (!path.isAbsolute(data.serverPath)) {
+        updateData.serverPath = path.resolve(config.serversBasePath, data.serverPath);
+      } else {
+        updateData.serverPath = path.resolve(data.serverPath);
+      }
+    }
     if (data.backupPath !== undefined) updateData.backupPath = data.backupPath;
     if (data.backupType !== undefined) updateData.backupType = data.backupType;
     if (data.backupExclusions !== undefined) {
