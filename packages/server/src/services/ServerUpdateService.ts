@@ -66,6 +66,8 @@ export interface UpdateSession {
   backupId?: string;
   startedAt: Date;
   wasRunning: boolean;
+  downloadSessionId?: string;      // Track active download for cancellation
+  tempPreservePath?: string;       // Track temp preserve directory for cleanup
 }
 
 export interface VersionCheckResult {
@@ -367,6 +369,10 @@ class ServerUpdateService extends EventEmitter {
       const preserved = await this.identifyPreservedPaths(server.serverPath);
       tempPreservePath = await this.preserveFiles(server.serverPath, preserved);
 
+      // Track temp preserve path for cleanup on cancellation
+      session.tempPreservePath = tempPreservePath;
+      this.sessions.set(session.sessionId, session);
+
       // Step 4: Download new version
       await this.updateSessionStatus(session, 'downloading', 45, 'Downloading new version...');
       await this.updateHistoryStatus(historyId, 'downloading');
@@ -378,7 +384,7 @@ class ServerUpdateService extends EventEmitter {
         const items = await fs.readdir(serverDir);
         for (const item of items) {
           const itemPath = path.join(serverDir, item);
-          await fs.remove(itemPath);
+          await this.removeWithRetry(itemPath);
         }
       }
 
@@ -386,6 +392,10 @@ class ServerUpdateService extends EventEmitter {
       const downloadSession = await hytaleDownloaderService.startDownload({
         destinationPath: server.serverPath,
       });
+
+      // Track download session for cancellation
+      session.downloadSessionId = downloadSession.sessionId;
+      this.sessions.set(session.sessionId, session);
 
       // Wait for download to complete
       await this.waitForDownload(downloadSession.sessionId, session);
@@ -509,6 +519,14 @@ class ServerUpdateService extends EventEmitter {
   private async waitForDownload(downloadSessionId: string, updateSession: UpdateSession): Promise<void> {
     return new Promise((resolve, reject) => {
       const checkInterval = setInterval(() => {
+        // Check if update was cancelled
+        const currentSession = this.sessions.get(updateSession.sessionId);
+        if (currentSession?.status === 'failed') {
+          clearInterval(checkInterval);
+          reject(new Error('Update cancelled'));
+          return;
+        }
+
         const downloadSession = hytaleDownloaderService.getDownloadSession(downloadSessionId);
 
         if (!downloadSession) {
@@ -745,6 +763,21 @@ class ServerUpdateService extends EventEmitter {
       throw new Error('Cannot cancel a completed or failed update');
     }
 
+    // Cancel active download if in progress
+    if (session.downloadSessionId) {
+      hytaleDownloaderService.cancelDownload(session.downloadSessionId);
+    }
+
+    // Clean up temp preserve directory if it exists
+    if (session.tempPreservePath && await fs.pathExists(session.tempPreservePath)) {
+      try {
+        await fs.remove(session.tempPreservePath);
+        logger.info(`[ServerUpdate] Cleaned up temp preserve path: ${session.tempPreservePath}`);
+      } catch (err) {
+        logger.warn(`[ServerUpdate] Failed to clean up temp preserve path: ${err}`);
+      }
+    }
+
     // Mark as failed
     session.status = 'failed';
     session.error = 'Update cancelled by user';
@@ -869,6 +902,28 @@ class ServerUpdateService extends EventEmitter {
 
   private sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Remove a file or directory with retry logic for locked files
+   */
+  private async removeWithRetry(targetPath: string, maxAttempts = 5, delayMs = 1000): Promise<void> {
+    const LOCKED_FILE_ERRORS = ['ENOTEMPTY', 'EBUSY', 'EACCES', 'EPERM', 'ETXTBSY'];
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        await fs.remove(targetPath);
+        return;
+      } catch (error: any) {
+        const isLockedError = LOCKED_FILE_ERRORS.includes(error.code);
+        if (isLockedError && attempt < maxAttempts) {
+          logger.debug(`[ServerUpdate] Retry ${attempt}/${maxAttempts} removing ${path.basename(targetPath)}, waiting ${delayMs}ms...`);
+          await this.sleep(delayMs);
+        } else {
+          throw error;
+        }
+      }
+    }
   }
 
   /**

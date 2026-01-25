@@ -98,7 +98,7 @@ export const ServerSettingsPage = () => {
 
   // Advanced settings state
   const [advancedSettings, setAdvancedSettings] = useState<AdvancedSettings>({
-    jvmArgs: '-Xms1G -Xmx2G',
+    jvmArgs: '-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot',
     serverArgs: '',
     jarFile: 'Server/HytaleServer.jar',
     assetsPath: '../Assets.zip',
@@ -164,7 +164,7 @@ export const ServerSettingsPage = () => {
 
       // Populate advanced settings
       setAdvancedSettings({
-        jvmArgs: serverData.jvmArgs || '-Xms1G -Xmx2G',
+        jvmArgs: serverData.jvmArgs || '-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot',
         serverArgs: serverData.serverArgs || '',
         jarFile: adapterConfig.jarFile || 'Server/HytaleServer.jar',
         assetsPath: adapterConfig.assetsPath || '../Assets.zip',
@@ -355,7 +355,7 @@ export const ServerSettingsPage = () => {
     }
 
     setAdvancedSettings({
-      jvmArgs: server.jvmArgs || '-Xms1G -Xmx2G',
+      jvmArgs: server.jvmArgs || '-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot',
       serverArgs: server.serverArgs || '',
       jarFile: adapterConfig.jarFile || 'Server/HytaleServer.jar',
       assetsPath: adapterConfig.assetsPath || '../Assets.zip',
@@ -781,10 +781,10 @@ export const ServerSettingsPage = () => {
                   }}
                   className="w-full bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-text-light-primary dark:text-text-primary focus:outline-none focus:border-accent-primary font-mono text-sm"
                   rows={4}
-                  placeholder="-Xms1G -Xmx2G"
+                  placeholder="-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot"
                 />
                 <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
-                  JVM arguments passed to the Java process. Common options: -Xms (min memory), -Xmx (max memory).
+                  JVM arguments passed to the Java process. AOT cache enables faster startup if HytaleServer.aot exists.
                 </p>
               </div>
 
@@ -816,7 +816,7 @@ export const ServerSettingsPage = () => {
                 <div className="font-mono text-xs bg-gray-200 dark:bg-gray-900 rounded p-3 overflow-x-auto">
                   <span className="text-blue-600 dark:text-blue-400">{advancedSettings.javaPath || 'java'}</span>
                   {' '}
-                  <span className="text-green-600 dark:text-green-400" title="JVM Arguments">{advancedSettings.jvmArgs || '-Xms1G -Xmx2G'}</span>
+                  <span className="text-green-600 dark:text-green-400" title="JVM Arguments">{advancedSettings.jvmArgs || '-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot'}</span>
                   {' '}
                   <span className="text-text-light-primary dark:text-text-primary">-jar {advancedSettings.jarFile || 'Server/HytaleServer.jar'}</span>
                   {' '}

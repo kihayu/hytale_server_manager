@@ -259,7 +259,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
                   setFormData(prev => ({
                     ...prev,
                     adapterType: 'java',
-                    jvmArgs: '-Xms1G -Xmx2G',
+                    jvmArgs: '-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot',
                     adapterConfig: {
                       jarFile: 'Server/HytaleServer.jar',
                       assetsPath: '../Assets.zip',
@@ -351,8 +351,8 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
                   JVM Arguments
                 </label>
                 <textarea
-                  placeholder="-Xms1G -Xmx2G"
-                  value={formData.jvmArgs || '-Xms1G -Xmx2G'}
+                  placeholder="-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot"
+                  value={formData.jvmArgs || '-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot'}
                   onChange={(e) => setFormData(prev => ({
                     ...prev,
                     jvmArgs: e.target.value,
@@ -361,7 +361,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
                   rows={2}
                 />
                 <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
-                  JVM arguments for the Java process. Common: -Xms (min memory), -Xmx (max memory)
+                  JVM arguments for the Java process. AOT cache enables faster startup if HytaleServer.aot exists.
                 </p>
               </div>
             </div>

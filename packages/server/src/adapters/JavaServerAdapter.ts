@@ -129,6 +129,22 @@ export class JavaServerAdapter implements IServerAdapter {
       throw new Error(`JAR file not found: ${jarPath}`);
     }
 
+    // Check for AOT cache file for faster startup
+    const aotPath = path.join(jarDir, 'HytaleServer.aot');
+    if (await fs.pathExists(aotPath)) {
+      const aotArg = '-XX:AOTCache=HytaleServer.aot';
+      if (!this.javaArgs.includes(aotArg)) {
+        // Insert AOT flag before -jar
+        const jarIndex = this.javaArgs.indexOf('-jar');
+        if (jarIndex > 0) {
+          this.javaArgs.splice(jarIndex, 0, aotArg);
+        } else {
+          this.javaArgs.unshift(aotArg);
+        }
+        logger.info(`[JavaAdapter] Using AOT cache for faster startup`);
+      }
+    }
+
     logger.info(`[JavaAdapter] Starting server ${this.serverId}`);
     logger.info(`[JavaAdapter] Command: ${this.javaPath} ${this.javaArgs.join(' ')} ${jarFileName} ${this.serverArgs.join(' ')}`);
 
@@ -188,9 +204,16 @@ export class JavaServerAdapter implements IServerAdapter {
       this.process.on('exit', async (code) => {
         logger.info(`[JavaAdapter] Server ${this.serverId} exited with code ${code}`);
         this.process = null;
-        this.status.status = code === 0 ? 'stopped' : 'crashed';
         this.status.playerCount = 0;
         this.startTime = null;
+
+        // Exit code 8 = server requests restart for update (Hytale convention)
+        if (code === 8) {
+          this.status.status = 'stopped';
+          logger.info(`[JavaAdapter] Server ${this.serverId} requested update (exit code 8)`);
+        } else {
+          this.status.status = code === 0 ? 'stopped' : 'crashed';
+        }
 
         await this.prisma.server.update({
           where: { id: this.serverId },
@@ -199,8 +222,10 @@ export class JavaServerAdapter implements IServerAdapter {
 
         this.emitLog({
           timestamp: new Date(),
-          level: code === 0 ? 'info' : 'error',
-          message: `Server ${code === 0 ? 'stopped' : 'crashed'} (exit code: ${code})`,
+          level: code === 0 || code === 8 ? 'info' : 'error',
+          message: code === 8
+            ? 'Server stopped for update (exit code: 8)'
+            : `Server ${code === 0 ? 'stopped' : 'crashed'} (exit code: ${code})`,
           source: 'system',
         });
       });
