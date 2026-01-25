@@ -5,6 +5,7 @@ import { IServerAdapter } from '../adapters/IServerAdapter';
 import { JavaServerAdapter } from '../adapters/JavaServerAdapter';
 import { ServerConfig, ServerStatus, ServerMetrics } from '../types';
 import logger from '../utils/logger';
+import config from '../config';
 import { DiscordNotificationService } from './DiscordNotificationService';
 import { RconService } from './RconService';
 import { LogTailService } from './LogTailService';
@@ -160,7 +161,12 @@ export class ServerService {
     }
 
     // Resolve to absolute path
-    const serverPath = path.resolve(data.serverPath);
+    let serverPath = data.serverPath;
+    if (!path.isAbsolute(serverPath)) {
+      serverPath = path.resolve(config.serversBasePath, serverPath);
+    } else {
+      serverPath = path.resolve(serverPath);
+    }
     const worldPath = path.join(serverPath, 'world');
 
     // Create the server directory
