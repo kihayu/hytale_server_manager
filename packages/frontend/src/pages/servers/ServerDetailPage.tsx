@@ -41,6 +41,14 @@ interface ServerStatus {
   uptime: number;
 }
 
+interface ModFile {
+  id: string;
+  fileName: string;
+  filePath: string;
+  fileSize: number;
+  fileType: string;
+}
+
 interface InstalledMod {
   id: string;
   serverId: string;
@@ -50,11 +58,21 @@ interface InstalledMod {
   versionId: string;
   versionName: string;
   classification: string;
-  filePath: string;
-  fileSize: number;
+  archiveSize: number;
+  files: ModFile[];
   enabled: boolean;
   installedAt: string;
+  providerId: string;
 }
+
+const getModDisplaySize = (mod: InstalledMod): number => {
+  // If files exist (extracted from archive), sum their sizes
+  if (mod.files && mod.files.length > 0) {
+    return mod.files.reduce((sum, file) => sum + file.fileSize, 0);
+  }
+  // Fall back to archive size
+  return mod.archiveSize || 0;
+};
 
 export const ServerDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -527,7 +545,7 @@ export const ServerDetailPage = () => {
                       <div className="flex items-center gap-3 text-sm text-text-light-muted dark:text-text-muted">
                         <span>v{mod.versionName}</span>
                         <span>•</span>
-                        <span>{(mod.fileSize / 1024).toFixed(1)} KB</span>
+                        <span>{(getModDisplaySize(mod) / 1024).toFixed(1)} KB</span>
                         <span>•</span>
                         <span>Installed {new Date(mod.installedAt).toLocaleDateString()}</span>
                       </div>
@@ -540,11 +558,22 @@ export const ServerDetailPage = () => {
                         size="sm"
                         icon={<ExternalLink size={14} />}
                         onClick={() => {
-                          const slug = mod.projectTitle.toLowerCase().replace(/\s+/g, '-');
-                          const classification = mod.classification.toLowerCase();
-                          window.open(`https://modtale.net/${classification}/${slug}-${mod.projectId}`, '_blank');
+                          if (mod.providerId === 'curseforge') {
+                            // CurseForge slugs: lowercase, spaces to hyphens, remove non-alphanumeric (except hyphens)
+                            const slug = mod.projectTitle
+                              .toLowerCase()
+                              .replace(/[^a-z0-9\s-]/g, '')
+                              .replace(/\s+/g, '-')
+                              .replace(/-+/g, '-');
+                            window.open(`https://www.curseforge.com/hytale/mods/${slug}`, '_blank');
+                          } else {
+                            // Default to Modtale
+                            const slug = mod.projectTitle.toLowerCase().replace(/\s+/g, '-');
+                            const type = mod.classification === 'MODPACK' ? 'modpack' : 'mod';
+                            window.open(`https://modtale.net/${type}/${slug}-${mod.projectId}`, '_blank');
+                          }
                         }}
-                        title="View on Modtale"
+                        title={`View on ${mod.providerId === 'curseforge' ? 'CurseForge' : 'Modtale'}`}
                       />
                       <Button
                         variant="danger"

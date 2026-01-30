@@ -84,37 +84,34 @@ export class AlertsService {
         await this.discordService.notify('alert_critical', {
           serverName: server?.name,
           reason: data.title,
-          details: {
-            message: data.message,
-            type: data.type,
-          },
+          details: data.message || data.title,
         });
       } else if (data.severity === 'warning') {
         await this.discordService.notify('alert_warning', {
           serverName: server?.name,
           reason: data.title,
-          details: {
-            message: data.message,
-            type: data.type,
-          },
+          details: data.message || data.title,
         });
       }
 
       // Also send specific performance alerts
       if (data.type === 'high_cpu') {
+        const cpuUsage = data.metadata?.cpuUsage ?? data.metadata;
         await this.discordService.notify('high_cpu', {
           serverName: server?.name,
-          details: data.metadata,
+          details: typeof cpuUsage === 'object' ? JSON.stringify(cpuUsage) : cpuUsage,
         });
       } else if (data.type === 'high_memory') {
+        const memoryUsage = data.metadata?.memoryUsage ?? data.metadata;
         await this.discordService.notify('high_memory', {
           serverName: server?.name,
-          details: data.metadata,
+          details: typeof memoryUsage === 'object' ? JSON.stringify(memoryUsage) : memoryUsage,
         });
       } else if (data.type === 'high_disk') {
+        const diskUsage = data.metadata?.diskUsage ?? data.metadata;
         await this.discordService.notify('high_disk', {
           serverName: server?.name,
-          details: data.metadata,
+          details: typeof diskUsage === 'object' ? JSON.stringify(diskUsage) : diskUsage,
         });
       }
     }

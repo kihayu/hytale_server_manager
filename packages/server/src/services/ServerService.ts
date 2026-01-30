@@ -5,6 +5,7 @@ import { IServerAdapter } from '../adapters/IServerAdapter';
 import { JavaServerAdapter } from '../adapters/JavaServerAdapter';
 import { ServerConfig, ServerStatus, ServerMetrics } from '../types';
 import logger from '../utils/logger';
+import config from '../config';
 import { DiscordNotificationService } from './DiscordNotificationService';
 import { RconService } from './RconService';
 import { LogTailService } from './LogTailService';
@@ -160,7 +161,12 @@ export class ServerService {
     }
 
     // Resolve to absolute path
-    const serverPath = path.resolve(data.serverPath);
+    let serverPath = data.serverPath;
+    if (!path.isAbsolute(serverPath)) {
+      serverPath = path.resolve(config.serversBasePath, serverPath);
+    } else {
+      serverPath = path.resolve(serverPath);
+    }
     const worldPath = path.join(serverPath, 'world');
 
     // Create the server directory
@@ -215,7 +221,13 @@ export class ServerService {
     if (data.version !== undefined) updateData.version = data.version;
     if (data.maxPlayers !== undefined) updateData.maxPlayers = data.maxPlayers;
     if (data.gameMode !== undefined) updateData.gameMode = data.gameMode;
-    if (data.serverPath !== undefined) updateData.serverPath = data.serverPath;
+    if (data.serverPath !== undefined) {
+      if (!path.isAbsolute(data.serverPath)) {
+        updateData.serverPath = path.resolve(config.serversBasePath, data.serverPath);
+      } else {
+        updateData.serverPath = path.resolve(data.serverPath);
+      }
+    }
     if (data.backupPath !== undefined) updateData.backupPath = data.backupPath;
     if (data.backupType !== undefined) updateData.backupType = data.backupType;
     if (data.backupExclusions !== undefined) {
@@ -404,8 +416,35 @@ export class ServerService {
     const server = await this.getServer(serverId);
     if (!server) throw new Error(`Server ${serverId} not found`);
 
+    // Update status to 'stopping'
+    await this.prisma.server.update({
+      where: { id: serverId },
+      data: { status: 'stopping' },
+    });
+
     const adapter = await this.getAdapter(serverId);
-    await adapter.restart();
+
+    // Stop the server
+    await adapter.stop();
+
+    // Update status to 'starting'
+    await this.prisma.server.update({
+      where: { id: serverId },
+      data: { status: 'starting' },
+    });
+
+    // Wait before starting (same as adapter.restart())
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Start the server
+    await adapter.start();
+
+    // Update status to 'running'
+    await this.prisma.server.update({
+      where: { id: serverId },
+      data: { status: 'running' },
+    });
+
     logger.info(`Restarted server: ${serverId}`);
 
     // Send Discord notification

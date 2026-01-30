@@ -24,7 +24,7 @@ IMPORTANT: You must configure the JWT secrets before first use. Generate random 
   <Category>GameServers: Tools:</Category>
   <WebUI>http://[IP]:[PORT:3001]</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/nebula-codes/hytale_server_manager/main/unraid/hytale-server-manager.xml</TemplateURL>
-  <Icon>https://static.wikia.nocookie.net/logopedia/images/7/7c/Hytale_%28Icon%29.png/revision/latest?cb=20220924001013</Icon>
+  <Icon>https://raw.githubusercontent.com/nebula-codes/hytale_server_manager/refs/heads/main/unraid/Hytale_Icon.png</Icon>
   <ExtraParams/>
   <PostArgs/>
   <CPUset/>
@@ -35,10 +35,11 @@ IMPORTANT: You must configure the JWT secrets before first use. Generate random 
   <Config Name="Default game port" Target="5520" Default="5520" Mode="udp" Description="" Type="Port" Display="always" Required="true" Mask="false">5520</Config>
   <Config Name="PUID" Target="PUID" Default="99" Mode="" Description="User ID for file permissions. Use 'id' command to find your UID." Type="Variable" Display="always" Required="false" Mask="false">99</Config>
   <Config Name="PGID" Target="PGID" Default="100" Mode="" Description="Group ID for file permissions. Use 'id' command to find your GID." Type="Variable" Display="always" Required="false" Mask="false">100</Config>
+  <Config Name="Timezone" Target="TZ" Default="Etc/UTC" Mode="" Description="Set container timezone in TZ format." Type="Variable" Display="always" Required="false" Mask="false">Etc/UTC</Config>
   <Config Name="Database" Target="/app/data/db" Default="/mnt/user/appdata/hytale-server-manager/db" Mode="rw" Description="SQLite database storage" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hytale-server-manager/db</Config>
   <Config Name="Servers" Target="/app/servers" Default="/mnt/user/appdata/hytale-server-manager/servers" Mode="rw" Description="Game server installations" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hytale-server-manager/servers</Config>
   <Config Name="Backups" Target="/app/data/backups" Default="/mnt/user/appdata/hytale-server-manager/backups" Mode="rw" Description="Server backup storage" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hytale-server-manager/backups</Config>
-  <Config Name="Logs" Target="/app/data/logs/" Default="/mnt/user/appdata/hytale-server-manager/logs/" Mode="rw" Description="Application logs (including Prisma logs)" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hytale-server-manager/logs/</Config>
+  <Config Name="Logs" Target="/app/logs/" Default="/mnt/user/appdata/hytale-server-manager/logs/" Mode="rw" Description="Application logs (including Prisma logs)" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hytale-server-manager/logs/</Config>
   <Config Name="Certificates" Target="/app/data/certs/" Default="/mnt/user/appdata/hytale-server-manager/certs/" Mode="rw" Description="SSL Certificates for the web UI" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hytale-server-manager/certs/</Config>
   <Config Name="Hytale Downloader" Target="/app/data/hytale-downloader" Default="/mnt/user/appdata/hytale-server-manager/hytale-downloader" Mode="rw" Description="Hytale downloader tool storage" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hytale-server-manager/hytale-downloader</Config>
   <Config Name="Machine ID" Target="/etc/machine-id" Default="/etc/machine-id" Mode="ro" Description="System machine ID for identification" Type="Path" Display="advanced" Required="true" Mask="false">/etc/machine-id</Config>
@@ -46,10 +47,11 @@ IMPORTANT: You must configure the JWT secrets before first use. Generate random 
   <Config Name="DISCORD_ENABLED" Target="DISCORD_ENABLED" Default="false" Mode="" Description="Enable Discord webhook notifications" Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
   <Config Name="CORS_ORIGIN" Target="CORS_ORIGIN" Default="http://localhost:3001" Mode="" Description="Allowed CORS origin. Set to your Unraid server URL for external access (e.g., https://192.168.1.100:3001)" Type="Variable" Display="advanced" Required="false" Mask="false">http://localhost:3001</Config>
   <Config Name="INSECURE_COOKIES" Target="INSECURE_COOKIES" Default="false" Mode="" Description="Allow HTTP access (NOT recommended). Set to 'true' only for local network testing without HTTPS." Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
-  <Config Name="SETTINGS_ENCRYPTION_KEY" Target="SETTINGS_ENCRYPTION_KEY" Default="" Mode="" Description="Encryption key for sensitive settings (exactly 32 hex chars). Generate with: openssl rand -hex 16" Type="Variable" Display="advanced" Required="false" Mask="true"/>
-  <Config Name="JWT_REFRESH_SECRET" Target="JWT_REFRESH_SECRET" Default="" Mode="" Description="JWT refresh token secret (min 32 chars). Generate with: openssl rand -hex 64" Type="Variable" Display="advanced" Required="false" Mask="true"/>
-  <Config Name="JWT_SECRET" Target="JWT_SECRET" Default="" Mode="" Description="JWT secret for authentication (min 32 chars). Generate with: openssl rand -hex 64" Type="Variable" Display="advanced" Required="false" Mask="true"/>
+  <Config Name="SETTINGS_ENCRYPTION_KEY" Target="SETTINGS_ENCRYPTION_KEY" Default="" Mode="" Description="Encryption key for sensitive settings (exactly 32 hex chars). Generate with: openssl rand -hex 16" Type="Variable" Display="always" Required="true" Mask="true"/>
+  <Config Name="JWT_REFRESH_SECRET" Target="JWT_REFRESH_SECRET" Default="" Mode="" Description="JWT refresh token secret (min 32 chars). Generate with: openssl rand -hex 64" Type="Variable" Display="always" Required="true" Mask="true"/>
+  <Config Name="JWT_SECRET" Target="JWT_SECRET" Default="" Mode="" Description="JWT secret for authentication (min 32 chars). Generate with: openssl rand -hex 64" Type="Variable" Display="always" Required="true" Mask="true"/>
   <Config Name="RATE_LIMIT_WINDOW" Target="RATE_LIMIT_WINDOW" Default="900000" Mode="" Description="Rate limit window in milliseconds (default: 900000 = 15 minutes)" Type="Variable" Display="always" Required="true" Mask="false">900000</Config>
   <Config Name="RATE_LIMIT_MAX" Target="RATE_LIMIT_MAX" Default="100" Mode="" Description="Maximum requests per rate limit window (default: 100)" Type="Variable" Display="always" Required="true" Mask="false">1000</Config>
+  <Config Name="MAX_FILE_UPLOAD_SIZE" Target="MAX_FILE_UPLOAD_SIZE" Default="52428800" Mode="" Description="Maximum file upload size in bytes (default: 52428800 = 50MB)" Type="Variable" Display="always" Required="true" Mask="false">52428800</Config>
   <TailscaleStateDir/>
 </Container>

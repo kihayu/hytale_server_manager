@@ -398,6 +398,21 @@ export const ServersPage = () => {
     });
   };
 
+  // Get ungrouped servers from local state (for real-time WebSocket updates)
+  // This ensures the UI updates immediately when server status changes
+  const localUngroupedServers = useMemo(() => {
+    // Get all server IDs that are in networks
+    const networkServerIds = new Set<string>();
+    networks.forEach(network => {
+      network.members?.forEach(member => {
+        networkServerIds.add(member.serverId);
+      });
+    });
+
+    // Filter servers that are not in any network
+    return servers.filter(server => !networkServerIds.has(server.id));
+  }, [servers, networks]);
+
   // Get available servers for network creation (all ungrouped servers)
   const availableServersForNetwork = useMemo(() => {
     return ungroupedServers.map(s => ({
@@ -583,97 +598,92 @@ export const ServersPage = () => {
   ];
 
   // Columns for ungrouped servers
-  const ungroupedColumns: Column<{ id: string; name: string; status: string }>[] = [
+  const ungroupedColumns: Column<Server>[] = [
     {
       key: 'name',
       label: 'Server',
       render: (server) => (
-        <span
-          className="font-medium text-text-light-primary dark:text-text-primary cursor-pointer hover:text-accent-primary"
-          onClick={() => navigate(`/servers/${server.id}`)}
-        >
-          {server.name}
-        </span>
+        <div>
+          <p className="font-medium text-text-light-primary dark:text-text-primary cursor-pointer hover:text-accent-primary" onClick={() => navigate(`/servers/${server.id}`)}>{server.name}</p>
+          <p className="text-xs text-text-light-muted dark:text-text-muted">{server.address}:{server.port}</p>
+        </div>
       ),
     },
     {
       key: 'status',
       label: 'Status',
-      render: (server) => <StatusIndicator status={server.status as any} showLabel />,
+      render: (server) => <StatusIndicator status={server.status} showLabel />,
     },
     {
       key: 'actions',
       label: 'Actions',
       sortable: false,
-      render: (server) => {
-        const fullServer = servers.find(s => s.id === server.id);
-        return (
-          <div className="flex gap-2">
-            {server.status === 'running' ? (
-              <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  icon={<Square size={14} />}
-                  onClick={() => fullServer && handleStop(fullServer)}
-                >
-                  Stop
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  icon={<RotateCw size={14} />}
-                  onClick={() => fullServer && handleRestart(fullServer)}
-                >
-                  Restart
-                </Button>
-              </>
-            ) : server.status === 'stopped' || server.status === 'crashed' ? (
+      render: (server) => (
+        <div className="flex gap-2">
+          {server.status === 'running' ? (
+            <>
               <Button
                 variant="ghost"
                 size="sm"
-                icon={<Play size={14} />}
-                onClick={() => fullServer && handleStart(fullServer)}
+                icon={<Square size={14} />}
+                onClick={() => handleStop(server)}
               >
-                Start
+                Stop
               </Button>
-            ) : server.status === 'stopping' ? (
               <Button
                 variant="ghost"
                 size="sm"
-                icon={<Skull size={14} />}
-                onClick={() => fullServer && handleKill(fullServer)}
-                className="text-danger hover:bg-danger/10"
-                title="Force kill the server"
+                icon={<RotateCw size={14} />}
+                onClick={() => handleRestart(server)}
               >
-                Kill
+                Restart
               </Button>
-            ) : (
-              <Button variant="ghost" size="sm" disabled>
-                {server.status}...
-              </Button>
-            )}
+            </>
+          ) : server.status === 'stopped' || server.status === 'crashed' ? (
             <Button
               variant="ghost"
               size="sm"
-              icon={<Eye size={14} />}
-              onClick={() => navigate(`/servers/${server.id}`)}
+              icon={<Play size={14} />}
+              onClick={() => handleStart(server)}
             >
-              Details
+              Start
             </Button>
+          ) : server.status === 'stopping' ? (
             <Button
               variant="ghost"
               size="sm"
-              icon={<Trash2 size={14} />}
-              onClick={() => fullServer && setServerToDelete(fullServer)}
-              disabled={server.status !== 'stopped' && server.status !== 'crashed'}
-              title={server.status !== 'stopped' && server.status !== 'crashed' ? 'Stop the server before deleting' : 'Delete server'}
+              icon={<Skull size={14} />}
+              onClick={() => handleKill(server)}
+              className="text-danger hover:bg-danger/10"
+              title="Force kill the server"
             >
-              Delete
+              Kill
             </Button>
-          </div>
-        );
-      },
+          ) : (
+            <Button variant="ghost" size="sm" disabled>
+              {server.status}...
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={<Eye size={14} />}
+            onClick={() => navigate(`/servers/${server.id}`)}
+          >
+            Details
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={<Trash2 size={14} />}
+            onClick={() => setServerToDelete(server)}
+            disabled={server.status !== 'stopped' && server.status !== 'crashed'}
+            title={server.status !== 'stopped' && server.status !== 'crashed' ? 'Stop the server before deleting' : 'Delete server'}
+          >
+            Delete
+          </Button>
+        </div>
+      ),
     },
   ];
 
@@ -771,14 +781,14 @@ export const ServersPage = () => {
           )}
 
           {/* Ungrouped Servers */}
-          {ungroupedServers.length > 0 && (
+          {localUngroupedServers.length > 0 && (
             <Card variant="glass">
               <CardHeader>
-                <CardTitle>Ungrouped Servers ({ungroupedServers.length})</CardTitle>
+                <CardTitle>Ungrouped Servers ({localUngroupedServers.length})</CardTitle>
               </CardHeader>
               <CardContent>
                 <DataTable
-                  data={ungroupedServers}
+                  data={localUngroupedServers}
                   columns={ungroupedColumns}
                   keyExtractor={(server) => server.id}
                   itemsPerPage={10}
@@ -789,7 +799,7 @@ export const ServersPage = () => {
           )}
 
           {/* Empty State */}
-          {!networksLoading && networks.length === 0 && ungroupedServers.length === 0 && servers.length === 0 && (
+          {!networksLoading && networks.length === 0 && localUngroupedServers.length === 0 && servers.length === 0 && (
             <Card variant="glass" className="text-center py-12">
               <CardContent>
                 <Network size={48} className="mx-auto text-text-muted mb-4" />

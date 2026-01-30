@@ -4,43 +4,39 @@ services:
     container_name: hytale-server-manager
     restart: unless-stopped
     ports:
-      - "3001:3001/tcp"
-      - "5520:5520/udp"
+      - "3002:3002/tcp"
+      - "5555:5555/udp"
     environment:
       # User/Group ID for file permissions (use `id` command to find yours)
       - PUID=1000
       - PGID=1000
-      # Set container timezone in TZ format. Using UTC as default.
-      - TZ=Etc/UTC 
       - NODE_ENV=production
-      - PORT=3001
+      - PORT=3002
       - HOST=0.0.0.0
       # Required secrets - generate your own!
       # Generate with: openssl rand -hex 64
-      - JWT_SECRET=your-jwt-secret-here-min-32-chars-generate-with-openssl-rand
-      - JWT_REFRESH_SECRET=your-refresh-secret-here-min-32-chars-generate-openssl
+      # - JWT_SECRET=your-jwt-secret-here-min-32-chars-generate-with-openssl-rand
+      # - JWT_REFRESH_SECRET=your-refresh-secret-here-min-32-chars-generate-openssl
       # Generate with: openssl rand -hex 16
       - SETTINGS_ENCRYPTION_KEY=your-32-char-encryption-key-here
       - INSECURE_COOKIES=true
       # CORS origin - set to your server's URL for external access
-      - CORS_ORIGIN=http://localhost:3001
+      - CORS_ORIGIN=https://j0okg4g0kw8gogkogwwok48k.91.99.208.47.sslip.io
       # Rate limiting
       - RATE_LIMIT_WINDOW=900000   # 15 minutes in milliseconds
       - RATE_LIMIT_MAX=1000         # Max requests per window
-      # File upload limit
-      - MAX_FILE_UPLOAD_SIZE=52428800  # 50MB in bytes (default)
-      # Optional: Discord notifications (can be configured in settings)
+      # Optional: Discord notifications
       # - DISCORD_ENABLED=true
       # - DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
     volumes:
       # Database persistence
       - hsm-database:/app/data/db
       # Game server files
-      - hsm-servers:/app/servers
+      - hsm-servers:/app/data/servers
       # Backup storage
       - hsm-backups:/app/data/backups
       # Application logs
-      - hsm-logs:/app/logs
+      - hsm-logs:/app/data/logs
       # SSL certificates (if using HTTPS)
       - hsm-certs:/app/data/certs
       # Hytale downloader tool
@@ -48,7 +44,7 @@ services:
       # Machine ID for system identification
       - /etc/machine-id:/etc/machine-id:ro
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/health"]
       interval: 30s
       timeout: 10s
       retries: 3

@@ -181,7 +181,7 @@ class ApiService {
       await authService.refreshAccessToken();
       this.onRefreshed(''); // Token is in cookie, we just notify subscribers
       return this.retryRequest<T>(endpoint, options);
-    } catch (error) {
+    } catch {
       // Refresh failed - clear auth state
       logger.error('Token refresh failed, logging out');
       await authService.logout({ callApi: false });
@@ -759,7 +759,8 @@ class ApiService {
     filePath: string,
     file: File,
     autoExtractZip: boolean = true,
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: number) => void,
+    signal?: AbortSignal
   ) {
     const formData = new FormData();
     formData.append('file', file);
@@ -767,7 +768,20 @@ class ApiService {
     formData.append('autoExtractZip', String(autoExtractZip));
 
     return new Promise<{ fileName: string; size: number; extractedFiles: string[] }>((resolve, reject) => {
+      let retried = false;
       const xhr = new XMLHttpRequest();
+
+      let abortHandler: ((this: AbortSignal, ev: Event) => void) | undefined;
+      if (signal) {
+        if (signal.aborted) {
+          reject(new Error('Upload cancelled'));
+          return;
+        }
+        abortHandler = () => {
+          xhr.abort();
+        };
+        signal.addEventListener('abort', abortHandler);
+      }
 
       // Track upload progress
       if (onProgress) {
@@ -779,19 +793,61 @@ class ApiService {
         });
       }
 
-      xhr.addEventListener('load', () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
+      xhr.addEventListener('load', async () => {
+        if (xhr.status === 401) {
+          try {
+            if (this.isRefreshing) {
+              await new Promise<void>((resolveRefresh, rejectRefresh) => {
+                this.subscribeToRefresh(async () => {
+                  try {
+                    resolveRefresh();
+                  } catch (e) {
+                    rejectRefresh(e);
+                  }
+                });
+              });
+            } else {
+              this.isRefreshing = true;
+              try {
+                await authService.refreshAccessToken();
+                this.onRefreshed('');
+              } catch {
+                await authService.logout({ callApi: false });
+                reject(new AuthError('Session expired. Please login again.', 'TOKEN_EXPIRED', 401));
+                return;
+              } finally {
+                this.isRefreshing = false;
+              }
+            }
+
+            if (!retried) {
+              retried = true;
+
+              try {
+                const result = await this.uploadFile(serverId, filePath, file, autoExtractZip, onProgress, signal);
+                resolve(result);
+              } catch (err) {
+                reject(err);
+              }
+              return;
+            }
+
+            reject(new AuthError('Session expired. Please login again.', 'TOKEN_EXPIRED', 401));
+          } catch {
+            reject(new AuthError('Session expired. Please login again.', 'TOKEN_EXPIRED', 401));
+          }
+        } else if (xhr.status >= 200 && xhr.status < 300) {
           try {
             const response = JSON.parse(xhr.responseText);
             resolve(response);
-          } catch (e) {
+          } catch {
             reject(new Error('Failed to parse upload response'));
           }
         } else {
           try {
             const error = JSON.parse(xhr.responseText);
             reject(new Error(error.error || 'Upload failed'));
-          } catch (e) {
+          } catch {
             reject(new Error(`Upload failed with status ${xhr.status}`));
           }
         }
@@ -805,11 +861,14 @@ class ApiService {
         reject(new Error('Upload cancelled'));
       });
 
-      const token = localStorage.getItem('token');
+      xhr.addEventListener('loadend', () => {
+        if (signal && abortHandler) {
+          signal.removeEventListener('abort', abortHandler);
+        }
+      });
+
       xhr.open('POST', `${this.baseUrl}/api/servers/${serverId}/files/upload`);
-      if (token) {
-        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-      }
+      xhr.withCredentials = true;
 
       xhr.send(formData);
     });
@@ -865,6 +924,17 @@ class ApiService {
   async deleteWorld(serverId: string, worldId: string) {
     return this.request<void>(`/api/servers/${serverId}/worlds/${worldId}`, {
       method: 'DELETE',
+    });
+  }
+
+  async getWorldConfig<T = unknown>(serverId: string, worldId: string): Promise<T> {
+    return this.request<T>(`/api/servers/${serverId}/worlds/${worldId}/config`);
+  }
+
+  async updateWorldConfig<T = unknown>(serverId: string, worldId: string, config: unknown): Promise<T> {
+    return this.request<T>(`/api/servers/${serverId}/worlds/${worldId}/config`, {
+      method: 'PUT',
+      body: JSON.stringify(config),
     });
   }
 

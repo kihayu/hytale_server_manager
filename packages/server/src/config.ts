@@ -18,9 +18,10 @@ if (dotenvResult.error) {
 }
 console.log(`[Config] JWT_SECRET loaded: ${process.env.JWT_SECRET ? 'YES (length: ' + process.env.JWT_SECRET.length + ')' : 'NO'}`);
 console.log(`[Config] JWT_REFRESH_SECRET loaded: ${process.env.JWT_REFRESH_SECRET ? 'YES' : 'NO'}`);
+console.log(`[Config] IS_DOCKER env: ${process.env.IS_DOCKER}`);
 
 // Version info - update this on each release
-export const VERSION = '0.2.12';
+export const VERSION = '0.3.16';
 export const VERSION_NAME = 'Beta';
 
 /**
@@ -31,6 +32,7 @@ export interface AppConfig {
   version: string;
   versionName: string;
   nodeEnv: string;
+  isDocker: boolean;
 
   // Server
   port: number;
@@ -121,6 +123,7 @@ const defaults: AppConfig = {
   version: VERSION,
   versionName: VERSION_NAME,
   nodeEnv: 'production',
+  isDocker: process.env.IS_DOCKER === 'true',
 
   // Server
   port: 3001,
@@ -271,6 +274,7 @@ function loadEnvConfig(): Partial<AppConfig> {
 
   // Only set values that are explicitly defined in environment
   if (process.env.NODE_ENV) envConfig.nodeEnv = process.env.NODE_ENV;
+  if (process.env.IS_DOCKER !== undefined) envConfig.isDocker = process.env.IS_DOCKER === 'true';
   if (process.env.PORT) envConfig.port = parseInt(process.env.PORT, 10);
   if (process.env.HOST) envConfig.host = process.env.HOST;
   if (process.env.CORS_ORIGIN) envConfig.corsOrigin = process.env.CORS_ORIGIN;
@@ -280,6 +284,7 @@ function loadEnvConfig(): Partial<AppConfig> {
   if (process.env.JWT_EXPIRES_IN) envConfig.jwtExpiresIn = process.env.JWT_EXPIRES_IN;
   if (process.env.RATE_LIMIT_WINDOW) envConfig.rateLimitWindow = parseInt(process.env.RATE_LIMIT_WINDOW, 10);
   if (process.env.RATE_LIMIT_MAX) envConfig.rateLimitMax = parseInt(process.env.RATE_LIMIT_MAX, 10);
+  if (process.env.MAX_FILE_UPLOAD_SIZE) envConfig.maxFileUploadSize = parseInt(process.env.MAX_FILE_UPLOAD_SIZE, 10);
 
   // Paths
   if (process.env.DATA_PATH) envConfig.dataPath = process.env.DATA_PATH;
@@ -486,6 +491,8 @@ function buildConfig(): AppConfig {
   // Always set version from code
   config.version = VERSION;
   config.versionName = VERSION_NAME;
+
+  console.log(`[Config] Docker mode: ${config.isDocker}`);
 
   return config;
 }

@@ -31,7 +31,7 @@ FROM node:20-slim AS production
 # Install runtime dependencies (gosu for dropping privileges with PUID/PGID)
 # Install Java 25 from Eclipse Temurin (Adoptium)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    openssl unzip gosu ca-certificates wget gnupg procps \
+    openssl unzip gosu ca-certificates wget gnupg procps tzdata \
     && mkdir -p /etc/apt/keyrings \
     && wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | gpg --dearmor -o /etc/apt/keyrings/adoptium.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb $(. /etc/os-release && echo $VERSION_CODENAME) main" > /etc/apt/sources.list.d/adoptium.list \
@@ -85,6 +85,7 @@ ENV LOGS_PATH=/app/data/logs
 ENV CERTS_PATH=/app/data/certs
 ENV HTTPS_ENABLED=false
 ENV CORS_ORIGIN=http://localhost:3001
+ENV IS_DOCKER=true
 
 # Expose port
 EXPOSE 3001

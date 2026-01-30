@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client';
 import fs from 'fs-extra';
 import path from 'path';
 import unzipper from 'unzipper';
-import { spawn } from 'child_process';
 import logger from '../utils/logger';
 
 const prisma = new PrismaClient();
@@ -26,6 +25,10 @@ export interface ExtractedFileInfo {
 export class FileService {
   // Cache server paths to avoid repeated database queries
   private serverPathCache: Map<string, string> = new Map();
+
+  // Track concurrent extractions per destination directory to prevent race conditions
+  private extractionQueues: Map<string, Promise<void>> = new Map();
+  private extractionLocks: Map<string, boolean> = new Map();
 
   /**
    * Get the absolute path for a server's directory from the database
@@ -64,6 +67,83 @@ export class FileService {
   }
 
   /**
+   * Acquire lock for extraction to a destination directory
+   * Ensures only one extraction happens to the same directory at a time
+   */
+  private async acquireExtractionLock(destPath: string): Promise<void> {
+    const resolvedPath = path.resolve(destPath);
+
+    let waitCount = 0;
+    while (this.extractionLocks.get(resolvedPath)) {
+      waitCount++;
+      const existingQueue = this.extractionQueues.get(resolvedPath);
+
+      if (existingQueue) {
+        logger.debug(`Extraction lock held for ${resolvedPath}, waiting for queue (attempt ${waitCount})`);
+        try {
+          await existingQueue;
+        } catch (err) {
+          logger.warn(`Queue promise rejected while waiting:`, err);
+        }
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
+    }
+
+    this.extractionLocks.set(resolvedPath, true);
+    logger.debug(`Extraction lock acquired for ${resolvedPath}`);
+  }
+
+  /**
+   * Release lock for extraction to a destination directory
+   */
+  private releaseExtractionLock(destPath: string): void {
+    const resolvedPath = path.resolve(destPath);
+    this.extractionLocks.delete(resolvedPath);
+    logger.debug(`Extraction lock released for ${resolvedPath}`);
+  }
+
+  /**
+   * Queue an extraction operation to prevent concurrent extractions to the same directory
+   */
+  private queueExtraction(destPath: string, operation: () => Promise<[string[], string]>): Promise<[string[], string]> {
+    const resolvedPath = path.resolve(destPath);
+
+    const currentTail = this.extractionQueues.get(resolvedPath) ?? Promise.resolve();
+
+    const runOperation = async (): Promise<[string[], string]> => {
+      await this.acquireExtractionLock(resolvedPath);
+      try {
+        const result = await operation();
+        return result;
+      } catch (err) {
+        logger.error(`Extraction operation failed for ${resolvedPath}:`, err);
+        throw err;
+      } finally {
+        this.releaseExtractionLock(resolvedPath);
+      }
+    };
+
+    const chained = currentTail
+      .catch(() => undefined)
+      .then(() => runOperation());
+
+    this.extractionQueues.set(
+      resolvedPath,
+      chained.then(
+        () => {
+          logger.debug(`Queue promise resolved for ${resolvedPath}`);
+        },
+        (err) => {
+          logger.debug(`Queue promise rejected for ${resolvedPath}:`, err);
+        }
+      )
+    );
+
+    return chained;
+  }
+
+  /**
    * Validate that a path is within the server directory (security)
    */
   private async validatePath(serverId: string, filePath: string): Promise<string> {
@@ -71,8 +151,9 @@ export class FileService {
     const absolutePath = path.join(serverPath, filePath);
     const normalizedPath = path.normalize(absolutePath);
 
-    // Ensure the path is within the server directory
-    if (!normalizedPath.startsWith(serverPath)) {
+    const normalizedServerPath = path.normalize(serverPath);
+    if (normalizedPath !== normalizedServerPath &&
+        !normalizedPath.startsWith(normalizedServerPath + path.sep)) {
       throw new Error('Access denied: Path is outside server directory');
     }
 
@@ -362,141 +443,162 @@ export class FileService {
   }
 
   /**
-   * Extract a zip file using native system tools, with fallback to unzipper library
+   * Extract a zip file using unzipper library with path traversal protection
+   * Queues extraction to prevent concurrent extractions to the same directory
+   * Returns tuple of [extractedFiles, tempDirPath] for cleanup tracking
+   *
+   * NOTE: Uses library-based extraction instead of native tools to prevent Zip Slip attacks
+   * where malicious ZIP entries could write outside the destination directory.
    */
-  private async extractZip(zipPath: string, destPath: string): Promise<string[]> {
-    // Try native extraction first (better for large files)
-    try {
-      return await this.extractZipNative(zipPath, destPath);
-    } catch (err) {
-      const error = err as NodeJS.ErrnoException;
-      // If native tool not found, fall back to unzipper library
-      if (error.message?.includes('ENOENT') || error.message?.includes('not found')) {
-        logger.info('[FileService] Native extraction tool not available, using unzipper library');
-        return await this.extractZipWithLibrary(zipPath, destPath);
-      }
-      throw err;
-    }
-  }
-
-  /**
-   * Extract using native system tools (PowerShell on Windows, unzip on Linux/Mac)
-   */
-  private extractZipNative(zipPath: string, destPath: string): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-      const isWindows = process.platform === 'win32';
-
-      let command: string;
-      let args: string[];
-
-      if (isWindows) {
-        // Use PowerShell's Expand-Archive for reliable extraction on Windows
-        command = 'powershell.exe';
-        args = [
-          '-NoProfile',
-          '-Command',
-          `Expand-Archive -Path "${zipPath}" -DestinationPath "${destPath}" -Force`,
-        ];
-      } else {
-        // Use unzip on Linux/Mac
-        command = 'unzip';
-        args = ['-o', zipPath, '-d', destPath];
-      }
-
-      logger.info(`[FileService] Running extraction: ${command} ${args.join(' ')}`);
-
-      const proc = spawn(command, args, {
-        stdio: ['pipe', 'pipe', 'pipe'],
-      });
-
-      let stderr = '';
-
-      proc.stderr.on('data', (data) => {
-        stderr += data.toString();
-      });
-
-      proc.on('close', async (code) => {
-        if (code === 0) {
-          // Get list of extracted files
-          const extractedFiles = await this.getExtractedFiles(destPath);
-          resolve(extractedFiles);
-        } else {
-          reject(new Error(`Extraction failed with code ${code}: ${stderr}`));
-        }
-      });
-
-      proc.on('error', (err) => {
-        reject(new Error(`Failed to start extraction: ${err.message}`));
-      });
+  private async extractZip(zipPath: string, destPath: string): Promise<[string[], string]> {
+    return this.queueExtraction(destPath, async () => {
+      return await this.extractZipWithLibrary(zipPath, destPath);
     });
   }
+
+
+
+  /**
+   * Generate a unique temporary directory name for extraction
+   * Uses timestamp + random string to ensure uniqueness even with concurrent extractions
+   */
+  private generateUniqueTempDir(destPath: string): string {
+    const timestamp = Date.now();
+    const randomId = Math.random().toString(36).substring(2, 11);
+    const uniqueId = `${timestamp}-${randomId}`;
+    return path.join(destPath, `.temp-extract-${uniqueId}`);
+  }
+
+
 
   /**
    * Extract using unzipper library (fallback when native tools unavailable)
+   * Extracts to a temporary directory first, then moves files after validation
+   * Returns tuple of [extractedFiles, tempDirPath] for cleanup tracking
    */
-  private extractZipWithLibrary(zipPath: string, destPath: string): Promise<string[]> {
-    return new Promise((resolve, reject) => {
+  private extractZipWithLibrary(zipPath: string, destPath: string): Promise<[string[], string]> {
+    return new Promise(async (resolve, reject) => {
+      const tempDir = this.generateUniqueTempDir(destPath);
       const extractedFiles: string[] = [];
+      const writePromises: Promise<void>[] = [];
 
-      fs.createReadStream(zipPath)
-        .pipe(unzipper.Parse())
-        .on('entry', (entry) => {
-          const fileName = entry.path;
-          const filePath = path.join(destPath, fileName);
+      try {
+        await fs.ensureDir(tempDir);
+        logger.info(`Created temp directory for extraction: ${tempDir}`);
 
-          // Skip if entry is a directory
-          if (entry.type === 'Directory') {
-            entry.autodrain();
-            return;
-          }
+        const resolvedTempDir = path.resolve(tempDir);
 
-          // Track extracted files
-          if (!fileName.endsWith('/')) {
-            extractedFiles.push(fileName);
-          }
+        fs.createReadStream(zipPath)
+          .pipe(unzipper.Parse())
+          .on('entry', (entry) => {
+            const fileName = entry.path;
 
-          // Create parent directory if needed
-          const dir = path.dirname(filePath);
-          fs.ensureDirSync(dir);
+            if (entry.type === 'Directory') {
+              entry.autodrain();
+              return;
+            }
 
-          // Extract file
-          entry.pipe(fs.createWriteStream(filePath));
-        })
-        .on('close', () => {
-          resolve(extractedFiles);
-        })
-        .on('error', reject);
-    });
-  }
+            const targetPath = path.resolve(tempDir, fileName);
+            if (!targetPath.startsWith(resolvedTempDir + path.sep) && targetPath !== resolvedTempDir) {
+              logger.warn(`Skipping dangerous path in ZIP: ${fileName}`);
+              entry.autodrain();
+              return;
+            }
 
-  /**
-   * Get list of files extracted from a zip
-   */
-  private async getExtractedFiles(destPath: string): Promise<string[]> {
-    const files: string[] = [];
+            const processEntryPromise = (async () => {
+              if (!fileName.endsWith('/')) {
+                extractedFiles.push(fileName);
+              }
 
-    const walkDir = async (dir: string, prefix = '') => {
-      const items = await fs.readdir(dir);
+              const dir = path.dirname(targetPath);
+              await fs.ensureDir(dir);
 
-      for (const item of items) {
-        const itemPath = path.join(dir, item);
-        const stats = await fs.stat(itemPath);
-        const relativePath = prefix ? `${prefix}/${item}` : item;
+              const writePromise = new Promise<void>((resolveWrite, rejectWrite) => {
+                const writeStream = fs.createWriteStream(targetPath);
 
-        if (stats.isDirectory()) {
-          await walkDir(itemPath, relativePath);
-        } else {
-          files.push(relativePath);
+                writeStream.on('finish', () => resolveWrite());
+                writeStream.on('error', (err) => rejectWrite(err));
+                entry.on('error', (err: unknown) => rejectWrite(err));
+
+                entry.pipe(writeStream);
+              });
+
+              await writePromise;
+            })();
+
+            writePromises.push(processEntryPromise);
+          })
+          .on('close', async () => {
+            const movedFiles: string[] = [];
+            const resolvedDestPath = path.resolve(destPath);
+
+            try {
+              await Promise.all(writePromises);
+              const uniqueExtractedFiles = Array.from(new Set(extractedFiles));
+
+              for (const file of uniqueExtractedFiles) {
+                const srcPath = path.resolve(tempDir, file);
+                const destFilePath = path.resolve(destPath, file);
+
+                if (!srcPath.startsWith(resolvedTempDir + path.sep) && srcPath !== resolvedTempDir) {
+                  continue;
+                }
+
+                if (!destFilePath.startsWith(resolvedDestPath + path.sep) && destFilePath !== resolvedDestPath) {
+                  continue;
+                }
+
+                if (!await fs.pathExists(srcPath)) {
+                  continue;
+                }
+
+                await fs.ensureDir(path.dirname(destFilePath));
+                await fs.move(srcPath, destFilePath, { overwrite: true });
+
+                movedFiles.push(destFilePath);
+              }
+
+              await fs.remove(tempDir);
+              resolve([uniqueExtractedFiles, tempDir]);
+            } catch (err) {
+              for (const movedFile of movedFiles) {
+                try {
+                  await fs.remove(movedFile);
+                } catch (rollbackError) {
+                  logger.warn(`Failed to roll back moved file ${movedFile}:`, rollbackError);
+                }
+              }
+
+              try {
+                await fs.remove(tempDir);
+              } catch (cleanupError) {
+                logger.warn(`Failed to clean up temp directory ${tempDir}:`, cleanupError);
+              }
+              reject(err);
+            }
+          })
+          .on('error', async (err) => {
+            try {
+              await fs.remove(tempDir);
+            } catch (cleanupError) {
+              logger.warn(`Failed to clean up temp directory ${tempDir}:`, cleanupError);
+            }
+            reject(err);
+          });
+      } catch (error) {
+        try {
+          await fs.remove(tempDir);
+        } catch (cleanupError) {
+          logger.warn(`Failed to clean up temp directory ${tempDir}:`, cleanupError);
         }
+        reject(error);
       }
-    };
-
-    await walkDir(destPath);
-    return files;
+    });
   }
 
   /**
    * Upload a file with optional ZIP extraction
+   * Handles concurrent extractions safely with queuing mechanism
    */
   async uploadFileWithExtraction(
     serverId: string,
@@ -506,23 +608,20 @@ export class FileService {
   ): Promise<ExtractedFileInfo> {
     const absolutePath = await this.validatePath(serverId, filePath);
 
-    // Ensure parent directory exists
     await fs.ensureDir(path.dirname(absolutePath));
 
-    // Write the file
     await fs.writeFile(absolutePath, buffer);
     logger.info(`File uploaded: ${filePath} for server ${serverId}`);
 
-    // Check if it's a ZIP file and should be extracted
     const isZipFile = filePath.toLowerCase().endsWith('.zip');
     if (isZipFile && autoExtractZip) {
-      try {
-        const extractDir = path.dirname(absolutePath);
-        const extractedFiles = await this.extractZip(absolutePath, extractDir);
+      const extractDir = path.dirname(absolutePath);
 
-        // Delete the original ZIP file after successful extraction
+      try {
+        const [extractedFiles] = await this.extractZip(absolutePath, extractDir);
+
         await fs.remove(absolutePath);
-        logger.info(`ZIP extracted and deleted: ${filePath} for server ${serverId}`);
+        logger.info(`ZIP extracted and deleted: ${filePath} for server ${serverId} (${extractedFiles.length} files extracted)`);
 
         return {
           fileName: path.basename(filePath),
@@ -530,10 +629,17 @@ export class FileService {
           extractedFiles,
         };
       } catch (error) {
-        logger.error(`Failed to extract ZIP file ${filePath}:`, error);
-        // Delete the uploaded file if extraction failed
-        await fs.remove(absolutePath);
-        throw new Error(`Failed to extract ZIP file: ${(error as Error).message}`);
+        const errorMessage = (error as Error).message || 'Unknown error';
+        logger.error(`Failed to extract ZIP file ${filePath}: ${errorMessage}`, error);
+
+        try {
+          await fs.remove(absolutePath);
+          logger.info(`Cleaned up failed ZIP file: ${absolutePath}`);
+        } catch (zipRemoveError) {
+          logger.warn(`Failed to remove ZIP file ${absolutePath}:`, zipRemoveError);
+        }
+
+        throw new Error(`Failed to extract ZIP file: ${errorMessage}`);
       }
     }
 

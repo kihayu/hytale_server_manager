@@ -30,7 +30,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
   const [formData, setFormData] = useState<ServerFormData>({
     name: '',
     serverPath: '',
-    address: 'localhost',
+    address: '0.0.0.0',
     port: 5520,
     version: '',
     maxPlayers: 20,
@@ -92,7 +92,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
     setFormData({
       name: '',
       serverPath: '',
-      address: 'localhost',
+      address: '0.0.0.0',
       port: 5520,
       version: '',
       maxPlayers: 20,
@@ -111,7 +111,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
       if (field === 'name' && typeof value === 'string') {
         const slugifiedName = value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
         if (slugifiedName) {
-          updated.serverPath = `servers/${slugifiedName}`;
+          updated.serverPath = `${slugifiedName}`;
         } else {
           updated.serverPath = '';
         }
@@ -202,7 +202,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
               </label>
               <Input
                 type="text"
-                placeholder="localhost"
+                placeholder="0.0.0.0"
                 value={formData.address}
                 onChange={(e) => updateField('address', e.target.value)}
               />
@@ -259,7 +259,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
                   setFormData(prev => ({
                     ...prev,
                     adapterType: 'java',
-                    jvmArgs: '-Xms1G -Xmx2G',
+                    jvmArgs: '-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot',
                     adapterConfig: {
                       jarFile: 'Server/HytaleServer.jar',
                       assetsPath: '../Assets.zip',
@@ -351,8 +351,8 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
                   JVM Arguments
                 </label>
                 <textarea
-                  placeholder="-Xms1G -Xmx2G"
-                  value={formData.jvmArgs || '-Xms1G -Xmx2G'}
+                  placeholder="-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot"
+                  value={formData.jvmArgs || '-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot'}
                   onChange={(e) => setFormData(prev => ({
                     ...prev,
                     jvmArgs: e.target.value,
@@ -361,7 +361,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
                   rows={2}
                 />
                 <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
-                  JVM arguments for the Java process. Common: -Xms (min memory), -Xmx (max memory)
+                  JVM arguments for the Java process. AOT cache enables faster startup if HytaleServer.aot exists.
                 </p>
               </div>
             </div>
