@@ -10,6 +10,8 @@ services:
       # User/Group ID for file permissions (use `id` command to find yours)
       - PUID=1000
       - PGID=1000
+      # Set container timezone in TZ format. Using UTC as default.
+      - TZ=Etc/UTC 
       - NODE_ENV=production
       - PORT=3001
       - HOST=0.0.0.0
@@ -25,18 +27,20 @@ services:
       # Rate limiting
       - RATE_LIMIT_WINDOW=900000   # 15 minutes in milliseconds
       - RATE_LIMIT_MAX=1000         # Max requests per window
-      # Optional: Discord notifications
+      # File upload limit
+      - MAX_FILE_UPLOAD_SIZE=52428800  # 50MB in bytes (default)
+      # Optional: Discord notifications (can be configured in settings)
       # - DISCORD_ENABLED=true
       # - DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
     volumes:
       # Database persistence
       - hsm-database:/app/data/db
       # Game server files
-      - hsm-servers:/app/data/servers
+      - hsm-servers:/app/servers
       # Backup storage
       - hsm-backups:/app/data/backups
       # Application logs
-      - hsm-logs:/app/data/logs
+      - hsm-logs:/app/logs
       # SSL certificates (if using HTTPS)
       - hsm-certs:/app/data/certs
       # Hytale downloader tool

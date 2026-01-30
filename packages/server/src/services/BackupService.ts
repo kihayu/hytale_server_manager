@@ -1,8 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import archiver from 'archiver';
 import fs from 'fs-extra';
+import * as fsNative from 'fs';
 import path from 'path';
 import micromatch from 'micromatch';
+import yauzl from 'yauzl';
 import { DiscordNotificationService } from './DiscordNotificationService';
 import { FtpStorageService } from './FtpStorageService';
 import config from '../config';
@@ -456,7 +458,7 @@ export class BackupService {
 
   /**
    * Add a file to the archive with retry logic for locked files
-   * Reads file into buffer first to avoid archiver stream errors on locked files
+   * Always uses streaming to avoid Node.js 2GB buffer limit
    */
   private async addFileToArchiveWithRetry(
     archive: archiver.Archiver,
@@ -467,17 +469,21 @@ export class BackupService {
 
     for (let attempt = 1; attempt <= retryAttempts; attempt++) {
       try {
-        // Get file metadata first, then read into memory
-        // This ensures we catch any lock errors before passing to archiver
+        // Get file metadata first
         const fileStat = await fs.stat(absolutePath);
-        const fileBuffer = await fs.readFile(absolutePath);
 
-        // Add buffer to archive (not file path) to avoid stream errors
-        archive.append(fileBuffer, {
+        // Test file accessibility
+        await fs.access(absolutePath, fs.constants.R_OK);
+
+        // Always use streaming - avoids Node.js 2GB buffer limit entirely
+        const readStream = fsNative.createReadStream(absolutePath);
+
+        archive.append(readStream, {
           name: relativePath,
           date: fileStat.mtime,
           mode: fileStat.mode,
         });
+
         return true;
       } catch (error: any) {
         const isLockedFile = LOCKED_FILE_ERRORS.includes(error.code);
@@ -493,11 +499,9 @@ export class BackupService {
           );
           return false;
         } else if (error.code === 'ENOENT') {
-          // File was deleted during backup
           logger.warn(`File no longer exists, skipping: ${relativePath}`);
           return false;
         } else {
-          // Unexpected error
           logger.error(`Error accessing file ${relativePath}:`, error);
           return false;
         }
@@ -619,12 +623,76 @@ export class BackupService {
   }
 
   /**
-   * Extract a zip archive
+   * Extract a zip archive using yauzl (handles files of any size)
+   * Cross-platform: works on Windows, Linux, and Docker
    */
   private async extractZipArchive(archivePath: string, destinationPath: string): Promise<void> {
-    const AdmZip = require('adm-zip');
-    const zip = new AdmZip(archivePath);
-    zip.extractAllTo(destinationPath, true);
+    return new Promise((resolve, reject) => {
+      yauzl.open(archivePath, { lazyEntries: true }, (err, zipfile) => {
+        if (err || !zipfile) {
+          reject(err || new Error('Failed to open zip file'));
+          return;
+        }
+
+        let pending = 0;
+        let finished = false;
+
+        const checkDone = () => {
+          if (finished && pending === 0) {
+            resolve();
+          }
+        };
+
+        zipfile.on('entry', (entry: yauzl.Entry) => {
+          const entryPath = path.join(destinationPath, entry.fileName);
+
+          // Handle directory entries
+          if (entry.fileName.endsWith('/')) {
+            fs.ensureDir(entryPath)
+              .then(() => zipfile.readEntry())
+              .catch(reject);
+            return;
+          }
+
+          // Handle file entries
+          pending++;
+          fs.ensureDir(path.dirname(entryPath))
+            .then(() => {
+              zipfile.openReadStream(entry, (streamErr, readStream) => {
+                if (streamErr || !readStream) {
+                  reject(streamErr || new Error('Failed to open read stream'));
+                  return;
+                }
+
+                const writeStream = fsNative.createWriteStream(entryPath);
+                readStream.pipe(writeStream);
+
+                writeStream.on('close', () => {
+                  pending--;
+                  checkDone();
+                });
+
+                writeStream.on('error', reject);
+                readStream.on('error', reject);
+
+                // Continue to next entry
+                zipfile.readEntry();
+              });
+            })
+            .catch(reject);
+        });
+
+        zipfile.on('end', () => {
+          finished = true;
+          checkDone();
+        });
+
+        zipfile.on('error', reject);
+
+        // Start reading entries
+        zipfile.readEntry();
+      });
+    });
   }
 
   /**
@@ -711,7 +779,8 @@ export class BackupService {
     });
 
     const totalBackups = backups.length;
-    const totalSize = backups.reduce((sum, b) => sum + b.fileSize, 0);
+    // Handle BigInt fileSize - convert to Number for arithmetic (safe for files up to ~9 petabytes)
+    const totalSize = backups.reduce((sum, b) => sum + Number(b.fileSize), 0);
     const completedBackups = backups.filter((b) => b.status === 'completed').length;
     const failedBackups = backups.filter((b) => b.status === 'failed').length;
 
