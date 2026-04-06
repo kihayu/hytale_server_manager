@@ -1,5 +1,5 @@
 import { PrismaClient, TaskGroup, TaskGroupMember, TaskGroupExecution } from '@prisma/client';
-import cron from 'node-cron';
+import cron, { ScheduledTask } from 'node-cron';
 import { SchedulerService } from './SchedulerService';
 import logger from '../utils/logger';
 
@@ -36,7 +36,7 @@ interface TaskResult {
 export class TaskGroupService {
   private prisma: PrismaClient;
   private schedulerService: SchedulerService;
-  private scheduledGroups: Map<string, cron.ScheduledTask> = new Map();
+  private scheduledGroups: Map<string, ScheduledTask> = new Map();
 
   constructor(prisma: PrismaClient, schedulerService: SchedulerService) {
     this.prisma = prisma;
@@ -88,7 +88,7 @@ export class TaskGroupService {
       async () => {
         await this.executeGroup(group.id);
       },
-      { scheduled: true, timezone: 'UTC' }
+      { timezone: 'UTC' }
     );
 
     this.scheduledGroups.set(group.id, cronTask);

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { createPrismaClient } from '../lib/prisma';
 import archiver from 'archiver';
 import fs from 'fs-extra';
 import * as fsNative from 'fs';
@@ -10,7 +10,7 @@ import { FtpStorageService } from './FtpStorageService';
 import config from '../config';
 import logger from '../utils/logger';
 
-const prisma = new PrismaClient();
+const prisma = createPrismaClient();
 
 // Error codes for locked/busy files
 const LOCKED_FILE_ERRORS = ['EBUSY', 'EACCES', 'EPERM', 'ETXTBSY'];

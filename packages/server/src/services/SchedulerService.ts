@@ -1,14 +1,14 @@
-import { PrismaClient } from '@prisma/client';
-import cron from 'node-cron';
+import { createPrismaClient } from '../lib/prisma';
+import cron, { ScheduledTask } from 'node-cron';
 import { ServerService } from './ServerService';
 import { BackupService } from './BackupService';
 import { ConsoleService } from './ConsoleService';
 import logger from '../utils/logger';
 
-const prisma = new PrismaClient();
+const prisma = createPrismaClient();
 
 export class SchedulerService {
-  private tasks: Map<string, cron.ScheduledTask> = new Map();
+  private tasks: Map<string, ScheduledTask> = new Map();
   private serverService: ServerService;
   private backupService: BackupService;
   private consoleService: ConsoleService;
@@ -71,7 +71,6 @@ export class SchedulerService {
         await this.executeTask(task);
       },
       {
-        scheduled: true,
         timezone: 'UTC',
       }
     );

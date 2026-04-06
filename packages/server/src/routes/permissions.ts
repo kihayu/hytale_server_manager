@@ -82,7 +82,7 @@ export function createPermissionRoutes(permissionService: PermissionService): Ro
     requirePermission(PERMISSIONS.PERMISSIONS_VIEW),
     async (req: AuthenticatedRequest, res: Response) => {
       try {
-        const { role } = req.params;
+        const { role } = req.params as Record<string, string>;
 
         if (!['admin', 'moderator', 'viewer'].includes(role)) {
           res.status(400).json({ message: 'Invalid role' });
@@ -111,7 +111,7 @@ export function createPermissionRoutes(permissionService: PermissionService): Ro
     requirePermission(PERMISSIONS.PERMISSIONS_MANAGE),
     async (req: AuthenticatedRequest, res: Response) => {
       try {
-        const { role } = req.params;
+        const { role } = req.params as Record<string, string>;
         const { permissions } = req.body as { permissions: string[] };
 
         if (!['admin', 'moderator', 'viewer'].includes(role)) {
@@ -163,7 +163,7 @@ export function createPermissionRoutes(permissionService: PermissionService): Ro
     requirePermission(PERMISSIONS.PERMISSIONS_MANAGE),
     async (req: AuthenticatedRequest, res: Response) => {
       try {
-        const { role } = req.params;
+        const { role } = req.params as Record<string, string>;
 
         if (!['admin', 'moderator', 'viewer'].includes(role)) {
           res.status(400).json({ message: 'Invalid role' });

@@ -3,12 +3,12 @@ import fs from 'fs-extra';
 import axios from 'axios';
 import { spawn, ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
-import { PrismaClient } from '@prisma/client';
+import { createPrismaClient } from '../lib/prisma';
 import unzipper from 'unzipper';
 import { getBasePath_ } from '../config';
 import logger from '../utils/logger';
 
-const prisma = new PrismaClient();
+const prisma = createPrismaClient();
 
 // ==========================================
 // Types

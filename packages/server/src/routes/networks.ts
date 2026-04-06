@@ -36,7 +36,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
   // GET /api/networks/:id - Get single network with members
   router.get('/:id', async (req, res): Promise<void> => {
     try {
-      const network = await networkService.getNetwork(req.params.id);
+      const network = await networkService.getNetwork((req.params.id as string));
       if (!network) {
         res.status(404).json({ error: 'Network not found' });
         return;
@@ -86,7 +86,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
     try {
       const { name, description, proxyServerId, proxyConfig, color, sortOrder, bulkActionsEnabled } = req.body;
 
-      const network = await networkService.updateNetwork(req.params.id, {
+      const network = await networkService.updateNetwork((req.params.id as string), {
         name,
         description,
         proxyServerId,
@@ -107,7 +107,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
   // DELETE /api/networks/:id - Delete network
   router.delete('/:id', async (req, res) => {
     try {
-      await networkService.deleteNetwork(req.params.id);
+      await networkService.deleteNetwork((req.params.id as string));
       res.json({ message: 'Network deleted' });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -134,7 +134,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
         return;
       }
 
-      await networkService.addServer(req.params.id, serverId, role);
+      await networkService.addServer((req.params.id as string), serverId, role);
       res.json({ message: 'Server added to network' });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -152,7 +152,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
   // DELETE /api/networks/:id/servers/:serverId - Remove server from network
   router.delete('/:id/servers/:serverId', async (req, res) => {
     try {
-      await networkService.removeServer(req.params.id, req.params.serverId);
+      await networkService.removeServer((req.params.id as string), (req.params.serverId as string));
       res.json({ message: 'Server removed from network' });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -171,7 +171,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
         return;
       }
 
-      await networkService.updateMemberRole(req.params.id, req.params.serverId, role);
+      await networkService.updateMemberRole((req.params.id as string), (req.params.serverId as string), role);
       res.json({ message: 'Member role updated' });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -190,7 +190,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
         return;
       }
 
-      await networkService.reorderMembers(req.params.id, serverIds);
+      await networkService.reorderMembers((req.params.id as string), serverIds);
       res.json({ message: 'Servers reordered' });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -206,7 +206,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
   // POST /api/networks/:id/start - Start all servers
   router.post('/:id/start', async (req, res) => {
     try {
-      const result = await networkService.startNetwork(req.params.id);
+      const result = await networkService.startNetwork((req.params.id as string));
       res.json(result);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -218,7 +218,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
   // POST /api/networks/:id/stop - Stop all servers
   router.post('/:id/stop', async (req, res) => {
     try {
-      const result = await networkService.stopNetwork(req.params.id);
+      const result = await networkService.stopNetwork((req.params.id as string));
       res.json(result);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -230,7 +230,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
   // POST /api/networks/:id/restart - Restart all servers
   router.post('/:id/restart', async (req, res) => {
     try {
-      const result = await networkService.restartNetwork(req.params.id);
+      const result = await networkService.restartNetwork((req.params.id as string));
       res.json(result);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -246,7 +246,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
   // GET /api/networks/:id/status - Get derived network status
   router.get('/:id/status', async (req, res) => {
     try {
-      const status = await networkService.getNetworkStatus(req.params.id);
+      const status = await networkService.getNetworkStatus((req.params.id as string));
       res.json(status);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -258,7 +258,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
   // GET /api/networks/:id/metrics - Get aggregated metrics
   router.get('/:id/metrics', async (req, res) => {
     try {
-      const metrics = await networkService.getNetworkMetrics(req.params.id);
+      const metrics = await networkService.getNetworkMetrics((req.params.id as string));
       res.json(metrics);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -270,7 +270,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
   // GET /api/networks/:id/players - Get cross-server players
   router.get('/:id/players', async (req, res) => {
     try {
-      const players = await networkService.getNetworkPlayers(req.params.id);
+      const players = await networkService.getNetworkPlayers((req.params.id as string));
       res.json(players);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -286,7 +286,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
   // GET /api/networks/:id/backups - List network backups
   router.get('/:id/backups', async (req, res) => {
     try {
-      const backups = await networkService.getNetworkBackups(req.params.id);
+      const backups = await networkService.getNetworkBackups((req.params.id as string));
       res.json(backups);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -299,7 +299,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
   router.post('/:id/backups', async (req, res) => {
     try {
       const { description } = req.body;
-      const backup = await networkService.createNetworkBackup(req.params.id, description);
+      const backup = await networkService.createNetworkBackup((req.params.id as string), description);
       res.status(202).json(backup);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -311,7 +311,7 @@ export function createNetworkRoutes(networkService: NetworkService): Router {
   // DELETE /api/networks/:id/backups/:backupId - Delete network backup
   router.delete('/:id/backups/:backupId', async (req, res) => {
     try {
-      await networkService.deleteNetworkBackup(req.params.backupId);
+      await networkService.deleteNetworkBackup((req.params.backupId as string));
       res.json({ message: 'Network backup deleted' });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';

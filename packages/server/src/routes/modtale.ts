@@ -63,7 +63,7 @@ export function createModtaleRoutes(): Router {
    */
   router.get('/projects/:id', async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
+      const { id } = req.params as Record<string, string>;
       const project = await modtaleApiService.getProject(id);
       return res.json(project);
     } catch (error: any) {
@@ -78,7 +78,7 @@ export function createModtaleRoutes(): Router {
    */
   router.get('/projects/slug/:slug', async (req: Request, res: Response) => {
     try {
-      const { slug } = req.params;
+      const { slug } = req.params as Record<string, string>;
       const project = await modtaleApiService.getProjectBySlug(slug);
       return res.json(project);
     } catch (error: any) {
@@ -121,7 +121,7 @@ export function createModtaleRoutes(): Router {
    */
   router.get('/projects/:id/versions/:versionId/dependencies', async (req: Request, res: Response) => {
     try {
-      const { id, versionId } = req.params;
+      const { id, versionId } = req.params as Record<string, string>;
       const dependencies = await modtaleApiService.getVersionDependencies(id, versionId);
       return res.json(dependencies);
     } catch (error: any) {
@@ -136,7 +136,7 @@ export function createModtaleRoutes(): Router {
    */
   router.get('/projects/:id/versions/:versionId/download', async (req: Request, res: Response): Promise<void> => {
     try {
-      const { id, versionId } = req.params;
+      const { id, versionId } = req.params as Record<string, string>;
       const downloadStream = await modtaleApiService.downloadVersion(id, versionId);
       res.setHeader('Content-Type', 'application/octet-stream');
       res.setHeader('Content-Disposition', `attachment; filename="${id}-${versionId}.zip"`);

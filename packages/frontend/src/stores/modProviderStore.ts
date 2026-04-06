@@ -106,7 +106,7 @@ export const useModProviderStore = create<ModProviderState>()(
           await get().loadProviders();
         } catch (error) {
           const message = error instanceof Error ? error.message : 'Failed to configure provider';
-          throw new Error(message);
+          throw new Error(message, { cause: error });
         }
       },
 

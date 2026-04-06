@@ -359,7 +359,7 @@ export function createSettingsRoutes(
     requirePermission(PERMISSIONS.SETTINGS_VIEW),
     async (req: AuthenticatedRequest, res: Response) => {
       try {
-        const { category } = req.params;
+        const { category } = req.params as Record<string, string>;
         const settings = await settingsService.getCategoryMasked(category);
 
         res.json({ category, settings });
@@ -379,7 +379,7 @@ export function createSettingsRoutes(
     requirePermission(PERMISSIONS.SETTINGS_UPDATE),
     async (req: AuthenticatedRequest, res: Response) => {
       try {
-        const { category } = req.params;
+        const { category } = req.params as Record<string, string>;
         const updates = req.body as Record<string, string>;
 
         await settingsService.updateCategory(category, updates, req.user?.id);

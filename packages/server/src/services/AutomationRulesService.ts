@@ -1,12 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-import cron from 'node-cron';
+import { createPrismaClient } from '../lib/prisma';
+import cron, { ScheduledTask } from 'node-cron';
 import logger from '../utils/logger';
 import { ServerService } from './ServerService';
 import { BackupService } from './BackupService';
 import { ActivityLogService } from './ActivityLogService';
 import { ACTIVITY_ACTIONS, RESOURCE_TYPES } from '../constants/ActivityLogActions';
 
-const prisma = new PrismaClient();
+const prisma = createPrismaClient();
 
 export type TriggerType = 'scheduled' | 'event' | 'condition';
 export type EventType = 'server_start' | 'server_stop' | 'player_join' | 'player_leave' | 'high_cpu' | 'high_memory';
@@ -68,7 +68,7 @@ export interface CreateRuleData {
 }
 
 export class AutomationRulesService {
-  private scheduledTasks: Map<string, cron.ScheduledTask> = new Map();
+  private scheduledTasks: Map<string, ScheduledTask> = new Map();
   private serverService: ServerService;
   private backupService: BackupService;
   private activityLogService?: ActivityLogService;

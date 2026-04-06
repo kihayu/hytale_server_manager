@@ -128,7 +128,7 @@ router.get('/server/:serverId', requirePermission(PERMISSIONS.ACTIVITY_VIEW), as
   try {
     const activityLogService: ActivityLogService = req.app.get('activityLogService');
 
-    const { serverId } = req.params;
+    const { serverId } = req.params as Record<string, string>;
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
 
     const activities = await activityLogService.getServerActivity(serverId, limit);
@@ -148,7 +148,7 @@ router.get('/user/:userId', requirePermission(PERMISSIONS.ACTIVITY_VIEW_ALL), as
   try {
     const activityLogService: ActivityLogService = req.app.get('activityLogService');
 
-    const { userId } = req.params;
+    const { userId } = req.params as Record<string, string>;
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
 
     const activities = await activityLogService.getUserActivity(userId, limit);
@@ -168,7 +168,7 @@ router.get('/:id', requirePermission(PERMISSIONS.ACTIVITY_VIEW), async (req: Req
   try {
     const activityLogService: ActivityLogService = req.app.get('activityLogService');
 
-    const activity = await activityLogService.getById(req.params.id);
+    const activity = await activityLogService.getById((req.params.id as string));
 
     if (!activity) {
       res.status(404).json({ message: 'Activity log entry not found' });

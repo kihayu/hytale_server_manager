@@ -18,7 +18,7 @@ router.get(
   requirePermission(PERMISSIONS.SERVERS_VIEW),
   async (req: Request, res: Response) => {
     try {
-      const { serverId } = req.params;
+      const { serverId } = req.params as Record<string, string>;
       const result = await serverUpdateService.checkForUpdate(serverId);
       res.json(result);
     } catch (error: any) {
@@ -55,7 +55,7 @@ router.post(
   requirePermission(PERMISSIONS.SERVERS_UPDATE),
   async (req: Request, res: Response) => {
     try {
-      const { serverId } = req.params;
+      const { serverId } = req.params as Record<string, string>;
       const { targetVersion } = req.body;
 
       const session = await serverUpdateService.startUpdate(serverId, targetVersion);
@@ -76,7 +76,7 @@ router.get(
   requirePermission(PERMISSIONS.SERVERS_VIEW),
   async (req: Request, res: Response) => {
     try {
-      const { sessionId } = req.params;
+      const { sessionId } = req.params as Record<string, string>;
       const session = serverUpdateService.getSession(sessionId);
 
       if (!session) {
@@ -101,7 +101,7 @@ router.post(
   requirePermission(PERMISSIONS.SERVERS_UPDATE),
   async (req: Request, res: Response) => {
     try {
-      const { sessionId } = req.params;
+      const { sessionId } = req.params as Record<string, string>;
       await serverUpdateService.cancelUpdate(sessionId);
       res.json({ success: true });
     } catch (error: any) {
@@ -120,7 +120,7 @@ router.post(
   requirePermission(PERMISSIONS.SERVERS_UPDATE),
   async (req: Request, res: Response) => {
     try {
-      const { serverId } = req.params;
+      const { serverId } = req.params as Record<string, string>;
       await serverUpdateService.rollback(serverId);
       res.json({ success: true });
     } catch (error: any) {
@@ -139,7 +139,7 @@ router.get(
   requirePermission(PERMISSIONS.SERVERS_VIEW),
   async (req: Request, res: Response) => {
     try {
-      const { serverId } = req.params;
+      const { serverId } = req.params as Record<string, string>;
       const limit = parseInt(req.query.limit as string) || 10;
       const history = await serverUpdateService.getUpdateHistory(serverId, limit);
       res.json(history);
@@ -159,7 +159,7 @@ router.post(
   requirePermission(PERMISSIONS.SERVERS_UPDATE),
   async (req: Request, res: Response) => {
     try {
-      const { serverId } = req.params;
+      const { serverId } = req.params as Record<string, string>;
       await serverUpdateService.forceResetUpdateState(serverId);
       res.json({ success: true, message: 'Update state reset successfully' });
     } catch (error: any) {

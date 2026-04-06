@@ -48,7 +48,7 @@ fi
 
 # Run Prisma database setup as the hsm user
 echo "Setting up database..."
-gosu hsm npx prisma db push --skip-generate --accept-data-loss
+gosu hsm npx prisma db push --accept-data-loss
 
 echo "Database ready."
 echo "Starting Hytale Server Manager..."

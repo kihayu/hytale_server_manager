@@ -1,5 +1,4 @@
 import { Router, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import os from 'os';
 import { AuthenticatedRequest, requirePermission } from '../middleware/auth';
 import { MetricsService } from '../services/MetricsService';
@@ -7,7 +6,9 @@ import { AlertsService } from '../services/AlertsService';
 import { PERMISSIONS } from '../permissions/definitions';
 import logger from '../utils/logger';
 
-const prisma = new PrismaClient();
+import { createPrismaClient } from '../lib/prisma';
+
+const prisma = createPrismaClient();
 
 // Store previous CPU measurement for delta calculation
 let previousCpuTimes: { idle: number; total: number } | null = null;
@@ -332,7 +333,7 @@ export function createDashboardRoutes(
     requirePermission(PERMISSIONS.SERVERS_START),
     async (req: AuthenticatedRequest, res: Response) => {
       try {
-        const { action } = req.params;
+        const { action } = req.params as Record<string, string>;
         const { serverIds } = req.body as { serverIds?: string[] };
 
         const validActions = ['start-all', 'stop-all', 'restart-all'];

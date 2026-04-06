@@ -10,7 +10,7 @@ const envPath = process.env.HSM_BASE_PATH
 console.log(`[Config] Loading .env from: ${envPath}`);
 console.log(`[Config] HSM_BASE_PATH: ${process.env.HSM_BASE_PATH || 'not set'}`);
 console.log(`[Config] __dirname: ${__dirname}`);
-const dotenvResult = dotenv.config({ path: envPath });
+const dotenvResult = dotenv.config({ path: envPath, quiet: true });
 if (dotenvResult.error) {
   console.error(`[Config] Error loading .env: ${dotenvResult.error.message}`);
 } else {

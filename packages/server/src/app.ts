@@ -6,6 +6,7 @@ import path from 'path';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { PrismaClient } from '@prisma/client';
+import { createPrismaClient } from './lib/prisma';
 import { Server as HTTPServer, createServer as createHTTPServer } from 'http';
 import { Server as HTTPSServer, createServer as createHTTPSServer } from 'https';
 import { Server as SocketServer } from 'socket.io';
@@ -119,7 +120,7 @@ export class App {
       pingTimeout: config.wsPingTimeout,
     });
 
-    this.prisma = new PrismaClient();
+    this.prisma = createPrismaClient();
 
     // Initialize permission and settings services
     this.permissionService = new PermissionService(this.prisma);
@@ -216,7 +217,7 @@ export class App {
   private async runMigrations(): Promise<void> {
     logger.info('Running database schema sync...');
     try {
-      const { stdout, stderr } = await execAsync('npx prisma db push --skip-generate --accept-data-loss', {
+      const { stdout, stderr } = await execAsync('npx prisma db push --accept-data-loss', {
         cwd: path.join(__dirname, '..'),
         env: { ...process.env, DATABASE_URL: config.databaseUrl },
       });
@@ -232,6 +233,10 @@ export class App {
    * Initialize Express middleware
    */
   private initializeMiddleware(): void {
+    // Trust the first proxy hop (nginx, Traefik, etc.) so express-rate-limit
+    // and req.ip resolve correctly from X-Forwarded-For.
+    this.express.set('trust proxy', 1);
+
     // HTTPS enforcement (production only)
     enforceHTTPS(this.express);
 
@@ -358,7 +363,7 @@ export class App {
       this.express.use(express.static(publicPath));
 
       // SPA fallback - serve index.html for any non-API routes
-      this.express.get('*', (req, res, next) => {
+      this.express.get('/{*path}', (req, res, next) => {
         // Skip API routes
         if (req.path.startsWith('/api/') || req.path === '/health') {
           return next();

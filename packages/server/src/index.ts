@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { App } from './app';
 import logger from './utils/logger';
 import fs from 'fs';

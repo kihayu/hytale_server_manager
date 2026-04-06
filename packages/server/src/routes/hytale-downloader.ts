@@ -144,7 +144,7 @@ router.get(
   requirePermission(PERMISSIONS.HYTALE_DL_AUTH),
   async (req: Request, res: Response) => {
     try {
-      const { sessionId } = req.params;
+      const { sessionId } = req.params as Record<string, string>;
       const session = hytaleDownloaderService.getOAuthSession(sessionId);
 
       if (!session) {
@@ -169,7 +169,7 @@ router.post(
   requirePermission(PERMISSIONS.HYTALE_DL_AUTH),
   async (req: Request, res: Response) => {
     try {
-      const { sessionId } = req.params;
+      const { sessionId } = req.params as Record<string, string>;
       hytaleDownloaderService.cancelOAuthFlow(sessionId);
       res.json({ success: true });
     } catch (error: any) {
@@ -302,7 +302,7 @@ router.get(
   requirePermission(PERMISSIONS.HYTALE_DL_DOWNLOAD),
   async (req: Request, res: Response) => {
     try {
-      const { sessionId } = req.params;
+      const { sessionId } = req.params as Record<string, string>;
       const session = hytaleDownloaderService.getDownloadSession(sessionId);
 
       if (!session) {
@@ -327,7 +327,7 @@ router.post(
   requirePermission(PERMISSIONS.HYTALE_DL_DOWNLOAD),
   async (req: Request, res: Response) => {
     try {
-      const { sessionId } = req.params;
+      const { sessionId } = req.params as Record<string, string>;
       hytaleDownloaderService.cancelDownload(sessionId);
       res.json({ success: true });
     } catch (error: any) {

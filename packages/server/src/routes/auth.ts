@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { createPrismaClient } from '../lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import logger from '../utils/logger';
@@ -8,7 +8,7 @@ import { ACTIVITY_ACTIONS, RESOURCE_TYPES } from '../constants/ActivityLogAction
 import { getActivityContext } from '../middleware/activityLogger';
 import { strictLimiter } from '../middleware/rateLimiter';
 
-const prisma = new PrismaClient();
+const prisma = createPrismaClient();
 
 // JWT configuration - REQUIRE secrets from environment
 function getRequiredEnvVar(name: string): string {

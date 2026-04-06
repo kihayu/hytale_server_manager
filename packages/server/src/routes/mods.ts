@@ -44,7 +44,7 @@ export function createModsRouter(modProviderService: ModProviderService): Router
     '/providers/:providerId/configure',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { providerId } = req.params;
+        const { providerId } = req.params as Record<string, string>;
         const { apiKey } = req.body;
 
         if (!apiKey || typeof apiKey !== 'string') {
@@ -75,7 +75,7 @@ export function createModsRouter(modProviderService: ModProviderService): Router
     '/providers/:providerId/search',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { providerId } = req.params;
+        const { providerId } = req.params as Record<string, string>;
 
         if (!modProviderService.hasProvider(providerId)) {
           res.status(404).json({ error: `Provider not found: ${providerId}` });
@@ -100,7 +100,7 @@ export function createModsRouter(modProviderService: ModProviderService): Router
     '/providers/:providerId/projects/:projectId',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { providerId, projectId } = req.params;
+        const { providerId, projectId } = req.params as Record<string, string>;
 
         if (!modProviderService.hasProvider(providerId)) {
           res.status(404).json({ error: `Provider not found: ${providerId}` });
@@ -123,7 +123,7 @@ export function createModsRouter(modProviderService: ModProviderService): Router
     '/providers/:providerId/projects/slug/:slug',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { providerId, slug } = req.params;
+        const { providerId, slug } = req.params as Record<string, string>;
 
         if (!modProviderService.hasProvider(providerId)) {
           res.status(404).json({ error: `Provider not found: ${providerId}` });
@@ -146,7 +146,7 @@ export function createModsRouter(modProviderService: ModProviderService): Router
     '/providers/:providerId/categories',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { providerId } = req.params;
+        const { providerId } = req.params as Record<string, string>;
 
         if (!modProviderService.hasProvider(providerId)) {
           res.status(404).json({ error: `Provider not found: ${providerId}` });
@@ -169,7 +169,7 @@ export function createModsRouter(modProviderService: ModProviderService): Router
     '/providers/:providerId/tags',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { providerId } = req.params;
+        const { providerId } = req.params as Record<string, string>;
 
         if (!modProviderService.hasProvider(providerId)) {
           res.status(404).json({ error: `Provider not found: ${providerId}` });
@@ -192,7 +192,7 @@ export function createModsRouter(modProviderService: ModProviderService): Router
     '/providers/:providerId/projects/:projectId/versions/:versionId/dependencies',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { providerId, projectId, versionId } = req.params;
+        const { providerId, projectId, versionId } = req.params as Record<string, string>;
 
         if (!modProviderService.hasProvider(providerId)) {
           res.status(404).json({ error: `Provider not found: ${providerId}` });
@@ -219,7 +219,7 @@ export function createModsRouter(modProviderService: ModProviderService): Router
     '/providers/:providerId/projects/:projectId/versions/:versionId/download',
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { providerId, projectId, versionId } = req.params;
+        const { providerId, projectId, versionId } = req.params as Record<string, string>;
 
         if (!modProviderService.hasProvider(providerId)) {
           res.status(404).json({ error: `Provider not found: ${providerId}` });

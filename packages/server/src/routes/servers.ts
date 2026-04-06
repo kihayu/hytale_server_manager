@@ -59,7 +59,7 @@ export function createServerRoutes(
    */
   router.get('/:id', requirePermission(PERMISSIONS.SERVERS_VIEW), async (req: Request, res: Response) => {
     try {
-      const server = await serverService.getServer(req.params.id);
+      const server = await serverService.getServer((req.params.id as string));
       if (!server) {
         return res.status(404).json({ error: 'Server not found' });
       }
@@ -150,7 +150,7 @@ export function createServerRoutes(
    */
   router.patch('/:id', requirePermission(PERMISSIONS.SERVERS_UPDATE), async (req: Request, res: Response) => {
     try {
-      const server = await serverService.updateServer(req.params.id, req.body);
+      const server = await serverService.updateServer((req.params.id as string), req.body);
       res.json(server);
     } catch (error) {
       logger.error('Error updating server:', error);
@@ -165,9 +165,9 @@ export function createServerRoutes(
   router.delete('/:id', requirePermission(PERMISSIONS.SERVERS_DELETE), async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
     try {
-      const server = await serverService.getServer(req.params.id);
+      const server = await serverService.getServer((req.params.id as string));
       const serverName = server?.name;
-      await serverService.deleteServer(req.params.id);
+      await serverService.deleteServer((req.params.id as string));
 
       // Log activity (user is guaranteed by requirePermission middleware)
       const activityLogService: ActivityLogService = req.app.get('activityLogService');
@@ -179,7 +179,7 @@ export function createServerRoutes(
         userRole: user.role,
         action: ACTIVITY_ACTIONS.SERVER_DELETE,
         resourceType: RESOURCE_TYPES.SERVER,
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         resourceName: serverName,
         status: 'success',
         ipAddress: context.ipAddress,
@@ -204,8 +204,8 @@ export function createServerRoutes(
   router.post('/:id/start', requirePermission(PERMISSIONS.SERVERS_START), async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
     try {
-      const server = await serverService.getServer(req.params.id);
-      await serverService.startServer(req.params.id);
+      const server = await serverService.getServer((req.params.id as string));
+      await serverService.startServer((req.params.id as string));
 
       // Log activity (user is guaranteed by requirePermission middleware)
       const activityLogService: ActivityLogService = req.app.get('activityLogService');
@@ -217,7 +217,7 @@ export function createServerRoutes(
         userRole: user.role,
         action: ACTIVITY_ACTIONS.SERVER_START,
         resourceType: RESOURCE_TYPES.SERVER,
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         resourceName: server?.name,
         status: 'success',
         ipAddress: context.ipAddress,
@@ -236,7 +236,7 @@ export function createServerRoutes(
         userRole: user.role,
         action: ACTIVITY_ACTIONS.SERVER_START,
         resourceType: RESOURCE_TYPES.SERVER,
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         status: 'failed',
         errorMessage: error.message,
         ipAddress: context.ipAddress,
@@ -255,8 +255,8 @@ export function createServerRoutes(
   router.post('/:id/stop', requirePermission(PERMISSIONS.SERVERS_STOP), async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
     try {
-      const server = await serverService.getServer(req.params.id);
-      await serverService.stopServer(req.params.id);
+      const server = await serverService.getServer((req.params.id as string));
+      await serverService.stopServer((req.params.id as string));
 
       // Log activity (user is guaranteed by requirePermission middleware)
       const activityLogService: ActivityLogService = req.app.get('activityLogService');
@@ -268,7 +268,7 @@ export function createServerRoutes(
         userRole: user.role,
         action: ACTIVITY_ACTIONS.SERVER_STOP,
         resourceType: RESOURCE_TYPES.SERVER,
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         resourceName: server?.name,
         status: 'success',
         ipAddress: context.ipAddress,
@@ -287,7 +287,7 @@ export function createServerRoutes(
         userRole: user.role,
         action: ACTIVITY_ACTIONS.SERVER_STOP,
         resourceType: RESOURCE_TYPES.SERVER,
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         status: 'failed',
         errorMessage: error.message,
         ipAddress: context.ipAddress,
@@ -306,8 +306,8 @@ export function createServerRoutes(
   router.post('/:id/restart', requirePermission(PERMISSIONS.SERVERS_RESTART), async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
     try {
-      const server = await serverService.getServer(req.params.id);
-      await serverService.restartServer(req.params.id);
+      const server = await serverService.getServer((req.params.id as string));
+      await serverService.restartServer((req.params.id as string));
 
       // Log activity (user is guaranteed by requirePermission middleware)
       const activityLogService: ActivityLogService = req.app.get('activityLogService');
@@ -319,7 +319,7 @@ export function createServerRoutes(
         userRole: user.role,
         action: ACTIVITY_ACTIONS.SERVER_RESTART,
         resourceType: RESOURCE_TYPES.SERVER,
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         resourceName: server?.name,
         status: 'success',
         ipAddress: context.ipAddress,
@@ -340,8 +340,8 @@ export function createServerRoutes(
   router.post('/:id/kill', requirePermission(PERMISSIONS.SERVERS_KILL), async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
     try {
-      const server = await serverService.getServer(req.params.id);
-      await serverService.killServer(req.params.id);
+      const server = await serverService.getServer((req.params.id as string));
+      await serverService.killServer((req.params.id as string));
 
       // Log activity (user is guaranteed by requirePermission middleware)
       const activityLogService: ActivityLogService = req.app.get('activityLogService');
@@ -353,7 +353,7 @@ export function createServerRoutes(
         userRole: user.role,
         action: ACTIVITY_ACTIONS.SERVER_KILL,
         resourceType: RESOURCE_TYPES.SERVER,
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         resourceName: server?.name,
         status: 'success',
         ipAddress: context.ipAddress,
@@ -377,7 +377,7 @@ export function createServerRoutes(
    */
   router.get('/:id/status', async (req: Request, res: Response) => {
     try {
-      const status = await serverService.getServerStatus(req.params.id);
+      const status = await serverService.getServerStatus((req.params.id as string));
       res.json(status);
     } catch (error) {
       logger.error('Error getting server status:', error);
@@ -391,7 +391,7 @@ export function createServerRoutes(
    */
   router.get('/:id/metrics', async (req: Request, res: Response) => {
     try {
-      const metrics = await serverService.getServerMetrics(req.params.id);
+      const metrics = await serverService.getServerMetrics((req.params.id as string));
       res.json(metrics);
     } catch (error) {
       logger.error('Error getting server metrics:', error);
@@ -405,7 +405,7 @@ export function createServerRoutes(
    */
   router.get('/:id/config', async (req: Request, res: Response) => {
     try {
-      const config = await serverService.getServerConfig(req.params.id);
+      const config = await serverService.getServerConfig((req.params.id as string));
       res.json(config);
     } catch (error) {
       logger.error('Error getting server config:', error);
@@ -429,8 +429,8 @@ export function createServerRoutes(
         return res.status(400).json({ error: 'Command is required' });
       }
 
-      const server = await serverService.getServer(req.params.id);
-      const adapter = await serverService.getAdapterForServer(req.params.id);
+      const server = await serverService.getServer((req.params.id as string));
+      const adapter = await serverService.getAdapterForServer((req.params.id as string));
       const response = await consoleService.sendCommand(adapter, command);
 
       // Log activity (user is guaranteed by requirePermission middleware)
@@ -443,7 +443,7 @@ export function createServerRoutes(
         userRole: user.role,
         action: ACTIVITY_ACTIONS.SERVER_COMMAND,
         resourceType: RESOURCE_TYPES.SERVER,
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         resourceName: server?.name,
         status: 'success',
         details: { command },
@@ -468,7 +468,7 @@ export function createServerRoutes(
       const offset = parseInt(req.query.offset as string) || 0;
       const level = req.query.level as string | undefined;
 
-      const logs = await consoleService.getLogs(req.params.id, limit, offset, level);
+      const logs = await consoleService.getLogs((req.params.id as string), limit, offset, level);
       res.json(logs);
     } catch (error) {
       logger.error('Error getting logs:', error);
@@ -486,7 +486,7 @@ export function createServerRoutes(
    */
   router.get('/:id/mods', requirePermission(PERMISSIONS.MODS_VIEW), async (req: Request, res: Response) => {
     try {
-      const mods = await modService.getServerMods(req.params.id);
+      const mods = await modService.getServerMods((req.params.id as string));
       res.json(mods);
     } catch (error) {
       logger.error('Error getting mods:', error);
@@ -513,7 +513,7 @@ export function createServerRoutes(
    * }
    */
   router.post('/:id/mods', requirePermission(PERMISSIONS.MODS_INSTALL), async (req: Request, res: Response): Promise<void> => {
-    logger.info(`POST /api/servers/${req.params.id}/mods - Request received`);
+    logger.info(`POST /api/servers/${(req.params.id as string)}/mods - Request received`);
     logger.info(`Request body: ${JSON.stringify(req.body)}`);
     try {
       const { metadata } = req.body;
@@ -536,7 +536,7 @@ export function createServerRoutes(
       const downloadVersion = providerId === 'curseforge'
         ? versionId
         : (versionName || versionId);
-      logger.info(`Installing mod ${projectId} version ${downloadVersion} from ${providerId} to server ${req.params.id}`);
+      logger.info(`Installing mod ${projectId} version ${downloadVersion} from ${providerId} to server ${(req.params.id as string)}`);
 
       // Ensure providerId is set in metadata
       metadata.providerId = providerId;
@@ -610,8 +610,8 @@ export function createServerRoutes(
       // Update metadata with actual file size
       metadata.fileSize = modFile.length;
 
-      const adapter = await serverService.getAdapterForServer(req.params.id);
-      const mod = await modService.installMod(adapter, req.params.id, modFile, metadata);
+      const adapter = await serverService.getAdapterForServer((req.params.id as string));
+      const mod = await modService.installMod(adapter, (req.params.id as string), modFile, metadata);
       res.status(201).json(mod);
     } catch (error: any) {
       logger.error('Error installing mod:', error);
@@ -625,8 +625,8 @@ export function createServerRoutes(
    */
   router.delete('/:serverId/mods/:modId', requirePermission(PERMISSIONS.MODS_UNINSTALL), async (req: Request, res: Response) => {
     try {
-      const adapter = await serverService.getAdapterForServer(req.params.serverId);
-      await modService.uninstallMod(adapter, req.params.modId);
+      const adapter = await serverService.getAdapterForServer((req.params.serverId as string));
+      await modService.uninstallMod(adapter, (req.params.modId as string));
       res.status(204).send();
     } catch (error) {
       logger.error('Error uninstalling mod:', error);
@@ -640,8 +640,8 @@ export function createServerRoutes(
    */
   router.patch('/:serverId/mods/:modId/enable', requirePermission(PERMISSIONS.MODS_TOGGLE), async (req: Request, res: Response) => {
     try {
-      const adapter = await serverService.getAdapterForServer(req.params.serverId);
-      const mod = await modService.enableMod(adapter, req.params.modId);
+      const adapter = await serverService.getAdapterForServer((req.params.serverId as string));
+      const mod = await modService.enableMod(adapter, (req.params.modId as string));
       res.json(mod);
     } catch (error) {
       logger.error('Error enabling mod:', error);
@@ -655,8 +655,8 @@ export function createServerRoutes(
    */
   router.patch('/:serverId/mods/:modId/disable', requirePermission(PERMISSIONS.MODS_TOGGLE), async (req: Request, res: Response) => {
     try {
-      const adapter = await serverService.getAdapterForServer(req.params.serverId);
-      const mod = await modService.disableMod(adapter, req.params.modId);
+      const adapter = await serverService.getAdapterForServer((req.params.serverId as string));
+      const mod = await modService.disableMod(adapter, (req.params.modId as string));
       res.json(mod);
     } catch (error) {
       logger.error('Error disabling mod:', error);
@@ -674,7 +674,7 @@ export function createServerRoutes(
    */
   router.get('/:id/mods/check-updates', requirePermission(PERMISSIONS.MODS_VIEW), async (req: Request, res: Response) => {
     try {
-      const mods = await modService.getServerMods(req.params.id);
+      const mods = await modService.getServerMods((req.params.id as string));
 
       if (mods.length === 0) {
         res.json([]);
@@ -763,7 +763,7 @@ export function createServerRoutes(
   router.post('/:serverId/mods/:modId/update', requirePermission(PERMISSIONS.MODS_INSTALL), async (req: Request, res: Response): Promise<void> => {
     const authReq = req as AuthenticatedRequest;
     try {
-      const { serverId, modId } = req.params;
+      const { serverId, modId } = req.params as Record<string, string>;
       const { versionId: targetVersionId } = req.body;
 
       const mod = await modService.getMod(modId);
@@ -869,7 +869,7 @@ export function createServerRoutes(
   router.post('/:id/mods/update-all', requirePermission(PERMISSIONS.MODS_INSTALL), async (req: Request, res: Response): Promise<void> => {
     const authReq = req as AuthenticatedRequest;
     try {
-      const serverId = req.params.id;
+      const serverId = (req.params.id as string);
       const mods = await modService.getServerMods(serverId);
 
       const updated: string[] = [];
@@ -975,8 +975,8 @@ export function createServerRoutes(
    */
   router.get('/:id/players', requirePermission(PERMISSIONS.PLAYERS_VIEW), async (req: Request, res: Response) => {
     try {
-      const onlineOnly = req.query.online === 'true';
-      const players = await playerService.getServerPlayers(req.params.id, onlineOnly);
+      const onlineOnly = (req.query.online as string) === 'true';
+      const players = await playerService.getServerPlayers((req.params.id as string), onlineOnly);
       res.json(players);
     } catch (error) {
       logger.error('Error getting players:', error);
@@ -991,8 +991,8 @@ export function createServerRoutes(
   router.post('/:serverId/players/:uuid/kick', requirePermission(PERMISSIONS.PLAYERS_KICK), async (req: Request, res: Response) => {
     try {
       const { reason } = req.body;
-      const adapter = await serverService.getAdapterForServer(req.params.serverId);
-      await playerService.kickPlayer(adapter, req.params.uuid, reason);
+      const adapter = await serverService.getAdapterForServer((req.params.serverId as string));
+      await playerService.kickPlayer(adapter, (req.params.uuid as string), reason);
       res.json({ message: 'Player kicked' });
     } catch (error) {
       logger.error('Error kicking player:', error);
@@ -1007,8 +1007,8 @@ export function createServerRoutes(
   router.post('/:serverId/players/:uuid/ban', requirePermission(PERMISSIONS.PLAYERS_BAN), async (req: Request, res: Response) => {
     try {
       const { reason, duration } = req.body;
-      const adapter = await serverService.getAdapterForServer(req.params.serverId);
-      const player = await playerService.banPlayer(adapter, req.params.uuid, reason, duration);
+      const adapter = await serverService.getAdapterForServer((req.params.serverId as string));
+      const player = await playerService.banPlayer(adapter, (req.params.uuid as string), reason, duration);
       res.json(player);
     } catch (error) {
       logger.error('Error banning player:', error);
@@ -1022,8 +1022,8 @@ export function createServerRoutes(
    */
   router.post('/:serverId/players/:uuid/unban', requirePermission(PERMISSIONS.PLAYERS_UNBAN), async (req: Request, res: Response) => {
     try {
-      const adapter = await serverService.getAdapterForServer(req.params.serverId);
-      const player = await playerService.unbanPlayer(adapter, req.params.uuid);
+      const adapter = await serverService.getAdapterForServer((req.params.serverId as string));
+      const player = await playerService.unbanPlayer(adapter, (req.params.uuid as string));
       res.json(player);
     } catch (error) {
       logger.error('Error unbanning player:', error);
@@ -1041,7 +1041,7 @@ export function createServerRoutes(
    */
   router.get('/:id/backups', requirePermission(PERMISSIONS.BACKUPS_VIEW), async (req: Request, res: Response) => {
     try {
-      const backups = await backupService.listBackups(req.params.id);
+      const backups = await backupService.listBackups((req.params.id as string));
       res.json(backups);
     } catch (error) {
       logger.error('Error getting backups:', error);
@@ -1055,7 +1055,7 @@ export function createServerRoutes(
    */
   router.get('/:id/backups/stats', requirePermission(PERMISSIONS.BACKUPS_VIEW), async (req: Request, res: Response) => {
     try {
-      const stats = await backupService.getBackupStats(req.params.id);
+      const stats = await backupService.getBackupStats((req.params.id as string));
       res.json(stats);
     } catch (error) {
       logger.error('Error getting backup stats:', error);
@@ -1071,11 +1071,11 @@ export function createServerRoutes(
     const authReq = req as AuthenticatedRequest;
     try {
       const { description } = req.body;
-      const server = await serverService.getServer(req.params.id);
+      const server = await serverService.getServer((req.params.id as string));
 
       // Run backup in background so the API returns immediately
       const backup = await backupService.createBackup(
-        req.params.id,
+        (req.params.id as string),
         description,
         undefined, // automationRuleId
         undefined, // scheduledTaskId
@@ -1133,7 +1133,7 @@ export function createServerRoutes(
    */
   router.get('/backups/:id', requirePermission(PERMISSIONS.BACKUPS_VIEW), async (req: Request, res: Response) => {
     try {
-      const backup = await backupService.getBackup(req.params.id);
+      const backup = await backupService.getBackup((req.params.id as string));
       res.json(backup);
     } catch (error: any) {
       logger.error('Error getting backup:', error);
@@ -1147,7 +1147,7 @@ export function createServerRoutes(
    */
   router.get('/backups/:id/download', requirePermission(PERMISSIONS.BACKUPS_VIEW), async (req: Request, res: Response): Promise<void> => {
     try {
-      const backup = await backupService.getBackup(req.params.id);
+      const backup = await backupService.getBackup((req.params.id as string));
 
       if (backup.status !== 'completed') {
         res.status(400).json({ error: 'Backup is not completed' });
@@ -1184,8 +1184,8 @@ export function createServerRoutes(
   router.post('/backups/:id/restore', requirePermission(PERMISSIONS.BACKUPS_RESTORE), async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
     try {
-      const backup = await backupService.getBackup(req.params.id);
-      await backupService.restoreBackup(req.params.id);
+      const backup = await backupService.getBackup((req.params.id as string));
+      await backupService.restoreBackup((req.params.id as string));
 
       // Log activity (user is guaranteed by requirePermission middleware)
       const activityLogService: ActivityLogService = req.app.get('activityLogService');
@@ -1197,7 +1197,7 @@ export function createServerRoutes(
         userRole: user.role,
         action: ACTIVITY_ACTIONS.BACKUP_RESTORE,
         resourceType: RESOURCE_TYPES.BACKUP,
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         resourceName: backup.name,
         status: 'success',
         ipAddress: context.ipAddress,
@@ -1218,9 +1218,9 @@ export function createServerRoutes(
   router.delete('/backups/:id', requirePermission(PERMISSIONS.BACKUPS_DELETE), async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
     try {
-      const backup = await backupService.getBackup(req.params.id);
+      const backup = await backupService.getBackup((req.params.id as string));
       const backupName = backup.name;
-      await backupService.deleteBackup(req.params.id);
+      await backupService.deleteBackup((req.params.id as string));
 
       // Log activity (user is guaranteed by requirePermission middleware)
       const activityLogService: ActivityLogService = req.app.get('activityLogService');
@@ -1232,7 +1232,7 @@ export function createServerRoutes(
         userRole: user.role,
         action: ACTIVITY_ACTIONS.BACKUP_DELETE,
         resourceType: RESOURCE_TYPES.BACKUP,
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         resourceName: backupName,
         status: 'success',
         ipAddress: context.ipAddress,
@@ -1256,7 +1256,7 @@ export function createServerRoutes(
    */
   router.get('/:id/tasks', async (req: Request, res: Response) => {
     try {
-      const tasks = await schedulerService.listTasks(req.params.id);
+      const tasks = await schedulerService.listTasks((req.params.id as string));
       res.json(tasks);
     } catch (error) {
       logger.error('Error getting tasks:', error);
@@ -1291,7 +1291,7 @@ export function createServerRoutes(
       }
 
       const task = await schedulerService.createTask({
-        serverId: req.params.id,
+        serverId: (req.params.id as string),
         name,
         type,
         cronExpression,
@@ -1312,7 +1312,7 @@ export function createServerRoutes(
    */
   router.get('/tasks/:id', async (req: Request, res: Response) => {
     try {
-      const task = await schedulerService.getTask(req.params.id);
+      const task = await schedulerService.getTask((req.params.id as string));
       res.json(task);
     } catch (error: any) {
       logger.error('Error getting task:', error);
@@ -1328,7 +1328,7 @@ export function createServerRoutes(
     try {
       const { name, cronExpression, taskData, enabled } = req.body;
 
-      const task = await schedulerService.updateTask(req.params.id, {
+      const task = await schedulerService.updateTask((req.params.id as string), {
         name,
         cronExpression,
         taskData,
@@ -1349,7 +1349,7 @@ export function createServerRoutes(
   router.post('/tasks/:id/toggle', async (req: Request, res: Response) => {
     try {
       const { enabled } = req.body;
-      const task = await schedulerService.toggleTask(req.params.id, enabled);
+      const task = await schedulerService.toggleTask((req.params.id as string), enabled);
       res.json(task);
     } catch (error: any) {
       logger.error('Error toggling task:', error);
@@ -1363,7 +1363,7 @@ export function createServerRoutes(
    */
   router.post('/tasks/:id/run', async (req: Request, res: Response) => {
     try {
-      await schedulerService.runTaskNow(req.params.id);
+      await schedulerService.runTaskNow((req.params.id as string));
       res.json({ message: 'Task executed successfully' });
     } catch (error: any) {
       logger.error('Error running task:', error);
@@ -1377,7 +1377,7 @@ export function createServerRoutes(
    */
   router.delete('/tasks/:id', async (req: Request, res: Response) => {
     try {
-      await schedulerService.deleteTask(req.params.id);
+      await schedulerService.deleteTask((req.params.id as string));
       res.status(204).send();
     } catch (error: any) {
       logger.error('Error deleting task:', error);
@@ -1396,7 +1396,7 @@ export function createServerRoutes(
   router.get('/:id/files', async (req: Request, res: Response) => {
     try {
       const { path: dirPath = '' } = req.query;
-      const files = await fileService.listFiles(req.params.id, dirPath as string);
+      const files = await fileService.listFiles((req.params.id as string), dirPath as string);
       res.json(files);
     } catch (error: any) {
       logger.error('Error listing files:', error);
@@ -1414,7 +1414,7 @@ export function createServerRoutes(
       if (!filePath) {
         return res.status(400).json({ error: 'File path is required' });
       }
-      const content = await fileService.readFile(req.params.id, filePath as string);
+      const content = await fileService.readFile((req.params.id as string), filePath as string);
       return res.json({ content });
     } catch (error: any) {
       logger.error('Error reading file:', error);
@@ -1432,7 +1432,7 @@ export function createServerRoutes(
       if (!filePath) {
         return res.status(400).json({ error: 'File path is required' });
       }
-      await fileService.writeFile(req.params.id, filePath, content || '');
+      await fileService.writeFile((req.params.id as string), filePath, content || '');
       return res.json({ message: 'File saved successfully' });
     } catch (error: any) {
       logger.error('Error writing file:', error);
@@ -1450,7 +1450,7 @@ export function createServerRoutes(
       if (!filePath) {
         return res.status(400).json({ error: 'File path is required' });
       }
-      await fileService.createFile(req.params.id, filePath, content);
+      await fileService.createFile((req.params.id as string), filePath, content);
       return res.status(201).json({ message: 'File created successfully' });
     } catch (error: any) {
       logger.error('Error creating file:', error);
@@ -1468,7 +1468,7 @@ export function createServerRoutes(
       if (!dirPath) {
         return res.status(400).json({ error: 'Directory path is required' });
       }
-      await fileService.createDirectory(req.params.id, dirPath);
+      await fileService.createDirectory((req.params.id as string), dirPath);
       return res.status(201).json({ message: 'Directory created successfully' });
     } catch (error: any) {
       logger.error('Error creating directory:', error);
@@ -1486,7 +1486,7 @@ export function createServerRoutes(
       if (!itemPath) {
         return res.status(400).json({ error: 'Path is required' });
       }
-      await fileService.delete(req.params.id, itemPath as string);
+      await fileService.delete((req.params.id as string), itemPath as string);
       return res.status(204).send();
     } catch (error: any) {
       logger.error('Error deleting file/directory:', error);
@@ -1504,7 +1504,7 @@ export function createServerRoutes(
       if (!oldPath || !newPath) {
         return res.status(400).json({ error: 'Both oldPath and newPath are required' });
       }
-      await fileService.rename(req.params.id, oldPath, newPath);
+      await fileService.rename((req.params.id as string), oldPath, newPath);
       return res.json({ message: 'Renamed successfully' });
     } catch (error: any) {
       logger.error('Error renaming:', error);
@@ -1522,7 +1522,7 @@ export function createServerRoutes(
       if (!itemPath) {
         return res.status(400).json({ error: 'Path is required' });
       }
-      const info = await fileService.getInfo(req.params.id, itemPath as string);
+      const info = await fileService.getInfo((req.params.id as string), itemPath as string);
       return res.json(info);
     } catch (error: any) {
       logger.error('Error getting file info:', error);
@@ -1540,7 +1540,7 @@ export function createServerRoutes(
       if (!pattern) {
         return res.status(400).json({ error: 'Search pattern is required' });
       }
-      const files = await fileService.searchFiles(req.params.id, pattern as string, dirPath as string);
+      const files = await fileService.searchFiles((req.params.id as string), pattern as string, dirPath as string);
       return res.json(files);
     } catch (error: any) {
       logger.error('Error searching files:', error);
@@ -1554,7 +1554,7 @@ export function createServerRoutes(
    */
   router.get('/:id/files/usage', async (req: Request, res: Response) => {
     try {
-      const usage = await fileService.getDiskUsage(req.params.id);
+      const usage = await fileService.getDiskUsage((req.params.id as string));
       res.json(usage);
     } catch (error: any) {
       logger.error('Error getting disk usage:', error);
@@ -1572,7 +1572,7 @@ export function createServerRoutes(
       if (!filePath) {
         return res.status(400).json({ error: 'File path is required' });
       }
-      const buffer = await fileService.downloadFile(req.params.id, filePath as string);
+      const buffer = await fileService.downloadFile((req.params.id as string), filePath as string);
       const filename = filePath.toString().split('/').pop() || 'download';
 
       res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
@@ -1643,7 +1643,7 @@ export function createServerRoutes(
         }
 
         const result = await fileService.uploadFileWithExtraction(
-          req.params.id,
+          (req.params.id as string),
           filePath,
           req.file.buffer,
           autoExtractZip
@@ -1669,7 +1669,7 @@ export function createServerRoutes(
     try {
       const { startTime, endTime, limit } = req.query;
       const metrics = await metricsService.queryMetrics({
-        serverId: req.params.id,
+        serverId: (req.params.id as string),
         startTime: startTime ? new Date(startTime as string) : undefined,
         endTime: endTime ? new Date(endTime as string) : undefined,
         limit: limit ? parseInt(limit as string) : undefined,
@@ -1687,7 +1687,7 @@ export function createServerRoutes(
    */
   router.get('/:id/metrics/latest', async (req: Request, res: Response) => {
     try {
-      const metrics = await metricsService.getLatestMetrics(req.params.id);
+      const metrics = await metricsService.getLatestMetrics((req.params.id as string));
       if (!metrics) {
         return res.status(404).json({ error: 'No metrics found' });
       }
@@ -1704,7 +1704,7 @@ export function createServerRoutes(
    */
   router.get('/:id/metrics/aggregate/:interval', async (req: Request, res: Response) => {
     try {
-      const { interval } = req.params;
+      const { interval } = req.params as Record<string, string>;
       const validIntervals = ['1h', '6h', '24h', '7d', '30d'];
 
       if (!validIntervals.includes(interval)) {
@@ -1712,7 +1712,7 @@ export function createServerRoutes(
       }
 
       const metrics = await metricsService.getAggregatedMetrics(
-        req.params.id,
+        (req.params.id as string),
         interval as '1h' | '6h' | '24h' | '7d' | '30d'
       );
       return res.json(metrics);
@@ -1732,7 +1732,7 @@ export function createServerRoutes(
    */
   router.get('/:id/worlds', async (req: Request, res: Response) => {
     try {
-      const worlds = await worldsService.listWorlds(req.params.id);
+      const worlds = await worldsService.listWorlds((req.params.id as string));
       return res.json(worlds);
     } catch (error: any) {
       logger.error('Error listing worlds:', error);
@@ -1746,7 +1746,7 @@ export function createServerRoutes(
    */
   router.get('/:id/worlds/:worldId', async (req: Request, res: Response) => {
     try {
-      const world = await worldsService.getWorld(req.params.worldId);
+      const world = await worldsService.getWorld((req.params.worldId as string));
       if (!world) {
         return res.status(404).json({ error: 'World not found' });
       }
@@ -1763,7 +1763,7 @@ export function createServerRoutes(
    */
   router.post('/:id/worlds/:worldId/activate', async (req: Request, res: Response) => {
     try {
-      await worldsService.setActiveWorld(req.params.id, req.params.worldId);
+      await worldsService.setActiveWorld((req.params.id as string), (req.params.worldId as string));
       return res.json({ message: 'World activated successfully' });
     } catch (error: any) {
       logger.error('Error activating world:', error);
@@ -1778,7 +1778,7 @@ export function createServerRoutes(
   router.put('/:id/worlds/:worldId', async (req: Request, res: Response) => {
     try {
       const { name, description } = req.body;
-      const world = await worldsService.updateWorld(req.params.worldId, { name, description });
+      const world = await worldsService.updateWorld((req.params.worldId as string), { name, description });
       return res.json(world);
     } catch (error: any) {
       logger.error('Error updating world:', error);
@@ -1792,7 +1792,7 @@ export function createServerRoutes(
    */
   router.delete('/:id/worlds/:worldId', async (req: Request, res: Response) => {
     try {
-      await worldsService.deleteWorld(req.params.worldId);
+      await worldsService.deleteWorld((req.params.worldId as string));
       return res.status(204).send();
     } catch (error: any) {
       logger.error('Error deleting world:', error);
@@ -1806,7 +1806,7 @@ export function createServerRoutes(
    */
   router.get('/:id/worlds/:worldId/config', async (req: Request, res: Response) => {
     try {
-      const config = await worldsService.getWorldConfig(req.params.worldId);
+      const config = await worldsService.getWorldConfig((req.params.worldId as string));
       return res.json(config);
     } catch (error: any) {
       logger.error('Error getting world config:', error);
@@ -1820,7 +1820,7 @@ export function createServerRoutes(
    */
   router.put('/:id/worlds/:worldId/config', async (req: Request, res: Response) => {
     try {
-      const config = await worldsService.updateWorldConfig(req.params.worldId, req.body);
+      const config = await worldsService.updateWorldConfig((req.params.worldId as string), req.body);
       return res.json(config);
     } catch (error: any) {
       logger.error('Error updating world config:', error);
@@ -1840,7 +1840,7 @@ export function createServerRoutes(
   router.get('/:id/alerts', async (req: Request, res: Response) => {
     try {
       const { unreadOnly, unresolvedOnly, limit } = req.query;
-      const alerts = await alertsService.getAlerts(req.params.id, {
+      const alerts = await alertsService.getAlerts((req.params.id as string), {
         unreadOnly: unreadOnly === 'true',
         unresolvedOnly: unresolvedOnly === 'true',
         limit: limit ? parseInt(limit as string) : undefined,
@@ -1858,7 +1858,7 @@ export function createServerRoutes(
    */
   router.get('/:id/alerts/unread-count', async (req: Request, res: Response) => {
     try {
-      const count = await alertsService.getUnreadCount(req.params.id);
+      const count = await alertsService.getUnreadCount((req.params.id as string));
       return res.json({ count });
     } catch (error: any) {
       logger.error('Error getting unread count:', error);
@@ -1872,7 +1872,7 @@ export function createServerRoutes(
    */
   router.put('/:id/alerts/:alertId/read', async (req: Request, res: Response) => {
     try {
-      await alertsService.markAsRead(req.params.alertId);
+      await alertsService.markAsRead((req.params.alertId as string));
       return res.json({ message: 'Alert marked as read' });
     } catch (error: any) {
       logger.error('Error marking alert as read:', error);
@@ -1886,7 +1886,7 @@ export function createServerRoutes(
    */
   router.put('/:id/alerts/read-all', async (req: Request, res: Response) => {
     try {
-      await alertsService.markAllAsRead(req.params.id);
+      await alertsService.markAllAsRead((req.params.id as string));
       return res.json({ message: 'All alerts marked as read' });
     } catch (error: any) {
       logger.error('Error marking all alerts as read:', error);
@@ -1900,7 +1900,7 @@ export function createServerRoutes(
    */
   router.put('/:id/alerts/:alertId/resolve', async (req: Request, res: Response) => {
     try {
-      await alertsService.resolveAlert(req.params.alertId);
+      await alertsService.resolveAlert((req.params.alertId as string));
       return res.json({ message: 'Alert resolved' });
     } catch (error: any) {
       logger.error('Error resolving alert:', error);
@@ -1914,7 +1914,7 @@ export function createServerRoutes(
    */
   router.delete('/:id/alerts/:alertId', async (req: Request, res: Response) => {
     try {
-      await alertsService.deleteAlert(req.params.alertId);
+      await alertsService.deleteAlert((req.params.alertId as string));
       return res.status(204).send();
     } catch (error: any) {
       logger.error('Error deleting alert:', error);
@@ -1932,7 +1932,7 @@ export function createServerRoutes(
    */
   router.get('/:id/automation-rules', async (req: Request, res: Response) => {
     try {
-      const rules = await automationRulesService.getRules(req.params.id);
+      const rules = await automationRulesService.getRules((req.params.id as string));
       return res.json(rules);
     } catch (error: any) {
       logger.error('Error getting automation rules:', error);
@@ -1946,7 +1946,7 @@ export function createServerRoutes(
    */
   router.get('/:id/automation-rules/:ruleId', async (req: Request, res: Response) => {
     try {
-      const rule = await automationRulesService.getRule(req.params.ruleId);
+      const rule = await automationRulesService.getRule((req.params.ruleId as string));
       if (!rule) {
         return res.status(404).json({ error: 'Rule not found' });
       }
@@ -1964,7 +1964,7 @@ export function createServerRoutes(
   router.post('/:id/automation-rules', async (req: Request, res: Response) => {
     try {
       const rule = await automationRulesService.createRule({
-        serverId: req.params.id,
+        serverId: (req.params.id as string),
         ...req.body,
       });
       return res.status(201).json(rule);
@@ -1980,7 +1980,7 @@ export function createServerRoutes(
    */
   router.put('/:id/automation-rules/:ruleId', async (req: Request, res: Response) => {
     try {
-      const rule = await automationRulesService.updateRule(req.params.ruleId, req.body);
+      const rule = await automationRulesService.updateRule((req.params.ruleId as string), req.body);
       return res.json(rule);
     } catch (error: any) {
       logger.error('Error updating automation rule:', error);
@@ -1994,7 +1994,7 @@ export function createServerRoutes(
    */
   router.delete('/:id/automation-rules/:ruleId', async (req: Request, res: Response) => {
     try {
-      await automationRulesService.deleteRule(req.params.ruleId);
+      await automationRulesService.deleteRule((req.params.ruleId as string));
       return res.status(204).send();
     } catch (error: any) {
       logger.error('Error deleting automation rule:', error);
@@ -2009,7 +2009,7 @@ export function createServerRoutes(
   router.put('/:id/automation-rules/:ruleId/toggle', async (req: Request, res: Response) => {
     try {
       const { enabled } = req.body;
-      await automationRulesService.toggleRule(req.params.ruleId, enabled);
+      await automationRulesService.toggleRule((req.params.ruleId as string), enabled);
       return res.json({ message: `Rule ${enabled ? 'enabled' : 'disabled'}` });
     } catch (error: any) {
       logger.error('Error toggling automation rule:', error);
@@ -2023,7 +2023,7 @@ export function createServerRoutes(
    */
   router.post('/:id/automation-rules/:ruleId/execute', async (req: Request, res: Response) => {
     try {
-      await automationRulesService.executeRule(req.params.ruleId);
+      await automationRulesService.executeRule((req.params.ruleId as string));
       return res.json({ message: 'Rule executed successfully' });
     } catch (error: any) {
       logger.error('Error executing automation rule:', error);

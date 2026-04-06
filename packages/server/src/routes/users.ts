@@ -1,10 +1,10 @@
 import { Router, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import logger from '../utils/logger';
 import { AuthenticatedRequest, authorize } from '../middleware/auth';
+import { createPrismaClient } from '../lib/prisma';
 
-const prisma = new PrismaClient();
+const prisma = createPrismaClient();
 
 /**
  * Create user management routes
@@ -47,7 +47,7 @@ export function createUserRoutes(): Router {
    */
   router.get('/:id', async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const { id } = req.params;
+      const { id } = req.params as Record<string, string>;
 
       const user = await prisma.user.findUnique({
         where: { id },
@@ -167,7 +167,7 @@ export function createUserRoutes(): Router {
    */
   router.patch('/:id', async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const { id } = req.params;
+      const { id } = req.params as Record<string, string>;
       const { email, username, password, role } = req.body;
 
       // Check if user exists
@@ -276,7 +276,7 @@ export function createUserRoutes(): Router {
    */
   router.delete('/:id', async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const { id } = req.params;
+      const { id } = req.params as Record<string, string>;
 
       // Prevent self-deletion
       if (req.user?.id === id) {

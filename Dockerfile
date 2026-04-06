@@ -1,7 +1,7 @@
 # ==========================================
 # Stage 1: Build
 # ==========================================
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
@@ -26,7 +26,7 @@ RUN pnpm build
 # ==========================================
 # Stage 2: Production
 # ==========================================
-FROM node:20-slim AS production
+FROM node:24-slim AS production
 
 # Install runtime dependencies (gosu for dropping privileges with PUID/PGID)
 # Install Java 25 from Eclipse Temurin (Adoptium)
@@ -51,6 +51,7 @@ RUN groupadd -g 911 hsm && \
 COPY --from=builder /app/packages/server/dist ./dist
 COPY --from=builder /app/packages/server/package.json ./
 COPY --from=builder /app/packages/server/prisma ./prisma
+COPY --from=builder /app/packages/server/prisma.config.ts ./
 
 # Copy frontend build to public directory (backend serves this in production)
 COPY --from=builder /app/packages/frontend/dist ./public

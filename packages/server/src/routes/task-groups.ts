@@ -34,7 +34,7 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
    */
   router.get('/:id', requirePermission(PERMISSIONS.SERVERS_VIEW), async (req: Request, res: Response) => {
     try {
-      const group = await taskGroupService.getGroupWithTasks(req.params.id);
+      const group = await taskGroupService.getGroupWithTasks((req.params.id as string));
       if (!group) {
         return res.status(404).json({ error: 'Task group not found' });
       }
@@ -99,7 +99,7 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
   router.patch('/:id', requirePermission(PERMISSIONS.SERVERS_UPDATE), async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
     try {
-      const group = await taskGroupService.updateGroup(req.params.id, req.body);
+      const group = await taskGroupService.updateGroup((req.params.id as string), req.body);
 
       // Log activity
       const user = authReq.user!;
@@ -133,12 +133,12 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
     const authReq = req as AuthenticatedRequest;
     try {
       // Get group info before deletion for logging
-      const group = await taskGroupService.getGroup(req.params.id);
+      const group = await taskGroupService.getGroup((req.params.id as string));
       if (!group) {
         return res.status(404).json({ error: 'Task group not found' });
       }
 
-      await taskGroupService.deleteGroup(req.params.id);
+      await taskGroupService.deleteGroup((req.params.id as string));
 
       // Log activity
       const user = authReq.user!;
@@ -150,7 +150,7 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
         userRole: user.role,
         action: ACTIVITY_ACTIONS.TASK_GROUP_DELETE,
         resourceType: RESOURCE_TYPES.TASK_GROUP,
-        resourceId: req.params.id,
+        resourceId: (req.params.id as string),
         resourceName: group.name,
         status: 'success',
         ipAddress: context.ipAddress,
@@ -176,7 +176,7 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
     const authReq = req as AuthenticatedRequest;
     try {
       const { enabled } = req.body;
-      const group = await taskGroupService.toggleGroup(req.params.id, enabled);
+      const group = await taskGroupService.toggleGroup((req.params.id as string), enabled);
 
       // Log activity
       const user = authReq.user!;
@@ -209,12 +209,12 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
   router.post('/:id/run', requirePermission(PERMISSIONS.SERVERS_UPDATE), async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
     try {
-      const group = await taskGroupService.getGroup(req.params.id);
+      const group = await taskGroupService.getGroup((req.params.id as string));
       if (!group) {
         return res.status(404).json({ error: 'Task group not found' });
       }
 
-      const execution = await taskGroupService.executeGroup(req.params.id);
+      const execution = await taskGroupService.executeGroup((req.params.id as string));
 
       // Log activity
       const user = authReq.user!;
@@ -248,7 +248,7 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
   router.get('/:id/executions', requirePermission(PERMISSIONS.SERVERS_VIEW), async (req: Request, res: Response) => {
     try {
       const limit = parseInt(req.query.limit as string) || 20;
-      const executions = await taskGroupService.getGroupExecutions(req.params.id, limit);
+      const executions = await taskGroupService.getGroupExecutions((req.params.id as string), limit);
       res.json(executions);
     } catch (error) {
       logger.error('Error getting task group executions:', error);
@@ -270,7 +270,7 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
       if (!taskId) {
         return res.status(400).json({ error: 'taskId is required' });
       }
-      await taskGroupService.addTask(req.params.id, taskId, sortOrder);
+      await taskGroupService.addTask((req.params.id as string), taskId, sortOrder);
       return res.json({ message: 'Task added to group' });
     } catch (error: any) {
       logger.error('Error adding task to group:', error);
@@ -284,7 +284,7 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
    */
   router.delete('/:id/tasks/:taskId', requirePermission(PERMISSIONS.SERVERS_UPDATE), async (req: Request, res: Response) => {
     try {
-      await taskGroupService.removeTask(req.params.id, req.params.taskId);
+      await taskGroupService.removeTask((req.params.id as string), (req.params.taskId as string));
       res.status(204).send();
     } catch (error) {
       logger.error('Error removing task from group:', error);
@@ -302,7 +302,7 @@ export function createTaskGroupRoutes(taskGroupService: TaskGroupService): Route
       if (!taskIds || !Array.isArray(taskIds)) {
         return res.status(400).json({ error: 'taskIds array is required' });
       }
-      await taskGroupService.reorderTasks(req.params.id, taskIds);
+      await taskGroupService.reorderTasks((req.params.id as string), taskIds);
       return res.json({ message: 'Tasks reordered' });
     } catch (error) {
       logger.error('Error reordering tasks:', error);
