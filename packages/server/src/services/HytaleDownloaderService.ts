@@ -1158,6 +1158,7 @@ class HytaleDownloaderService extends EventEmitter {
 
     this.activeSessions.set(sessionId, proc);
 
+    let stderrBuffer = '';
     let lastSpeedCalcTime = Date.now();
     let lastBytesDownloaded = 0;
 
@@ -1221,6 +1222,7 @@ class HytaleDownloaderService extends EventEmitter {
     proc.stderr.on('data', (data) => {
       const text = data.toString();
       logger.debug('[HytaleDownloader] download stderr:', text);
+      stderrBuffer += text;
       parseProgress(text);
     });
 
@@ -1290,7 +1292,9 @@ class HytaleDownloaderService extends EventEmitter {
         }
       } else {
         session.status = 'failed';
-        session.error = `Download failed with exit code ${code}`;
+        session.error = stderrBuffer.trim()
+          ? `Download failed (exit code ${code}): ${stderrBuffer.trim().substring(0, 500)}`
+          : `Download failed with exit code ${code}`;
         this.emit('download:error', {
           sessionId,
           error: session.error,

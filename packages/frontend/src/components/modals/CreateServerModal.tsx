@@ -136,7 +136,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
       if (field === 'name' && typeof value === 'string') {
         const slugifiedName = value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
         if (slugifiedName) {
-          updated.serverPath = `servers/${slugifiedName}`;
+          updated.serverPath = `data/servers/${slugifiedName}`;
         } else {
           updated.serverPath = '';
         }

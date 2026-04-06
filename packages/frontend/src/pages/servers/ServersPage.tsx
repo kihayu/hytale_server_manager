@@ -400,6 +400,21 @@ export const ServersPage = () => {
     });
   };
 
+  // Get ungrouped servers from local state (for real-time WebSocket updates)
+  // This ensures the UI updates immediately when server status changes
+  const localUngroupedServers = useMemo(() => {
+    // Get all server IDs that are in networks
+    const networkServerIds = new Set<string>();
+    networks.forEach(network => {
+      network.members?.forEach(member => {
+        networkServerIds.add(member.serverId);
+      });
+    });
+
+    // Filter servers that are not in any network
+    return servers.filter(server => !networkServerIds.has(server.id));
+  }, [servers, networks]);
+
   // Get available servers for network creation (all ungrouped servers)
   const availableServersForNetwork = useMemo(() => {
     return ungroupedServers.map(s => ({
@@ -586,17 +601,15 @@ export const ServersPage = () => {
   ];
 
   // Columns for ungrouped servers
-  const ungroupedColumns: Column<{ id: string; name: string; status: string }>[] = [
+  const ungroupedColumns: Column<Server>[] = [
     {
       key: 'name',
       label: t('servers.columns.server'),
       render: (server) => (
-        <span
-          className="font-medium text-text-light-primary dark:text-text-primary cursor-pointer hover:text-accent-primary"
-          onClick={() => navigate(`/servers/${server.id}`)}
-        >
-          {server.name}
-        </span>
+        <div>
+          <p className="font-medium text-text-light-primary dark:text-text-primary cursor-pointer hover:text-accent-primary" onClick={() => navigate(`/servers/${server.id}`)}>{server.name}</p>
+          <p className="text-xs text-text-light-muted dark:text-text-muted">{server.address}:{server.port}</p>
+        </div>
       ),
     },
     {
@@ -606,7 +619,7 @@ export const ServersPage = () => {
         // Use status from local servers state if available for immediate updates
         const fullServer = servers.find(s => s.id === server.id);
         const currentStatus = fullServer?.status || server.status;
-        return <StatusIndicator status={currentStatus as any} showLabel />;
+        return <StatusIndicator status={currentStatus} showLabel />;
       },
     },
     {
@@ -779,14 +792,14 @@ export const ServersPage = () => {
           )}
 
           {/* Ungrouped Servers */}
-          {ungroupedServers.length > 0 && (
+           {localUngroupedServers.length > 0 && (
             <Card variant="glass">
               <CardHeader>
-                <CardTitle>{t('servers.ungrouped')} ({ungroupedServers.length})</CardTitle>
+                <CardTitle>Ungrouped Servers ({localUngroupedServers.length})</CardTitle>
               </CardHeader>
               <CardContent>
                 <DataTable
-                  data={ungroupedServers}
+                  data={localUngroupedServers}
                   columns={ungroupedColumns}
                   keyExtractor={(server) => server.id}
                   itemsPerPage={10}
@@ -797,7 +810,7 @@ export const ServersPage = () => {
           )}
 
           {/* Empty State */}
-          {!networksLoading && networks.length === 0 && ungroupedServers.length === 0 && servers.length === 0 && (
+          {!networksLoading && networks.length === 0 && localUngroupedServers.length === 0 && servers.length === 0 && (
             <Card variant="glass" className="text-center py-12">
               <CardContent>
                 <Network size={48} className="mx-auto text-text-muted mb-4" />
