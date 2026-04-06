@@ -183,7 +183,7 @@ export const ServerWorldsPage = () => {
                   <div className="flex items-start sm:items-center gap-4 flex-1">
                     <Globe
                       size={24}
-                      className="flex-shrink-0 mt-1 sm:mt-0 text-text-light-muted dark:text-text-muted"
+                      className="shrink-0 mt-1 sm:mt-0 text-text-light-muted dark:text-text-muted"
                     />
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-text-light-primary dark:text-text-primary">
@@ -203,7 +203,7 @@ export const ServerWorldsPage = () => {
                     </div>
                   </div>
 
-                  <div className="flex gap-2 sm:flex-shrink-0">
+                  <div className="flex gap-2 sm:shrink-0">
                     <Button
                       variant="ghost"
                       size="sm"

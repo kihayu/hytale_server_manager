@@ -126,7 +126,7 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
           <select
             value={selectedVersion || ''}
             onChange={(e) => setSelectedVersion(e.target.value)}
-            className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
+            className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50"
           >
             {project.versions?.map((version) => {
               const dateStr = version.releaseDate;
@@ -234,7 +234,7 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
                    </div>
                  </div>
                   {selectedServer === server.id && (
-                    <CheckCircle2 size={20} className="text-accent-primary flex-shrink-0" />
+                    <CheckCircle2 size={20} className="text-accent-primary shrink-0" />
                   )}
                 </div>
               </button>

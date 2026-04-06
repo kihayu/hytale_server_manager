@@ -481,7 +481,7 @@ export const ServerSettingsPage = () => {
                     setGeneralSettings(prev => ({ ...prev, gameMode: e.target.value }));
                     setHasChanges(true);
                   }}
-                  className="w-full bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-text-light-primary dark:text-text-primary focus:outline-none focus:border-accent-primary"
+                  className="w-full bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:border-accent-primary"
                 >
                   <option value="exploration">{t('servers.settings.general.modes.exploration')}</option>
                   <option value="creative">{t('servers.settings.general.modes.creative')}</option>
@@ -556,7 +556,7 @@ export const ServerSettingsPage = () => {
                       }));
                       setHasChanges(true);
                     }}
-                    className="w-full bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-text-light-primary dark:text-text-primary focus:outline-none focus:border-accent-primary"
+                    className="w-full bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:border-accent-primary"
                   >
                     <option value="local">{t('servers.settings.storage.type_local')}</option>
                     <option value="ftp" disabled={!ftpStatus?.enabled}>
@@ -802,7 +802,7 @@ export const ServerSettingsPage = () => {
                     setAdvancedSettings(prev => ({ ...prev, jvmArgs: e.target.value }));
                     setHasChanges(true);
                   }}
-                  className="w-full bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-text-light-primary dark:text-text-primary focus:outline-none focus:border-accent-primary font-mono text-sm"
+                  className="w-full bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:border-accent-primary font-mono text-sm"
                   rows={4}
                   placeholder="-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot"
                 />

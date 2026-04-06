@@ -142,7 +142,7 @@ export const FileEditorModal = ({ isOpen, onClose, onSave, serverId, file }: Fil
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full h-[500px] bg-white dark:bg-primary-bg-secondary text-text-light-primary dark:text-text-primary font-mono text-sm p-4 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-primary resize-none"
+            className="w-full h-[500px] bg-white dark:bg-primary-bg-secondary text-text-light-primary dark:text-text-primary font-mono text-sm p-4 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-hidden focus:ring-2 focus:ring-accent-primary resize-none"
             spellCheck={false}
             placeholder={t('files.editor.placeholder')}
           />

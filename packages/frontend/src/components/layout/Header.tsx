@@ -121,7 +121,7 @@ export const Header = () => {
             disabled
             type="search"
             placeholder={t('common.search_placeholder')}
-            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary placeholder-text-muted text-base focus:outline-none focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary min-h-[44px]"
+            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary placeholder-text-muted text-base focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary min-h-[44px]"
           />
         </div>
       </div>
@@ -291,7 +291,7 @@ export const Header = () => {
                       <select
                         value={SUPPORTED_LANGUAGES.find(l => l.code === i18n.language)?.code || i18n.language.split('-')[0]}
                         onChange={(e) => changeLanguage(e.target.value)}
-                        className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-text-light-primary dark:text-text-primary text-sm rounded-md px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                        className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-text-light-primary dark:text-text-primary text-sm rounded-md px-2 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
                       >
                         {SUPPORTED_LANGUAGES.map((lang) => (
                           <option key={lang.code} value={lang.code}>

@@ -102,7 +102,7 @@ export const Sidebar = () => {
           }`
         }
       >
-        <item.icon size={20} className="flex-shrink-0" />
+        <item.icon size={20} className="shrink-0" />
         {!sidebarCollapsed && (
           <span className="font-medium">{t(item.labelKey)}</span>
         )}

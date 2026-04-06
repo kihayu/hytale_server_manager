@@ -195,7 +195,7 @@ export const ServerUpdateModal = ({
         {/* Pre-update warning */}
         {!isUpdating && !isComplete && (
           <div className="flex items-start gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-            <AlertTriangle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+            <AlertTriangle className="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" />
             <div className="text-sm">
               <p className="font-medium text-yellow-500 mb-1">{t('updates.modal.before.title')}</p>
               <ul className="text-text-light-muted dark:text-text-muted space-y-1 list-disc list-inside">

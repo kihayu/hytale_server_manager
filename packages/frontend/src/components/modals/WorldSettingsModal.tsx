@@ -100,7 +100,7 @@ export const WorldSettingsModal = ({ world, isOpen, onClose, onSave }: WorldSett
               <select
                 value={editedWorld.difficulty}
                 onChange={(e) => setEditedWorld({ ...editedWorld, difficulty: e.target.value as Difficulty })}
-                className="w-full bg-primary-bg border border-gray-700 rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:border-accent-primary"
+                className="w-full bg-primary-bg border border-gray-700 rounded-lg px-3 py-2 text-text-primary focus:outline-hidden focus:border-accent-primary"
               >
                 <option value="peaceful">{t('servers.world_settings.basic.difficulty_peaceful')}</option>
                 <option value="easy">{t('servers.world_settings.basic.difficulty_easy')}</option>
@@ -114,7 +114,7 @@ export const WorldSettingsModal = ({ world, isOpen, onClose, onSave }: WorldSett
               <select
                 value={editedWorld.type}
                 onChange={(e) => setEditedWorld({ ...editedWorld, type: e.target.value as WorldType })}
-                className="w-full bg-primary-bg border border-gray-700 rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:border-accent-primary"
+                className="w-full bg-primary-bg border border-gray-700 rounded-lg px-3 py-2 text-text-primary focus:outline-hidden focus:border-accent-primary"
               >
                 <option value="normal">{t('servers.world_settings.basic.env_normal')}</option>
                 <option value="nether">{t('servers.world_settings.basic.env_nether')}</option>

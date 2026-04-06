@@ -314,7 +314,7 @@ export const HytaleWorldConfigModal = ({
       {/* Server Running Warning */}
       {isServerRunning && (
         <div className="flex items-center gap-3 p-4 mb-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-          <AlertTriangle className="text-amber-500 flex-shrink-0" size={20} />
+          <AlertTriangle className="text-amber-500 shrink-0" size={20} />
           <div>
             <p className="text-sm font-medium text-amber-500">{t('servers.world_config.running.title')}</p>
             <p className="text-xs text-amber-500/80">
@@ -355,7 +355,7 @@ export const HytaleWorldConfigModal = ({
       {/* JSON Error */}
       {jsonError && (
         <div className="flex items-center gap-3 p-3 mb-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-          <AlertTriangle className="text-red-500 flex-shrink-0" size={18} />
+          <AlertTriangle className="text-red-500 shrink-0" size={18} />
           <p className="text-sm text-red-500">{jsonError}</p>
         </div>
       )}
@@ -378,7 +378,7 @@ export const HytaleWorldConfigModal = ({
             value={jsonText}
             onChange={(e) => handleJsonChange(e.target.value)}
             disabled={isDisabled}
-            className="w-full h-[60vh] p-4 font-mono text-sm bg-gray-900 text-gray-100 border border-gray-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-accent-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-[60vh] p-4 font-mono text-sm bg-gray-900 text-gray-100 border border-gray-700 rounded-lg resize-none focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
             spellCheck={false}
           />
         </div>

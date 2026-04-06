@@ -251,7 +251,7 @@ export const FileManagerPage = () => {
               setSelectedServer(e.target.value);
               setCurrentPath('');
             }}
-            className="w-full max-w-md px-4 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full max-w-md px-4 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
           >
             <option value="">{getServerPlaceholder()}</option>
             {servers.map((server) => (

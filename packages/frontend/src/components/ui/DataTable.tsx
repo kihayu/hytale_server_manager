@@ -388,7 +388,7 @@ export function DataTable<T>({
                 setPageSize(Number(e.target.value));
                 setCurrentPage(1);
               }}
-              className="px-2 py-1 text-sm bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="px-2 py-1 text-sm bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
             >
               {PAGE_SIZE_OPTIONS.map((size) => (
                 <option key={size} value={size}>

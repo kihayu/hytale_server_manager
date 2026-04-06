@@ -370,7 +370,7 @@ export function WidgetErrorBoundary({
       fallback={(error, reset) => (
         <div className={`p-4 bg-danger/10 border border-danger/30 rounded-lg ${className}`}>
           <div className="flex items-start gap-3">
-            <AlertTriangle size={20} className="text-danger flex-shrink-0 mt-0.5" />
+            <AlertTriangle size={20} className="text-danger shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-danger">
                 Failed to load {name}
@@ -381,7 +381,7 @@ export function WidgetErrorBoundary({
             </div>
             <button
               onClick={reset}
-              className="flex-shrink-0 p-1 hover:bg-danger/20 rounded transition-colors"
+              className="shrink-0 p-1 hover:bg-danger/20 rounded transition-colors"
               title="Retry"
             >
               <RefreshCw size={16} className="text-danger" />

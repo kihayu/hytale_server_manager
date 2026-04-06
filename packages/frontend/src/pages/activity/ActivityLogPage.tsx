@@ -274,7 +274,7 @@ export const ActivityLogPage = () => {
                   placeholder={t('activity.filters.search_placeholder')}
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
-                  className="pl-9 pr-4 py-2 border border-border rounded-lg bg-background text-text-primary w-64 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="pl-9 pr-4 py-2 border border-border rounded-lg bg-background text-text-primary w-64 focus:outline-hidden focus:ring-2 focus:ring-primary/50"
                 />
               </div>
               <Button type="submit" variant="secondary">
@@ -290,7 +290,7 @@ export const ActivityLogPage = () => {
                   setCategoryFilter(e.target.value);
                   setFilters(prev => ({ ...prev, page: 1 }));
                 }}
-                className="px-3 py-2 border border-border rounded-lg bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="px-3 py-2 border border-border rounded-lg bg-background text-text-primary focus:outline-hidden focus:ring-2 focus:ring-primary/50"
               >
                 {categories.map((cat) => (
                   <option key={cat.value} value={cat.value}>
@@ -305,7 +305,7 @@ export const ActivityLogPage = () => {
                   setStatusFilter(e.target.value);
                   setFilters(prev => ({ ...prev, page: 1 }));
                 }}
-                className="px-3 py-2 border border-border rounded-lg bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="px-3 py-2 border border-border rounded-lg bg-background text-text-primary focus:outline-hidden focus:ring-2 focus:ring-primary/50"
               >
                 <option value="">{t('activity.filters.statuses.all')}</option>
                 <option value="success">{t('activity.status.success')}</option>

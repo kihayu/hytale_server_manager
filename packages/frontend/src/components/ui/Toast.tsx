@@ -56,7 +56,7 @@ const Toast = ({ toast }: { toast: ToastType }) => {
       className={`relative flex items-start gap-3 p-4 rounded-lg border-2 ${styles[toast.type]} backdrop-blur-sm shadow-lg min-w-[320px] max-w-[420px]`}
     >
       {/* Icon */}
-      <div className="flex-shrink-0 mt-0.5">{icons[toast.type]}</div>
+      <div className="shrink-0 mt-0.5">{icons[toast.type]}</div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
@@ -71,7 +71,7 @@ const Toast = ({ toast }: { toast: ToastType }) => {
       {/* Close Button */}
       <button
         onClick={() => removeToast(toast.id)}
-        className="flex-shrink-0 text-text-muted hover:text-text-primary transition-colors"
+        className="shrink-0 text-text-muted hover:text-text-primary transition-colors"
         aria-label={t('ui.toast.close_aria')}
       >
         <X size={16} />

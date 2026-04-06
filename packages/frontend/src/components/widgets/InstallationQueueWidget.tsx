@@ -99,7 +99,7 @@ export const InstallationQueueWidget = () => {
                       <img
                         src={item.projectIconUrl || `https://via.placeholder.com/40/6366f1/ffffff?text=${item.projectTitle[0]}`}
                         alt={item.projectTitle}
-                        className="w-10 h-10 rounded object-cover flex-shrink-0"
+                        className="w-10 h-10 rounded object-cover shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
@@ -111,7 +111,7 @@ export const InstallationQueueWidget = () => {
                               {item.serverName} • v{item.versionName}
                             </p>
                           </div>
-                          <div className="flex items-center gap-1 flex-shrink-0">
+                          <div className="flex items-center gap-1 shrink-0">
                             {getStatusIcon(item.status)}
                             {(item.status === 'completed' || item.status === 'failed') && (
                               <button

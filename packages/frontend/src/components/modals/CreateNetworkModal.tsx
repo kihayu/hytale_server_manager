@@ -216,7 +216,7 @@ export const CreateNetworkModal = ({
                 if (errors.description) setErrors(prev => ({ ...prev, description: '' }));
               }}
               rows={2}
-              className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/50 resize-none"
+              className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 resize-none"
             />
             {errors.description && (
               <p className="text-danger text-sm mt-1">{errors.description}</p>

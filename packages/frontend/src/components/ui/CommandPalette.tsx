@@ -168,13 +168,13 @@ export const CommandPalette = () => {
         >
           {/* Search Input */}
           <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-300 dark:border-gray-800">
-            <Search size={20} className="text-text-light-muted dark:text-text-muted flex-shrink-0" />
+            <Search size={20} className="text-text-light-muted dark:text-text-muted shrink-0" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('ui.command.placeholder')}
-              className="flex-1 bg-transparent text-text-light-primary dark:text-text-primary placeholder-text-muted dark:placeholder-text-muted outline-none text-lg"
+              className="flex-1 bg-transparent text-text-light-primary dark:text-text-primary placeholder-text-muted dark:placeholder-text-muted outline-hidden text-lg"
               autoFocus
             />
             <button

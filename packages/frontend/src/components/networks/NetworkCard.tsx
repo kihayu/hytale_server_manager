@@ -123,7 +123,7 @@ export const NetworkCard = ({
 
             {/* Network Color Indicator */}
             <div
-              className="w-1 h-12 rounded-full flex-shrink-0"
+              className="w-1 h-12 rounded-full shrink-0"
               style={{ backgroundColor: network.color || '#00FF88' }}
             />
 

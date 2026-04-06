@@ -259,7 +259,7 @@ export const ModpacksPage = () => {
           <img
             src={modpack.iconUrl || `https://via.placeholder.com/48/6366f1/ffffff?text=${modpack.title[0]}`}
             alt={modpack.title}
-            className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+            className="w-10 h-10 rounded-lg object-cover shrink-0"
           />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -421,7 +421,7 @@ export const ModpacksPage = () => {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'downloads' | 'rating' | 'updated')}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
                   >
                     <option value="downloads">{t('modpacks.sort.downloads')}</option>
                     <option value="rating">{t('modpacks.sort.rating')}</option>

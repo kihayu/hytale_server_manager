@@ -123,7 +123,7 @@ export const LoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary-bg via-primary-bg-secondary to-primary-bg">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-primary-bg via-primary-bg-secondary to-primary-bg">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -228,7 +228,7 @@ export const LoginPage = () => {
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
                     className="p-4 bg-red-500/10 border-2 border-red-500/50 rounded-lg flex items-start gap-3 shadow-lg shadow-red-500/20"
                   >
-                    <div className="p-1.5 bg-red-500/20 rounded-full flex-shrink-0">
+                    <div className="p-1.5 bg-red-500/20 rounded-full shrink-0">
                       <AlertCircle size={20} className="text-red-500" />
                     </div>
                     <div className="flex-1">
@@ -329,7 +329,7 @@ export const LoginPage = () => {
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
                     className="p-4 bg-red-500/10 border-2 border-red-500/50 rounded-lg flex items-start gap-3 shadow-lg shadow-red-500/20"
                   >
-                    <div className="p-1.5 bg-red-500/20 rounded-full flex-shrink-0">
+                    <div className="p-1.5 bg-red-500/20 rounded-full shrink-0">
                       <AlertCircle size={20} className="text-red-500" />
                     </div>
                     <div className="flex-1">

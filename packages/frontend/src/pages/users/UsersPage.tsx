@@ -362,7 +362,7 @@ export const UsersPage = () => {
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value as 'admin' | 'moderator' | 'viewer' })}
-                  className="w-full px-3 py-2 bg-primary-bg border border-gray-700 rounded text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                  className="w-full px-3 py-2 bg-primary-bg border border-gray-700 rounded text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
                 >
                   <option value="viewer">{t('users.roles.viewer_option')}</option>
                   <option value="moderator">{t('users.roles.moderator_option')}</option>

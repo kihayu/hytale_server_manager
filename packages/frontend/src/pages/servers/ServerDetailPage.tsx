@@ -669,7 +669,7 @@ export const ServerDetailPage = () => {
                     <img
                       src={mod.projectIconUrl || `https://via.placeholder.com/48/6366f1/ffffff?text=${mod.projectTitle[0]}`}
                       alt={mod.projectTitle}
-                      className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                      className="w-12 h-12 rounded-lg object-cover shrink-0"
                     />
 
                     {/* Mod Info */}
@@ -702,7 +702,7 @@ export const ServerDetailPage = () => {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-2 flex-shrink-0">
+                    <div className="flex gap-2 shrink-0">
                       {updateStatuses[mod.id]?.updateAvailable && (
                         <Button
                           variant="success"

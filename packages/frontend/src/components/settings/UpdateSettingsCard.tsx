@@ -101,7 +101,7 @@ export const UpdateSettingsCard = () => {
               </div>
             </div>
             <div className="flex items-start gap-3 p-4 bg-blue-500/10 text-blue-400 rounded-lg">
-              <Info size={20} className="flex-shrink-0 mt-0.5" />
+              <Info size={20} className="shrink-0 mt-0.5" />
               <div className="text-sm">
                 <p className="font-medium mb-1">{t('settings.updates.docker.instructions_title')}</p>
                 <ul className="list-disc list-inside space-y-1 text-blue-300">
@@ -134,7 +134,7 @@ export const UpdateSettingsCard = () => {
             {updateInfo?.updateAvailable && (
               <div className="border border-accent-primary/30 rounded-lg p-4 mb-6">
                 <div className="flex items-start gap-3 mb-4">
-                  <Download size={20} className="text-accent-primary mt-1 flex-shrink-0" />
+                  <Download size={20} className="text-accent-primary mt-1 shrink-0" />
                   <div>
                     <h4 className="font-medium text-text-light-primary dark:text-text-primary">
                       {updateInfo.releaseName || t('settings.updates.version_name', { version: updateInfo.latestVersion })}
@@ -188,7 +188,7 @@ export const UpdateSettingsCard = () => {
                 {showConfirm && !isUpdating && (
                   <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 p-4 rounded mb-4">
                     <div className="flex items-start gap-3 mb-3">
-                      <AlertTriangle size={20} className="flex-shrink-0 mt-0.5" />
+                      <AlertTriangle size={20} className="shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium mb-1">{t('settings.updates.confirm_update')}</p>
                         <p className="text-sm opacity-80">
@@ -269,7 +269,7 @@ export const UpdateSettingsCard = () => {
 
             {/* Info Box */}
             <div className="flex items-start gap-3 p-4 bg-blue-500/10 text-blue-400 rounded-lg">
-              <Info size={20} className="flex-shrink-0 mt-0.5" />
+              <Info size={20} className="shrink-0 mt-0.5" />
               <div className="text-sm">
                 <p className="font-medium mb-1">{t('settings.updates.info.title')}</p>
                 <ul className="list-disc list-inside space-y-1 text-blue-300">

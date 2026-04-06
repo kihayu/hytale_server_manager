@@ -396,7 +396,7 @@ export const UploadFileModal = ({
         {validationErrors.length > 0 && (
           <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-4">
               <div className="flex gap-3">
-                <AlertTriangle size={20} className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                <AlertTriangle size={20} className="text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <h4 className="font-medium text-red-900 dark:text-red-100 mb-2">
                     {t('files.upload.validation.failed', { count: validationErrors.length })}
@@ -457,14 +457,14 @@ export const UploadFileModal = ({
                 <Card key={upload.id} variant="glass">
                   <CardContent className="py-3 px-4">
                     <div className="flex items-center gap-3">
-                      <File size={16} className="text-gray-500 flex-shrink-0" />
+                      <File size={16} className="text-gray-500 shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                           <p className="text-sm font-medium text-text-light-primary dark:text-text-primary truncate">
                             {upload.file.name}
                           </p>
                           {upload.status === 'success' && (
-                            <CheckCircle size={16} className="text-green-500 flex-shrink-0" />
+                            <CheckCircle size={16} className="text-green-500 shrink-0" />
                           )}
                           {upload.status === 'extracting' && (
                             <Badge variant="success" size="sm">
@@ -472,7 +472,7 @@ export const UploadFileModal = ({
                             </Badge>
                           )}
                           {upload.status === 'error' && (
-                            <AlertCircle size={16} className="text-red-500 flex-shrink-0" />
+                            <AlertCircle size={16} className="text-red-500 shrink-0" />
                           )}
                         </div>
 
@@ -510,7 +510,7 @@ export const UploadFileModal = ({
                       {(upload.status === 'pending' || upload.status === 'uploading') && (
                         <button
                           onClick={() => cancelUpload(upload.id)}
-                          className="text-gray-500 hover:text-red-600 dark:hover:text-red-400 flex-shrink-0 transition-colors"
+                          className="text-gray-500 hover:text-red-600 dark:hover:text-red-400 shrink-0 transition-colors"
                           title={t('files.upload.cancel_title')}
                         >
                           <X size={16} />
@@ -520,7 +520,7 @@ export const UploadFileModal = ({
                       {(upload.status === 'error' || upload.status === 'success' || upload.status === 'extracting' || upload.status === 'cancelled') && (
                         <button
                           onClick={() => removeUpload(upload.id)}
-                          className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex-shrink-0"
+                          className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 shrink-0"
                           title={t('files.upload.remove_title')}
                         >
                           <X size={16} />

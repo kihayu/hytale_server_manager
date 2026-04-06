@@ -1,8 +1,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* Class-based dark mode (equivalent to darkMode: 'class' in v3) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Colors - HytalePanel Adaptive Theme (Dark & Light) */
+  --color-primary-bg: #0f1419;
+  --color-primary-bg-secondary: #1a1f2e;
+  --color-primary-light-bg: #f8fafc;
+  --color-primary-light-bg-secondary: #ffffff;
+
+  --color-accent-primary: #f59e0b;
+  --color-accent-secondary: #06b6d4;
+
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #f43f5e;
+
+  --color-text-primary: #e2e8f0;
+  --color-text-muted: #64748b;
+  --color-text-light-primary: #1e293b;
+  --color-text-light-muted: #64748b;
+
+  /* Font families */
+  --font-heading: 'Rajdhani', 'Exo 2', sans-serif;
+  --font-body: 'IBM Plex Sans', 'Source Sans Pro', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Background images */
+  --background-image-grid-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+
+  /* Animations */
+  --animate-pulse-glow: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+}
 
 @layer base {
   * {
@@ -106,27 +143,10 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-gradient-to-r from-accent-primary to-accent-secondary bg-clip-text text-transparent;
+    @apply bg-linear-to-r from-accent-primary to-accent-secondary bg-clip-text text-transparent;
   }
 
   .border-gradient {
     border-image: linear-gradient(to right, #f59e0b, #06b6d4) 1;
-  }
-}
-
-/* Animation keyframes */
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-/* Loading spinner */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
   }
 }

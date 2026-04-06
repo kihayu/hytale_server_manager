@@ -243,7 +243,7 @@ export const ConsolePage = () => {
               onChange={(e) => setCommand(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendCommand()}
               placeholder={t('console.command_placeholder')}
-              className="flex-1 px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-primary/50 font-mono"
+              className="flex-1 px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary placeholder-text-muted focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 font-mono"
               disabled={!['running', 'starting'].includes(selectedServerData?.status || '')}
             />
             <Button

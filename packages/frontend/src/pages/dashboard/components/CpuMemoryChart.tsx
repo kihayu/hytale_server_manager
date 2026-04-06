@@ -108,7 +108,7 @@ export const CpuMemoryChart = ({ data, range, onRangeChange, loading }: CpuMemor
                     borderRadius: '8px',
                     color: '#F9FAFB',
                   }}
-                  labelFormatter={(value: string | number) => format(new Date(value), 'PPp')}
+                  labelFormatter={(label) => format(new Date(label as string | number), 'PPp')}
                   formatter={(value, name) => [
                     `${Number(value).toFixed(1)}%`,
                     name === 'cpu' ? 'CPU' : 'Memory',

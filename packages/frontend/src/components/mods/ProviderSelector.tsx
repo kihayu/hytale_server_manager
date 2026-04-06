@@ -55,7 +55,7 @@ export const ProviderSelector = ({
           <select
             value={selectedProvider}
             onChange={(e) => setSelectedProvider(e.target.value)}
-            className="appearance-none px-4 py-2 pr-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary cursor-pointer min-w-[180px]"
+            className="appearance-none px-4 py-2 pr-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary cursor-pointer min-w-[180px]"
           >
             <option value="all">{t('providers.all')}</option>
             {providers.map((provider) => (
@@ -138,7 +138,7 @@ export const ProviderSelectorCompact = ({
       <select
         value={selectedProvider}
         onChange={(e) => setSelectedProvider(e.target.value)}
-        className="appearance-none px-3 py-1.5 pr-8 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary cursor-pointer text-sm"
+        className="appearance-none px-3 py-1.5 pr-8 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary cursor-pointer text-sm"
       >
         <option value="all">{t('providers.all')}</option>
         {providers.map((provider) => (

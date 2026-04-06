@@ -209,7 +209,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
             value={serverId}
             onChange={(e) => setServerId(e.target.value)}
             disabled={isEditMode}
-            className={`w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary ${isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+            className={`w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary ${isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
           >
             <option value="">{t('automation.modals.create_task.server_placeholder')}</option>
             {servers.map((server) => (
@@ -247,7 +247,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
             value={type}
             onChange={(e) => setType(e.target.value as 'backup' | 'restart' | 'start' | 'stop' | 'command')}
             disabled={isEditMode}
-            className={`w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary ${isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+            className={`w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary ${isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
           >
             <option value="backup">{t('automation.modals.create_task.type_options.backup')}</option>
             <option value="restart">{t('automation.modals.create_task.type_options.restart')}</option>
@@ -322,7 +322,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
           <select
             value={cronPreset}
             onChange={(e) => setCronPreset(e.target.value)}
-            className="w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
           >
             {CRON_PRESETS.map((preset) => (
               <option key={preset.value} value={preset.value}>
@@ -354,7 +354,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
         {selectedServer && name && (
           <div className="bg-gray-100 dark:bg-gray-900 rounded-lg p-4">
             <div className="flex items-start gap-3">
-              <Clock className="text-accent-primary flex-shrink-0 mt-0.5" size={20} />
+              <Clock className="text-accent-primary shrink-0 mt-0.5" size={20} />
               <div className="flex-1">
                 <p className="text-sm font-medium text-text-light-primary dark:text-text-primary">
                   {t('automation.modals.create_task.preview.title')}
