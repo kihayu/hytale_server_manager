@@ -48,10 +48,10 @@ function AccessDenied() {
         <div className="inline-flex items-center justify-center w-20 h-20 bg-danger/20 rounded-full mb-6">
           <ShieldX className="w-10 h-10 text-danger" />
         </div>
-        <h1 className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary mb-2">
+        <h1 className="text-2xl font-heading font-bold text-fg-light dark:text-fg mb-2">
           {t('auth.permission.denied_title')}
         </h1>
-        <p className="text-text-light-muted dark:text-text-muted mb-6">
+        <p className="text-fg-muted dark:text-fg-muted mb-6">
           {t('auth.permission.denied_message')}
         </p>
         <Button

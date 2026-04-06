@@ -235,7 +235,7 @@ export const TaskGroupModal = ({
       <div className="space-y-4">
         {/* Group Name */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('automation.modals.task_group.name_label')}
           </label>
           <Input
@@ -248,7 +248,7 @@ export const TaskGroupModal = ({
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('automation.modals.task_group.description_label')}
           </label>
           <Input
@@ -261,13 +261,13 @@ export const TaskGroupModal = ({
 
         {/* Schedule Preset */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('automation.modals.task_group.schedule_label')}
           </label>
           <select
             value={cronPreset}
             onChange={(e) => setCronPreset(e.target.value)}
-            className="w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
+            className="w-full px-3 py-2 bg-white dark:bg-surface border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent"
           >
             {CRON_PRESETS.map((preset) => (
               <option key={preset.value} value={preset.value}>
@@ -280,7 +280,7 @@ export const TaskGroupModal = ({
         {/* Custom Cron Expression */}
         {cronPreset === 'custom' && (
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('automation.modals.task_group.custom_cron_label')}
             </label>
             <Input
@@ -289,7 +289,7 @@ export const TaskGroupModal = ({
               placeholder={t('automation.modals.task_group.custom_cron_placeholder')}
               className="w-full font-mono"
             />
-            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+            <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
               {t('automation.modals.task_group.custom_cron_helper')}
             </p>
           </div>
@@ -297,7 +297,7 @@ export const TaskGroupModal = ({
 
         {/* Failure Mode */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('automation.modals.task_group.failure_label')}
           </label>
           <div className="flex gap-4">
@@ -308,9 +308,9 @@ export const TaskGroupModal = ({
                 value="stop"
                 checked={failureMode === 'stop'}
                 onChange={() => setFailureMode('stop')}
-                className="accent-accent-primary"
+                className="accent-accent"
               />
-              <span className="text-sm text-text-light-primary dark:text-text-primary">
+              <span className="text-sm text-fg-light dark:text-fg">
                 {t('automation.modals.task_group.failure_stop')}
               </span>
             </label>
@@ -321,9 +321,9 @@ export const TaskGroupModal = ({
                 value="continue"
                 checked={failureMode === 'continue'}
                 onChange={() => setFailureMode('continue')}
-                className="accent-accent-primary"
+                className="accent-accent"
               />
-              <span className="text-sm text-text-light-primary dark:text-text-primary">
+              <span className="text-sm text-fg-light dark:text-fg">
                 {t('automation.modals.task_group.failure_continue')}
               </span>
             </label>
@@ -332,7 +332,7 @@ export const TaskGroupModal = ({
 
         {/* Delay Between Tasks */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('automation.modals.task_group.delay_label')}
           </label>
           <Input
@@ -342,14 +342,14 @@ export const TaskGroupModal = ({
             onChange={(e) => setDelayBetweenTasks(parseInt(e.target.value) || 0)}
             className="w-full"
           />
-          <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+          <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
             {t('automation.modals.task_group.delay_helper')}
           </p>
         </div>
 
         {/* Task Selection */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('automation.modals.task_group.tasks_label')}
             {selectedTaskIds.length > 0 &&
               ` (${t('automation.modals.task_group.tasks_selected', { count: selectedTaskIds.length })})`}
@@ -357,21 +357,21 @@ export const TaskGroupModal = ({
 
           {/* Selected Tasks (ordered) */}
           {selectedTasks.length > 0 && (
-            <div className="mb-3 border border-accent-primary/50 rounded-lg p-2 bg-accent-primary/5">
-              <p className="text-xs font-medium text-accent-primary mb-2">Execution Order (drag to reorder)</p>
+            <div className="mb-3 border border-accent/50 rounded-lg p-2 bg-accent/5">
+              <p className="text-xs font-medium text-accent mb-2">Execution Order (drag to reorder)</p>
               <div className="space-y-1">
                 {selectedTasks.map((task, index) => (
                   <div
                     key={task.id}
-                    className="flex items-center gap-2 bg-white dark:bg-primary-bg-secondary rounded px-2 py-1.5"
+                    className="flex items-center gap-2 bg-white dark:bg-surface rounded px-2 py-1.5"
                   >
-                    <GripVertical size={14} className="text-text-light-muted dark:text-text-muted cursor-grab" />
-                    <span className="text-xs font-mono text-accent-primary">{index + 1}</span>
+                    <GripVertical size={14} className="text-fg-muted dark:text-fg-muted cursor-grab" />
+                    <span className="text-xs font-mono text-accent">{index + 1}</span>
                     <div className="flex-1 min-w-0">
-                      <span className="text-sm text-text-light-primary dark:text-text-primary truncate block">
+                      <span className="text-sm text-fg-light dark:text-fg truncate block">
                         {task.name}
                       </span>
-                      <span className="text-xs text-text-light-muted dark:text-text-muted">
+                      <span className="text-xs text-fg-muted dark:text-fg-muted">
                         {task.server.name} - {task.type}
                       </span>
                     </div>
@@ -406,11 +406,11 @@ export const TaskGroupModal = ({
           {/* Available Tasks */}
           <div className="border border-gray-200 dark:border-gray-700 rounded-lg max-h-48 overflow-y-auto">
             {unselectedTasks.length === 0 && selectedTasks.length === 0 ? (
-              <div className="p-4 text-center text-text-light-muted dark:text-text-muted text-sm">
+              <div className="p-4 text-center text-fg-muted dark:text-fg-muted text-sm">
                 {t('automation.modals.task_group.tasks_empty')}
               </div>
             ) : unselectedTasks.length === 0 ? (
-              <div className="p-4 text-center text-text-light-muted dark:text-text-muted text-sm">
+              <div className="p-4 text-center text-fg-muted dark:text-fg-muted text-sm">
                 {t('automation.modals.task_group.tasks_all_selected')}
               </div>
             ) : (
@@ -424,17 +424,17 @@ export const TaskGroupModal = ({
                     type="checkbox"
                     checked={false}
                     onChange={() => {}}
-                    className="accent-accent-primary"
+                    className="accent-accent"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-text-light-primary dark:text-text-primary truncate">
+                      <span className="text-sm font-medium text-fg-light dark:text-fg truncate">
                         {task.name}
                       </span>
                       <Badge variant="default" size="sm">{task.type}</Badge>
                       {!task.enabled && <Badge variant="warning" size="sm">{t('automation.modals.task_group.disabled')}</Badge>}
                     </div>
-                    <span className="text-xs text-text-light-muted dark:text-text-muted">
+                    <span className="text-xs text-fg-muted dark:text-fg-muted">
                       {task.server.name}
                     </span>
                   </div>
@@ -448,27 +448,27 @@ export const TaskGroupModal = ({
         {name && selectedTasks.length > 0 && (
           <div className="bg-gray-100 dark:bg-gray-900 rounded-lg p-4">
             <div className="flex items-start gap-3">
-              <Clock className="text-accent-primary shrink-0 mt-0.5" size={20} />
+              <Clock className="text-accent shrink-0 mt-0.5" size={20} />
               <div className="flex-1">
-                <p className="text-sm font-medium text-text-light-primary dark:text-text-primary">
+                <p className="text-sm font-medium text-fg-light dark:text-fg">
                   {t('automation.modals.task_group.preview.title')}
                 </p>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                   {t('automation.modals.task_group.preview.name', { name })}
                 </p>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                   {t('automation.modals.task_group.preview.schedule', {
                     schedule: cronPreset === 'custom' ? customCron : CRON_PRESETS.find(p => p.value === cronPreset)?.label,
                   })}
                 </p>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                   {t('automation.modals.task_group.preview.tasks', {
                     count: selectedTasks.length,
                   })}
                   {delayBetweenTasks > 0 &&
                     ` ${t('automation.modals.task_group.preview.delay', { seconds: delayBetweenTasks })}`}
                 </p>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                   {t('automation.modals.task_group.preview.failure', {
                     mode:
                       failureMode === 'stop'

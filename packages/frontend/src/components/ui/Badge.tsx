@@ -15,11 +15,11 @@ export const Badge = ({
   const baseStyles = 'inline-flex items-center font-medium rounded-full';
 
   const variants = {
-    default: 'bg-gray-700 text-text-light-primary dark:text-text-primary',
+    default: 'bg-gray-700 text-fg-light dark:text-fg',
     success: 'bg-success/20 text-success border border-success/30',
     warning: 'bg-warning/20 text-warning border border-warning/30',
     danger: 'bg-danger/20 text-danger border border-danger/30',
-    info: 'bg-accent-secondary/20 text-accent-secondary border border-accent-secondary/30',
+    info: 'bg-accent-alt/20 text-accent-alt border border-accent-alt/30',
   };
 
   const sizes = {

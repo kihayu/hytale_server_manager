@@ -121,11 +121,11 @@ export const ServerWorldsPage = () => {
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+            <h1 className="text-2xl sm:text-3xl font-heading font-bold text-fg-light dark:text-fg">
               {t('servers.worlds.title')}
             </h1>
             {server && (
-              <p className="text-sm sm:text-base text-text-light-muted dark:text-text-muted mt-1">
+              <p className="text-sm sm:text-base text-fg-muted dark:text-fg-muted mt-1">
                 {server.name}
               </p>
             )}
@@ -163,13 +163,13 @@ export const ServerWorldsPage = () => {
 
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-2 border-accent-primary border-t-transparent" />
+              <div className="animate-spin rounded-full h-8 w-8 border-2 border-accent border-t-transparent" />
             </div>
           ) : worlds.length === 0 ? (
             <div className="text-center py-12">
-              <Globe size={48} className="mx-auto text-text-light-muted dark:text-text-muted mb-3 opacity-50" />
-              <p className="text-text-light-muted dark:text-text-muted mb-2">{t('servers.worlds.empty.title')}</p>
-              <p className="text-sm text-text-light-muted dark:text-text-muted opacity-75">
+              <Globe size={48} className="mx-auto text-fg-muted dark:text-fg-muted mb-3 opacity-50" />
+              <p className="text-fg-muted dark:text-fg-muted mb-2">{t('servers.worlds.empty.title')}</p>
+              <p className="text-sm text-fg-muted dark:text-fg-muted opacity-75">
                 {t('servers.worlds.empty.subtitle')}
               </p>
             </div>
@@ -178,25 +178,25 @@ export const ServerWorldsPage = () => {
               {worlds.map(world => (
                 <div
                   key={world.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-accent-primary/50 transition-colors gap-4"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-accent/50 transition-colors gap-4"
                 >
                   <div className="flex items-start sm:items-center gap-4 flex-1">
                     <Globe
                       size={24}
-                      className="shrink-0 mt-1 sm:mt-0 text-text-light-muted dark:text-text-muted"
+                      className="shrink-0 mt-1 sm:mt-0 text-fg-muted dark:text-fg-muted"
                     />
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-text-light-primary dark:text-text-primary">
+                      <h3 className="font-medium text-fg-light dark:text-fg">
                         {world.name}
                       </h3>
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-text-light-muted dark:text-text-muted mt-1">
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-fg-muted dark:text-fg-muted mt-1">
                         <span>{t('servers.worlds.size', { size: formatSize(world.sizeBytes) })}</span>
                         {world.lastPlayed && (
                           <span>{t('servers.worlds.last_played', { date: formatDate(world.lastPlayed) })}</span>
                         )}
                       </div>
                       {world.description && (
-                        <p className="text-sm text-text-light-muted dark:text-text-muted mt-2 line-clamp-2">
+                        <p className="text-sm text-fg-muted dark:text-fg-muted mt-2 line-clamp-2">
                           {world.description}
                         </p>
                       )}
@@ -233,7 +233,7 @@ export const ServerWorldsPage = () => {
         <CardHeader>
           <CardTitle>{t('servers.worlds.info.title')}</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-text-light-muted dark:text-text-muted space-y-2">
+        <CardContent className="text-sm text-fg-muted dark:text-fg-muted space-y-2">
           <p>
             {t('servers.worlds.info.body1')}
           </p>

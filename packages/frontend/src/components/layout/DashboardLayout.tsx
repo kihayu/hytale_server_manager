@@ -5,7 +5,7 @@ import { MobileHeader } from './MobileHeader';
 
 export const DashboardLayout = () => {
   return (
-    <div className="flex min-h-screen bg-white dark:bg-primary-bg">
+    <div className="flex min-h-screen bg-white dark:bg-canvas">
       <MobileHeader />
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden pt-16 lg:pt-0">

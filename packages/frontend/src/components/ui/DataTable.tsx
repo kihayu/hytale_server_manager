@@ -224,12 +224,12 @@ export function DataTable<T>({
             <Button variant="ghost" size="sm" icon={<Eye size={16} />}>
               {t('table.columns')}
             </Button>
-            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-surface border border-gray-300 dark:border-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
               <div className="p-2 space-y-1">
                 {columns.map((col) => (
                   <label
                     key={col.key}
-                    className="flex items-center gap-2 px-2 py-1.5 hover:bg-primary-bg dark:hover:bg-primary-bg rounded cursor-pointer"
+                    className="flex items-center gap-2 px-2 py-1.5 hover:bg-canvas dark:hover:bg-canvas rounded cursor-pointer"
                   >
                     <input
                       type="checkbox"
@@ -237,7 +237,7 @@ export function DataTable<T>({
                       onChange={() => toggleColumnVisibility(col.key)}
                       className="rounded"
                     />
-                    <span className="text-sm text-text-light-primary dark:text-text-primary">{col.label}</span>
+                    <span className="text-sm text-fg-light dark:text-fg">{col.label}</span>
                   </label>
                 ))}
               </div>
@@ -255,8 +255,8 @@ export function DataTable<T>({
 
       {/* Selection Bar */}
       {selectable && selectedIds.size > 0 && (
-        <div className="flex items-center justify-between bg-accent-primary/10 border border-accent-primary/30 rounded-lg px-4 py-2">
-          <span className="text-sm text-text-light-primary dark:text-text-primary">
+        <div className="flex items-center justify-between bg-accent/10 border border-accent/30 rounded-lg px-4 py-2">
+          <span className="text-sm text-fg-light dark:text-fg">
             {t('table.selection.count', { count: selectedIds.size })}
           </span>
           <div className="flex items-center gap-2">
@@ -271,7 +271,7 @@ export function DataTable<T>({
       {/* Table */}
       <div className="overflow-x-auto rounded-lg border border-gray-300 dark:border-gray-800">
         <table className="w-full">
-          <thead className="bg-primary-bg-secondary/60 dark:bg-primary-bg-secondary/60">
+          <thead className="bg-surface/60 dark:bg-surface/60">
             <tr>
               {selectable && (
                 <th className="w-12 px-4 py-3">
@@ -283,7 +283,7 @@ export function DataTable<T>({
                         if (el) el.indeterminate = someCurrentPageSelected;
                       }}
                       onChange={handleSelectAll}
-                      className="w-4 h-4 rounded border-2 border-gray-400 dark:border-gray-600 bg-transparent checked:bg-accent-primary checked:border-accent-primary focus:ring-2 focus:ring-accent-primary focus:ring-offset-0 cursor-pointer transition-colors"
+                      className="w-4 h-4 rounded border-2 border-gray-400 dark:border-gray-600 bg-transparent checked:bg-accent checked:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-0 cursor-pointer transition-colors"
                     />
                   </div>
                 </th>
@@ -291,12 +291,12 @@ export function DataTable<T>({
               {visibleColumns.map((column) => (
                 <th
                   key={column.key}
-                  className={`text-left px-4 py-3 text-sm font-heading font-semibold text-text-light-muted dark:text-text-muted ${column.className || ''}`}
+                  className={`text-left px-4 py-3 text-sm font-heading font-semibold text-fg-muted dark:text-fg-muted ${column.className || ''}`}
                 >
                   {column.sortable !== false ? (
                     <button
                       onClick={() => handleSort(column.key)}
-                      className="flex items-center gap-2 hover:text-text-primary dark:hover:text-text-primary transition-colors"
+                      className="flex items-center gap-2 hover:text-fg dark:hover:text-fg transition-colors"
                     >
                       {column.label}
                       {sortColumn === column.key ? (
@@ -321,7 +321,7 @@ export function DataTable<T>({
               <tr>
                 <td
                   colSpan={visibleColumns.length + (selectable ? 1 : 0)}
-                  className="px-4 py-12 text-center text-text-light-muted dark:text-text-muted"
+                  className="px-4 py-12 text-center text-fg-muted dark:text-fg-muted"
                 >
                   {t('table.no_data')}
                 </td>
@@ -335,8 +335,8 @@ export function DataTable<T>({
                   <tr
                     key={itemId}
                     onClick={() => onRowClick?.(item)}
-                    className={`border-t border-gray-800/50 dark:border-gray-800/50 ${onRowClick ? 'cursor-pointer hover:bg-primary-bg/50 dark:hover:bg-primary-bg/50' : ''
-                      } ${isSelected ? 'bg-accent-primary/5' : ''} transition-colors`}
+                    className={`border-t border-gray-800/50 dark:border-gray-800/50 ${onRowClick ? 'cursor-pointer hover:bg-canvas/50 dark:hover:bg-canvas/50' : ''
+                      } ${isSelected ? 'bg-accent/5' : ''} transition-colors`}
                   >
                     {selectable && (
                       <td className="w-12 px-4 py-3">
@@ -349,7 +349,7 @@ export function DataTable<T>({
                               handleSelectRow(itemId);
                             }}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-4 h-4 rounded border-2 border-gray-400 dark:border-gray-600 bg-transparent checked:bg-accent-primary checked:border-accent-primary focus:ring-2 focus:ring-accent-primary focus:ring-offset-0 cursor-pointer transition-colors"
+                            className="w-4 h-4 rounded border-2 border-gray-400 dark:border-gray-600 bg-transparent checked:bg-accent checked:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-0 cursor-pointer transition-colors"
                           />
                         </div>
                       </td>
@@ -357,7 +357,7 @@ export function DataTable<T>({
                     {visibleColumns.map((column) => (
                       <td
                         key={column.key}
-                        className={`px-4 py-3 text-sm text-text-light-primary dark:text-text-primary ${column.className || ''}`}
+                        className={`px-4 py-3 text-sm text-fg-light dark:text-fg ${column.className || ''}`}
                       >
                         {column.render ? column.render(item) : (() => { const v = (item as Record<string, unknown>)[column.key]; return (v === null || v === undefined || (typeof v !== 'string' && typeof v !== 'number' && typeof v !== 'boolean' && typeof v !== 'bigint')) ? '' : String(v); })()}
                       </td>
@@ -373,7 +373,7 @@ export function DataTable<T>({
       {/* Pagination */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <p className="text-sm text-text-light-muted dark:text-text-muted">
+          <p className="text-sm text-fg-muted dark:text-fg-muted">
             {t('table.pagination.showing', {
               start: sortedData.length > 0 ? (currentPage - 1) * pageSize + 1 : 0,
               end: Math.min(currentPage * pageSize, sortedData.length),
@@ -381,14 +381,14 @@ export function DataTable<T>({
             })}
           </p>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-text-light-muted dark:text-text-muted">{t('table.pagination.per_page')}</span>
+            <span className="text-sm text-fg-muted dark:text-fg-muted">{t('table.pagination.per_page')}</span>
             <select
               value={pageSize}
               onChange={(e) => {
                 setPageSize(Number(e.target.value));
                 setCurrentPage(1);
               }}
-              className="px-2 py-1 text-sm bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
+              className="px-2 py-1 text-sm bg-white dark:bg-surface border border-gray-300 dark:border-gray-700 rounded text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent"
             >
               {PAGE_SIZE_OPTIONS.map((size) => (
                 <option key={size} value={size}>
@@ -426,8 +426,8 @@ export function DataTable<T>({
                     key={pageNum}
                     onClick={() => setCurrentPage(pageNum)}
                     className={`px-3 py-1 rounded text-sm transition-colors ${currentPage === pageNum
-                      ? 'bg-accent-primary text-black font-medium'
-                      : 'text-text-light-muted dark:text-text-muted hover:text-text-primary dark:hover:text-text-primary hover:bg-primary-bg dark:hover:bg-primary-bg'
+                      ? 'bg-accent text-black font-medium'
+                      : 'text-fg-muted dark:text-fg-muted hover:text-fg dark:hover:text-fg hover:bg-canvas dark:hover:bg-canvas'
                       }`}
                   >
                     {pageNum}

@@ -25,7 +25,7 @@ const getActionIcon = (category: string, action: string) => {
 
   switch (category) {
     case 'server':
-      return <Server size={14} className="text-accent-primary" />;
+      return <Server size={14} className="text-accent" />;
     case 'user':
       return <User size={14} className="text-purple-500" />;
     case 'auth':
@@ -35,7 +35,7 @@ const getActionIcon = (category: string, action: string) => {
     case 'backup':
       return <HardDrive size={14} className="text-blue-500" />;
     default:
-      return <Activity size={14} className="text-text-light-muted dark:text-text-muted" />;
+      return <Activity size={14} className="text-fg-muted dark:text-fg-muted" />;
   }
 };
 
@@ -84,11 +84,11 @@ export const ActivityFeedWidget = () => {
       </CardHeader>
       <CardContent>
         {loading ? (
-          <div className="text-center py-4 text-text-light-muted dark:text-text-muted">
+          <div className="text-center py-4 text-fg-muted dark:text-fg-muted">
             {t('dashboard.activity.loading')}
           </div>
         ) : activities.length === 0 ? (
-          <div className="text-center py-4 text-text-light-muted dark:text-text-muted text-sm">
+          <div className="text-center py-4 text-fg-muted dark:text-fg-muted text-sm">
             {t('dashboard.activity.empty')}
           </div>
         ) : (
@@ -96,13 +96,13 @@ export const ActivityFeedWidget = () => {
             {activities.map((activity) => (
               <div
                 key={activity.id}
-                className="flex items-start gap-2 p-2 bg-white dark:bg-primary-bg-secondary rounded border border-gray-200 dark:border-gray-800"
+                className="flex items-start gap-2 p-2 bg-white dark:bg-surface rounded border border-gray-200 dark:border-gray-800"
               >
                 <div className="mt-0.5">{getActionIcon(activity.actionCategory, activity.action)}</div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-text-light-primary dark:text-text-primary">
+                  <p className="text-sm text-fg-light dark:text-fg">
                     <span className="font-medium">{activity.username}</span>{' '}
-                    <span className="text-text-light-muted dark:text-text-muted">
+                    <span className="text-fg-muted dark:text-fg-muted">
                       {formatAction(activity.action).toLowerCase()}
                     </span>
                     {activity.resourceName && (
@@ -113,7 +113,7 @@ export const ActivityFeedWidget = () => {
                     )}
                   </p>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs text-text-light-muted dark:text-text-muted">
+                    <span className="text-xs text-fg-muted dark:text-fg-muted">
                       {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
                     </span>
                     {activity.status === 'failed' && (

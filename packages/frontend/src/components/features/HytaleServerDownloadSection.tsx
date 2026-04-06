@@ -162,14 +162,14 @@ export const HytaleServerDownloadSection = ({
   // If binary not installed
   if (!status?.binaryInstalled) {
     return (
-      <div className="p-4 bg-primary-bg-secondary rounded-lg space-y-4">
+      <div className="p-4 bg-surface rounded-lg space-y-4">
         <div className="flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-medium text-text-light-primary dark:text-text-primary mb-1">
+            <h4 className="font-medium text-fg-light dark:text-fg mb-1">
               {t('hytale_downloader.install.title')}
             </h4>
-            <p className="text-sm text-text-light-muted dark:text-text-muted mb-3">
+            <p className="text-sm text-fg-muted dark:text-fg-muted mb-3">
               {t('hytale_downloader.install.description')}
             </p>
             <Button
@@ -195,14 +195,14 @@ export const HytaleServerDownloadSection = ({
   if (!status?.isAuthenticated) {
     return (
       <>
-        <div className="p-4 bg-primary-bg-secondary rounded-lg space-y-4">
+        <div className="p-4 bg-surface rounded-lg space-y-4">
           <div className="flex items-start gap-3">
-            <Key className="w-5 h-5 text-accent-primary shrink-0 mt-0.5" />
+            <Key className="w-5 h-5 text-accent shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-medium text-text-light-primary dark:text-text-primary mb-1">
+              <h4 className="font-medium text-fg-light dark:text-fg mb-1">
                 {t('hytale_downloader.auth.title')}
               </h4>
-              <p className="text-sm text-text-light-muted dark:text-text-muted mb-3">
+              <p className="text-sm text-fg-muted dark:text-fg-muted mb-3">
                 {t('hytale_downloader.auth.description')}
               </p>
               <Button
@@ -228,9 +228,9 @@ export const HytaleServerDownloadSection = ({
 
   // Show download section
   return (
-    <div className="p-4 bg-primary-bg-secondary rounded-lg space-y-4">
+    <div className="p-4 bg-surface rounded-lg space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="font-medium text-text-light-primary dark:text-text-primary">
+        <h4 className="font-medium text-fg-light dark:text-fg">
           {t('hytale_downloader.download.title')}
         </h4>
         <div className="flex items-center gap-2 text-sm text-green-500">
@@ -257,13 +257,13 @@ export const HytaleServerDownloadSection = ({
 
         {/* Patchline selector */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('hytale_downloader.download.patchline_label')}
           </label>
           <select
             value={selectedPatchline}
             onChange={handlePatchlineChange}
-            className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50"
+            className="w-full px-4 py-2 bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent/50"
             disabled={downloadSession ? ['downloading', 'extracting', 'validating'].includes(downloadSession.status) : false}
           >
             <option value="release">{t('hytale_downloader.download.patchline_release')}</option>
@@ -275,7 +275,7 @@ export const HytaleServerDownloadSection = ({
       {gameVersion && (
         <div className="p-3 bg-green-500/10 rounded-lg">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-text-light-secondary dark:text-text-secondary">
+            <span className="text-sm text-fg-muted dark:text-fg-muted">
               {t('hytale_downloader.download.available_version')}
             </span>
             <span className="text-sm font-mono text-green-500">
@@ -326,7 +326,7 @@ export const HytaleServerDownloadSection = ({
       )}
 
       {!serverPath && (
-        <p className="text-xs text-text-light-muted dark:text-text-muted">
+        <p className="text-xs text-fg-muted dark:text-fg-muted">
           {t('hytale_downloader.download.path_hint')}
         </p>
       )}
@@ -344,7 +344,7 @@ export const HytaleServerDownloadSection = ({
               onVersionSet?.('');
             }
           }}
-          className="flex items-center gap-2 text-sm text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary transition-colors"
+          className="flex items-center gap-2 text-sm text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg transition-colors"
         >
           {showSkipSection ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           <FolderOpen size={16} />
@@ -355,13 +355,13 @@ export const HytaleServerDownloadSection = ({
           <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg space-y-3">
             <div className="flex items-start gap-2">
               <AlertCircle className="w-4 h-4 text-yellow-500 shrink-0 mt-0.5" />
-              <p className="text-xs text-text-light-muted dark:text-text-muted">
+              <p className="text-xs text-fg-muted dark:text-fg-muted">
                 Only use this option if you already have server files in the specified directory.
                 This is intended for migrating existing servers to the manager.
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+              <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
                 Server Version *
               </label>
               <Input
@@ -375,7 +375,7 @@ export const HytaleServerDownloadSection = ({
                   onSkipDownload?.(version.trim().length > 0);
                 }}
               />
-              <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+              <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                 Enter the version of your existing server files
               </p>
             </div>

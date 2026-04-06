@@ -80,13 +80,13 @@ export const CreateItemModal = ({ isOpen, onClose, onCreated, serverId, currentP
           {type === 'file' ? (
             <File size={24} className="text-blue-500" />
           ) : (
-            <Folder size={24} className="text-accent-primary" />
+            <Folder size={24} className="text-accent" />
           )}
           <div>
-            <p className="text-sm font-medium text-text-light-primary dark:text-text-primary">
+            <p className="text-sm font-medium text-fg-light dark:text-fg">
               {type === 'file' ? t('files.create.creating_file') : t('files.create.creating_folder')}
             </p>
-            <p className="text-xs text-text-light-muted dark:text-text-muted">
+            <p className="text-xs text-fg-muted dark:text-fg-muted">
               {t('files.create.location', { path: currentPath || 'root' })}
             </p>
           </div>
@@ -94,7 +94,7 @@ export const CreateItemModal = ({ isOpen, onClose, onCreated, serverId, currentP
 
         {/* Name Input */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {type === 'file' ? t('files.create.file_name') : t('files.create.folder_name')} *
           </label>
           <Input
@@ -104,7 +104,7 @@ export const CreateItemModal = ({ isOpen, onClose, onCreated, serverId, currentP
             className="w-full"
             autoFocus
           />
-          <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+          <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
             {t('files.create.no_separators')}
           </p>
         </div>
@@ -112,13 +112,13 @@ export const CreateItemModal = ({ isOpen, onClose, onCreated, serverId, currentP
         {/* Content Input (for files only) */}
         {type === 'file' && (
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('files.create.initial_content')}
             </label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full h-32 bg-white dark:bg-primary-bg-secondary text-text-light-primary dark:text-text-primary font-mono text-sm p-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-hidden focus:ring-2 focus:ring-accent-primary resize-none"
+              className="w-full h-32 bg-white dark:bg-surface text-fg-light dark:text-fg font-mono text-sm p-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-hidden focus:ring-2 focus:ring-accent resize-none"
               placeholder={t('files.create.initial_content_placeholder')}
               spellCheck={false}
             />
@@ -128,8 +128,8 @@ export const CreateItemModal = ({ isOpen, onClose, onCreated, serverId, currentP
         {/* Preview */}
         {name && (
           <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
-            <p className="text-xs text-text-light-muted dark:text-text-muted mb-1">{t('files.create.full_path')}</p>
-            <p className="text-sm font-mono text-text-light-primary dark:text-text-primary">
+            <p className="text-xs text-fg-muted dark:text-fg-muted mb-1">{t('files.create.full_path')}</p>
+            <p className="text-sm font-mono text-fg-light dark:text-fg">
               /{currentPath ? `${currentPath}/` : ''}{name}
             </p>
           </div>

@@ -71,7 +71,7 @@ export const QuickActionsPanel = ({ runningCount, stoppedCount, onRefresh }: Qui
           >
             {t('dashboard.quick_actions.start_all')}
             {stoppedCount > 0 && (
-              <span className="ml-auto text-text-light-muted dark:text-text-muted text-sm">
+              <span className="ml-auto text-fg-muted dark:text-fg-muted text-sm">
                 {t('dashboard.quick_actions.stopped_count', { count: stoppedCount })}
               </span>
             )}
@@ -86,7 +86,7 @@ export const QuickActionsPanel = ({ runningCount, stoppedCount, onRefresh }: Qui
           >
             {t('dashboard.quick_actions.stop_all')}
             {runningCount > 0 && (
-              <span className="ml-auto text-text-light-muted dark:text-text-muted text-sm">
+              <span className="ml-auto text-fg-muted dark:text-fg-muted text-sm">
                 {t('dashboard.quick_actions.running_count', { count: runningCount })}
               </span>
             )}

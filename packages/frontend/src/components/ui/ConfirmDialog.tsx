@@ -37,8 +37,8 @@ export const ConfirmDialog = ({
       bg: 'bg-warning/20',
     },
     info: {
-      icon: 'text-accent-primary',
-      bg: 'bg-accent-primary/20',
+      icon: 'text-accent',
+      bg: 'bg-accent/20',
     },
   };
 
@@ -50,7 +50,7 @@ export const ConfirmDialog = ({
         <div className={`p-4 rounded-full ${style.bg} mb-4`}>
           <AlertTriangle size={32} className={style.icon} />
         </div>
-        <p className="text-text-light-primary dark:text-text-primary mb-2">
+        <p className="text-fg-light dark:text-fg mb-2">
           {message}
         </p>
       </div>

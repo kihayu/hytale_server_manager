@@ -97,8 +97,8 @@ const CollapsibleSection = ({ title, icon, children, defaultOpen = true }: Colla
         className="w-full flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left"
       >
         {isOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-        <span className="text-text-light-muted dark:text-text-muted">{icon}</span>
-        <span className="font-medium text-text-light-primary dark:text-text-primary">{title}</span>
+        <span className="text-fg-muted dark:text-fg-muted">{icon}</span>
+        <span className="font-medium text-fg-light dark:text-fg">{title}</span>
       </button>
       {isOpen && <div className="p-4 space-y-3">{children}</div>}
     </div>
@@ -116,9 +116,9 @@ interface ToggleSettingProps {
 const ToggleSetting = ({ label, description, checked, onChange, disabled }: ToggleSettingProps) => (
   <div className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
     <div className="flex-1 mr-4">
-      <span className="text-sm font-medium text-text-light-primary dark:text-text-primary">{label}</span>
+      <span className="text-sm font-medium text-fg-light dark:text-fg">{label}</span>
       {description && (
-        <p className="text-xs text-text-light-muted dark:text-text-muted mt-0.5">{description}</p>
+        <p className="text-xs text-fg-muted dark:text-fg-muted mt-0.5">{description}</p>
       )}
     </div>
     <input
@@ -126,7 +126,7 @@ const ToggleSetting = ({ label, description, checked, onChange, disabled }: Togg
       checked={checked}
       onChange={(e) => onChange(e.target.checked)}
       disabled={disabled}
-      className="w-5 h-5 accent-accent-primary disabled:opacity-50 disabled:cursor-not-allowed"
+      className="w-5 h-5 accent-accent disabled:opacity-50 disabled:cursor-not-allowed"
     />
   </div>
 );
@@ -145,9 +145,9 @@ interface NumberSettingProps {
 const NumberSetting = ({ label, description, value, onChange, disabled, min, max, step = 0.1 }: NumberSettingProps) => (
   <div className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
     <div className="flex-1 mr-4">
-      <span className="text-sm font-medium text-text-light-primary dark:text-text-primary">{label}</span>
+      <span className="text-sm font-medium text-fg-light dark:text-fg">{label}</span>
       {description && (
-        <p className="text-xs text-text-light-muted dark:text-text-muted mt-0.5">{description}</p>
+        <p className="text-xs text-fg-muted dark:text-fg-muted mt-0.5">{description}</p>
       )}
     </div>
     <Input
@@ -170,8 +170,8 @@ interface ReadOnlyFieldProps {
 
 const ReadOnlyField = ({ label, value }: ReadOnlyFieldProps) => (
   <div className="flex items-center justify-between p-3 rounded-lg bg-gray-100 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700">
-    <span className="text-sm text-text-light-muted dark:text-text-muted">{label}</span>
-    <span className="text-sm font-mono text-text-light-primary dark:text-text-primary">
+    <span className="text-sm text-fg-muted dark:text-fg-muted">{label}</span>
+    <span className="text-sm font-mono text-fg-light dark:text-fg">
       {value ?? 'N/A'}
     </span>
   </div>
@@ -331,8 +331,8 @@ export const HytaleWorldConfigModal = ({
             onClick={switchToFormView}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               viewMode === 'form'
-                ? 'bg-accent-primary text-black'
-                : 'bg-gray-100 dark:bg-gray-800 text-text-light-muted dark:text-text-muted hover:bg-gray-200 dark:hover:bg-gray-700'
+                ? 'bg-accent text-black'
+                : 'bg-gray-100 dark:bg-gray-800 text-fg-muted dark:text-fg-muted hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
           >
             <SlidersHorizontal size={16} />
@@ -342,8 +342,8 @@ export const HytaleWorldConfigModal = ({
             onClick={switchToJsonView}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               viewMode === 'json'
-                ? 'bg-accent-primary text-black'
-                : 'bg-gray-100 dark:bg-gray-800 text-text-light-muted dark:text-text-muted hover:bg-gray-200 dark:hover:bg-gray-700'
+                ? 'bg-accent text-black'
+                : 'bg-gray-100 dark:bg-gray-800 text-fg-muted dark:text-fg-muted hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
           >
             <Code size={16} />
@@ -363,7 +363,7 @@ export const HytaleWorldConfigModal = ({
       {/* Content */}
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="animate-spin text-accent-primary" size={32} />
+          <Loader2 className="animate-spin text-accent" size={32} />
         </div>
       ) : error ? (
         <div className="text-center py-12">
@@ -378,7 +378,7 @@ export const HytaleWorldConfigModal = ({
             value={jsonText}
             onChange={(e) => handleJsonChange(e.target.value)}
             disabled={isDisabled}
-            className="w-full h-[60vh] p-4 font-mono text-sm bg-gray-900 text-gray-100 border border-gray-700 rounded-lg resize-none focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-[60vh] p-4 font-mono text-sm bg-gray-900 text-gray-100 border border-gray-700 rounded-lg resize-none focus:outline-hidden focus:ring-2 focus:ring-accent/50 disabled:opacity-50 disabled:cursor-not-allowed"
             spellCheck={false}
           />
         </div>

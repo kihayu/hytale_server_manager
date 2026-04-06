@@ -50,8 +50,8 @@ export const BridgePage = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">{t('bridge.title')}</h1>
-        <p className="text-text-light-muted dark:text-text-muted mt-1">{t('bridge.subtitle')}</p>
+        <h1 className="text-3xl font-heading font-bold text-fg-light dark:text-fg">{t('bridge.title')}</h1>
+        <p className="text-fg-muted dark:text-fg-muted mt-1">{t('bridge.subtitle')}</p>
       </div>
 
       {/* Connection Status */}
@@ -73,16 +73,16 @@ export const BridgePage = () => {
                 )}
               </div>
               <div>
-                <p className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+                <p className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
                 {getConnectionLabel()}
                 </p>
-                <p className="text-text-light-muted dark:text-text-muted">{t('bridge.plugin_version', { version: bridge.pluginVersion })}</p>
+                <p className="text-fg-muted dark:text-fg-muted">{t('bridge.plugin_version', { version: bridge.pluginVersion })}</p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-sm text-text-light-muted dark:text-text-muted">{getLatencyLabel()}</p>
-              <p className="text-2xl font-heading font-bold text-accent-primary">{bridge.latency}ms</p>
-              <p className="text-xs text-text-light-muted dark:text-text-muted">
+              <p className="text-sm text-fg-muted dark:text-fg-muted">{getLatencyLabel()}</p>
+              <p className="text-2xl font-heading font-bold text-accent">{bridge.latency}ms</p>
+              <p className="text-xs text-fg-muted dark:text-fg-muted">
                 Last heartbeat: {new Date(bridge.lastHeartbeat).toLocaleTimeString()}
               </p>
             </div>
@@ -105,8 +105,8 @@ export const BridgePage = () => {
               >
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h4 className="font-heading font-semibold text-text-light-primary dark:text-text-primary">{feature.name}</h4>
-                    <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">{feature.description}</p>
+                    <h4 className="font-heading font-semibold text-fg-light dark:text-fg">{feature.name}</h4>
+                    <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">{feature.description}</p>
                   </div>
                   <Badge variant={feature.enabled ? 'success' : 'default'} size="sm">
                     {getFeatureBadge(feature.enabled)}
@@ -131,7 +131,7 @@ export const BridgePage = () => {
               <CardTitle>{t('bridge.events.title')}</CardTitle>
               <CardDescription>{t('bridge.events.description')}</CardDescription>
             </div>
-            <Activity size={20} className="text-accent-primary animate-pulse" />
+            <Activity size={20} className="text-accent animate-pulse" />
           </div>
         </CardHeader>
         <CardContent>
@@ -139,7 +139,7 @@ export const BridgePage = () => {
             {mockServerEvents.map((event) => (
               <div
                 key={event.id}
-                className="p-3 rounded-lg bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-800/50"
+                className="p-3 rounded-lg bg-white dark:bg-canvas border border-gray-300 dark:border-gray-800/50"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -154,15 +154,15 @@ export const BridgePage = () => {
                       {getEventBadgeLabel(event.type)}
                     </Badge>
                     <div>
-                      <p className="text-sm text-text-light-primary dark:text-text-primary">
+                      <p className="text-sm text-fg-light dark:text-fg">
                         {getEventMessage(event)}
                       </p>
                       {(event.data as Record<string, string>).server && (
-                        <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">{(event.data as Record<string, string>).server}</p>
+                        <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">{(event.data as Record<string, string>).server}</p>
                       )}
                     </div>
                   </div>
-                  <span className="text-xs text-text-light-muted dark:text-text-muted">
+                  <span className="text-xs text-fg-muted dark:text-fg-muted">
                     {new Date(event.timestamp).toLocaleTimeString()}
                   </span>
                 </div>

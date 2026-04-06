@@ -104,8 +104,8 @@ export const HytaleOAuthModal = ({ isOpen, onClose, onSuccess }: HytaleOAuthModa
     if (isStartingOAuth || (oauthSession?.status === 'pending' && !oauthSession?.deviceCode)) {
       return (
         <div className="flex flex-col items-center justify-center py-12 gap-4">
-          <Loader2 className="w-12 h-12 text-accent-primary animate-spin" />
-          <p className="text-text-light-secondary dark:text-text-secondary">
+          <Loader2 className="w-12 h-12 text-accent animate-spin" />
+          <p className="text-fg-muted dark:text-fg-muted">
             {t('hytale_downloader.oauth.initiating')}
           </p>
         </div>
@@ -120,10 +120,10 @@ export const HytaleOAuthModal = ({ isOpen, onClose, onSuccess }: HytaleOAuthModa
             <XCircle className="w-10 h-10 text-red-500" />
           </div>
           <div className="text-center">
-            <h3 className="text-lg font-semibold text-text-light-primary dark:text-text-primary mb-2">
+            <h3 className="text-lg font-semibold text-fg-light dark:text-fg mb-2">
               {t('hytale_downloader.oauth.error_title')}
             </h3>
-            <p className="text-text-light-muted dark:text-text-muted">
+            <p className="text-fg-muted dark:text-fg-muted">
               {error || oauthSession?.error || t('hytale_downloader.oauth.error_description')}
             </p>
           </div>
@@ -143,10 +143,10 @@ export const HytaleOAuthModal = ({ isOpen, onClose, onSuccess }: HytaleOAuthModa
             <AlertCircle className="w-10 h-10 text-yellow-500" />
           </div>
           <div className="text-center">
-            <h3 className="text-lg font-semibold text-text-light-primary dark:text-text-primary mb-2">
+            <h3 className="text-lg font-semibold text-fg-light dark:text-fg mb-2">
               {t('hytale_downloader.oauth.expired_title')}
             </h3>
-            <p className="text-text-light-muted dark:text-text-muted">
+            <p className="text-fg-muted dark:text-fg-muted">
               {t('hytale_downloader.oauth.expired_description')}
             </p>
           </div>
@@ -166,10 +166,10 @@ export const HytaleOAuthModal = ({ isOpen, onClose, onSuccess }: HytaleOAuthModa
             <CheckCircle className="w-10 h-10 text-green-500" />
           </div>
           <div className="text-center">
-            <h3 className="text-lg font-semibold text-text-light-primary dark:text-text-primary mb-2">
+            <h3 className="text-lg font-semibold text-fg-light dark:text-fg mb-2">
               {t('hytale_downloader.oauth.success_title')}
             </h3>
-            <p className="text-text-light-muted dark:text-text-muted">
+            <p className="text-fg-muted dark:text-fg-muted">
               {t('hytale_downloader.oauth.success_description')}
             </p>
           </div>
@@ -183,18 +183,18 @@ export const HytaleOAuthModal = ({ isOpen, onClose, onSuccess }: HytaleOAuthModa
         <div className="space-y-6">
           {/* Instructions */}
           <div className="text-center">
-            <p className="text-text-light-secondary dark:text-text-secondary mb-4">
+            <p className="text-fg-muted dark:text-fg-muted mb-4">
               {t('hytale_downloader.oauth.instructions')}
             </p>
           </div>
 
           {/* Device Code */}
           <div className="bg-gray-100 dark:bg-gray-800/50 rounded-lg p-6 text-center">
-            <p className="text-sm text-text-light-muted dark:text-text-muted mb-2">
+            <p className="text-sm text-fg-muted dark:text-fg-muted mb-2">
               {t('hytale_downloader.oauth.code_label')}
             </p>
             <div className="flex items-center justify-center gap-3">
-              <code className="text-3xl font-mono font-bold tracking-wider text-accent-primary">
+              <code className="text-3xl font-mono font-bold tracking-wider text-accent">
                 {oauthSession.deviceCode}
               </code>
               <Button
@@ -211,7 +211,7 @@ export const HytaleOAuthModal = ({ isOpen, onClose, onSuccess }: HytaleOAuthModa
               </Button>
             </div>
             {timeRemaining !== null && (
-              <p className="text-sm text-text-light-muted dark:text-text-muted mt-3">
+              <p className="text-sm text-fg-muted dark:text-fg-muted mt-3">
                 {t('hytale_downloader.oauth.expires_in')}{' '}
                 <span className={timeRemaining < 60 ? 'text-yellow-500' : ''}>
                   {formatTime(timeRemaining)}
@@ -226,7 +226,7 @@ export const HytaleOAuthModal = ({ isOpen, onClose, onSuccess }: HytaleOAuthModa
               href={oauthSession.verificationUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-accent-primary hover:bg-accent-secondary text-white rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-alt text-white rounded-lg transition-colors"
             >
               <ExternalLink size={18} />
               {t('hytale_downloader.oauth.open_login')}
@@ -234,7 +234,7 @@ export const HytaleOAuthModal = ({ isOpen, onClose, onSuccess }: HytaleOAuthModa
           </div>
 
           {/* Status indicator */}
-          <div className="flex items-center justify-center gap-2 text-text-light-muted dark:text-text-muted">
+          <div className="flex items-center justify-center gap-2 text-fg-muted dark:text-fg-muted">
             <Loader2 size={16} className="animate-spin" />
             <span>{t('hytale_downloader.oauth.waiting')}</span>
           </div>
@@ -245,8 +245,8 @@ export const HytaleOAuthModal = ({ isOpen, onClose, onSuccess }: HytaleOAuthModa
     // Fallback loading
     return (
       <div className="flex flex-col items-center justify-center py-12 gap-4">
-        <Loader2 className="w-12 h-12 text-accent-primary animate-spin" />
-        <p className="text-text-light-secondary dark:text-text-secondary">
+        <Loader2 className="w-12 h-12 text-accent animate-spin" />
+        <p className="text-fg-muted dark:text-fg-muted">
           {t('hytale_downloader.oauth.preparing')}
         </p>
       </div>
@@ -256,14 +256,14 @@ export const HytaleOAuthModal = ({ isOpen, onClose, onSuccess }: HytaleOAuthModa
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title={t('hytale_downloader.oauth.title')} size="sm">
       <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
-        <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center">
-          <Key className="w-5 h-5 text-accent-primary" />
+        <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+          <Key className="w-5 h-5 text-accent" />
         </div>
         <div>
-          <h3 className="text-sm font-medium text-text-light-primary dark:text-text-primary">
+          <h3 className="text-sm font-medium text-fg-light dark:text-fg">
             {t('hytale_downloader.oauth.header_title')}
           </h3>
-          <p className="text-xs text-text-light-muted dark:text-text-muted">
+          <p className="text-xs text-fg-muted dark:text-fg-muted">
             {t('hytale_downloader.oauth.header_subtitle')}
           </p>
         </div>

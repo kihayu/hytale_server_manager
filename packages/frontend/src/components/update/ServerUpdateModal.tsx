@@ -179,15 +179,15 @@ export const ServerUpdateModal = ({
         {/* Server Info */}
         <div className="flex items-center justify-between p-4 bg-gray-100 dark:bg-gray-800/50 rounded-lg">
           <div>
-            <h3 className="font-medium text-text-light-primary dark:text-text-primary">{serverName}</h3>
-            <p className="text-sm text-text-light-muted dark:text-text-muted">
+            <h3 className="font-medium text-fg-light dark:text-fg">{serverName}</h3>
+            <p className="text-sm text-fg-muted dark:text-fg-muted">
               {t('updates.modal.current_version', { version: currentVersion })}
             </p>
           </div>
           {versionCheck?.availableVersion && (
             <div className="text-right">
-              <p className="text-sm text-text-light-muted dark:text-text-muted">{t('updates.modal.available_version_label')}</p>
-              <p className="font-medium text-accent-primary">{versionCheck.availableVersion}</p>
+              <p className="text-sm text-fg-muted dark:text-fg-muted">{t('updates.modal.available_version_label')}</p>
+              <p className="font-medium text-accent">{versionCheck.availableVersion}</p>
             </div>
           )}
         </div>
@@ -198,7 +198,7 @@ export const ServerUpdateModal = ({
             <AlertTriangle className="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" />
             <div className="text-sm">
               <p className="font-medium text-yellow-500 mb-1">{t('updates.modal.before.title')}</p>
-              <ul className="text-text-light-muted dark:text-text-muted space-y-1 list-disc list-inside">
+              <ul className="text-fg-muted dark:text-fg-muted space-y-1 list-disc list-inside">
                 <li>{t('updates.modal.before.items.backup')}</li>
                 <li>{t('updates.modal.before.items.preserve')}</li>
                 <li>{t('updates.modal.before.items.stop')}</li>
@@ -221,7 +221,7 @@ export const ServerUpdateModal = ({
                   {statusConfig?.label ? t(statusConfig.label) : ''}
                 </p>
                 {message && (
-                  <p className="text-sm text-text-light-muted dark:text-text-muted">{message}</p>
+                  <p className="text-sm text-fg-muted dark:text-fg-muted">{message}</p>
                 )}
               </div>
             </div>
@@ -232,12 +232,12 @@ export const ServerUpdateModal = ({
                 className={`h-full rounded-full transition-all duration-500 ${
                   status === 'completed' ? 'bg-green-500' :
                   status === 'failed' ? 'bg-red-500' :
-                  'bg-accent-primary'
+                  'bg-accent'
                 }`}
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <p className="text-sm text-center text-text-light-muted dark:text-text-muted">
+            <p className="text-sm text-center text-fg-muted dark:text-fg-muted">
               {t('updates.modal.progress', { percent: progress })}
             </p>
 
@@ -253,9 +253,9 @@ export const ServerUpdateModal = ({
         {/* Checking for updates */}
         {isChecking && (
           <div className="flex items-center justify-center gap-2 py-8">
-            <Loader2 className="w-5 h-5 animate-spin text-accent-primary" />
-           <span className="text-text-light-muted dark:text-text-muted">Checking for updates...</span>
-            <span className="text-text-light-muted dark:text-text-muted">{t('updates.modal.checking')}</span>
+            <Loader2 className="w-5 h-5 animate-spin text-accent" />
+           <span className="text-fg-muted dark:text-fg-muted">Checking for updates...</span>
+            <span className="text-fg-muted dark:text-fg-muted">{t('updates.modal.checking')}</span>
           </div>
         )}
 
@@ -263,8 +263,8 @@ export const ServerUpdateModal = ({
         {!isChecking && !versionCheck?.updateAvailable && !isUpdating && !isComplete && (
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <CheckCircle className="w-12 h-12 text-green-500 mb-3" />
-            <p className="font-medium text-text-light-primary dark:text-text-primary">Server is up to date</p>
-            <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+            <p className="font-medium text-fg-light dark:text-fg">Server is up to date</p>
+            <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
               {t('updates.modal.up_to_date.description', { version: currentVersion })}
             </p>
           </div>

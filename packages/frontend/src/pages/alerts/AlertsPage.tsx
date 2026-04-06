@@ -244,7 +244,7 @@ export const AlertsPage = () => {
       render: (alert) => (
         <div>
           <div className="flex items-center gap-2">
-            <span className={`font-medium ${!alert.isRead ? 'text-text-light-primary dark:text-text-primary' : 'text-text-light-muted dark:text-text-muted'}`}>
+            <span className={`font-medium ${!alert.isRead ? 'text-fg-light dark:text-fg' : 'text-fg-muted dark:text-fg-muted'}`}>
               {alert.title}
             </span>
             {!alert.isRead && (
@@ -254,7 +254,7 @@ export const AlertsPage = () => {
               <Badge variant="success" size="sm">{t('alerts.badges.resolved')}</Badge>
             )}
           </div>
-          <p className="text-sm text-text-light-muted dark:text-text-muted mt-1 line-clamp-2">
+          <p className="text-sm text-fg-muted dark:text-fg-muted mt-1 line-clamp-2">
             {alert.message}
           </p>
         </div>
@@ -264,7 +264,7 @@ export const AlertsPage = () => {
       key: 'serverName',
       label: t('alerts.columns.server'),
       render: (alert) => (
-        <span className="text-sm text-text-light-primary dark:text-text-primary">
+        <span className="text-sm text-fg-light dark:text-fg">
           {alert.serverName}
         </span>
       ),
@@ -284,7 +284,7 @@ export const AlertsPage = () => {
       render: (alert) => (
         <div>
           <p className="text-sm">{formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}</p>
-          <p className="text-xs text-text-light-muted dark:text-text-muted">
+          <p className="text-xs text-fg-muted dark:text-fg-muted">
             {new Date(alert.createdAt).toLocaleString(i18n.language === 'es' ? 'es-ES' : 'en-US')}
           </p>
         </div>
@@ -331,10 +331,10 @@ export const AlertsPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+          <h1 className="text-3xl font-heading font-bold text-fg-light dark:text-fg">
             {t('alerts.title')}
           </h1>
-          <p className="text-text-light-muted dark:text-text-muted mt-1">
+          <p className="text-fg-muted dark:text-fg-muted mt-1">
             {t('alerts.subtitle')}
           </p>
         </div>
@@ -350,12 +350,12 @@ export const AlertsPage = () => {
 
       {/* Server Selector */}
       <div className="flex flex-wrap gap-2 items-center">
-        <span className="text-sm text-text-light-muted dark:text-text-muted">{t('alerts.server_selector.label')}</span>
+        <span className="text-sm text-fg-muted dark:text-fg-muted">{t('alerts.server_selector.label')}</span>
         <button
           onClick={() => setSelectedServer('all')}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedServer === 'all'
-              ? 'bg-accent-primary text-black'
-              : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+              ? 'bg-accent text-black'
+              : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
             }`}
         >
           {t('alerts.server_selector.all_servers')}
@@ -365,8 +365,8 @@ export const AlertsPage = () => {
             key={server.id}
             onClick={() => setSelectedServer(server.id)}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedServer === server.id
-                ? 'bg-accent-primary text-black'
-                : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+                ? 'bg-accent text-black'
+                : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
               }`}
           >
             {server.name}
@@ -379,8 +379,8 @@ export const AlertsPage = () => {
         <Card variant="glass">
           <CardContent>
             <div className="text-center">
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('alerts.stats.total')}</p>
-              <p className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('alerts.stats.total')}</p>
+              <p className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
                 {stats.total}
               </p>
             </div>
@@ -389,8 +389,8 @@ export const AlertsPage = () => {
         <Card variant="glass">
           <CardContent>
             <div className="text-center">
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('alerts.stats.unread')}</p>
-              <p className="text-2xl font-heading font-bold text-accent-primary">
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('alerts.stats.unread')}</p>
+              <p className="text-2xl font-heading font-bold text-accent">
                 {stats.unread}
               </p>
             </div>
@@ -399,7 +399,7 @@ export const AlertsPage = () => {
         <Card variant="glass">
           <CardContent>
             <div className="text-center">
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('alerts.stats.critical')}</p>
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('alerts.stats.critical')}</p>
               <p className="text-2xl font-heading font-bold text-red-500">
                 {stats.critical}
               </p>
@@ -409,7 +409,7 @@ export const AlertsPage = () => {
         <Card variant="glass">
           <CardContent>
             <div className="text-center">
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('alerts.stats.warning')}</p>
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('alerts.stats.warning')}</p>
               <p className="text-2xl font-heading font-bold text-yellow-500">
                 {stats.warning}
               </p>
@@ -419,7 +419,7 @@ export const AlertsPage = () => {
         <Card variant="glass">
           <CardContent>
             <div className="text-center">
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('alerts.stats.info')}</p>
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('alerts.stats.info')}</p>
               <p className="text-2xl font-heading font-bold text-blue-500">
                 {stats.info}
               </p>
@@ -456,7 +456,7 @@ export const AlertsPage = () => {
         </CardHeader>
         <CardContent>
           {alerts.length === 0 && !loading ? (
-            <div className="text-center py-12 text-text-light-muted dark:text-text-muted">
+            <div className="text-center py-12 text-fg-muted dark:text-fg-muted">
               <Bell size={48} className="mx-auto mb-4 opacity-50" />
               <p>{t('alerts.list.empty_title')}</p>
               <p className="text-sm mt-2">{t('alerts.list.empty_message')}</p>

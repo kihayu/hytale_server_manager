@@ -202,14 +202,14 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
       <div className="space-y-4">
         {/* Server Selection */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('automation.modals.create_task.server_label')}
           </label>
           <select
             value={serverId}
             onChange={(e) => setServerId(e.target.value)}
             disabled={isEditMode}
-            className={`w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary ${isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+            className={`w-full px-3 py-2 bg-white dark:bg-surface border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent ${isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
           >
             <option value="">{t('automation.modals.create_task.server_placeholder')}</option>
             {servers.map((server) => (
@@ -219,7 +219,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
             ))}
           </select>
           {isEditMode && (
-            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+            <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
               {t('automation.modals.create_task.server_edit_helper')}
             </p>
           )}
@@ -227,7 +227,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
 
         {/* Task Name */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('automation.modals.create_task.name_label')}
           </label>
           <Input
@@ -240,14 +240,14 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
 
         {/* Task Type */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('automation.modals.create_task.type_label')}
           </label>
           <select
             value={type}
             onChange={(e) => setType(e.target.value as 'backup' | 'restart' | 'start' | 'stop' | 'command')}
             disabled={isEditMode}
-            className={`w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary ${isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+            className={`w-full px-3 py-2 bg-white dark:bg-surface border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent ${isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
           >
             <option value="backup">{t('automation.modals.create_task.type_options.backup')}</option>
             <option value="restart">{t('automation.modals.create_task.type_options.restart')}</option>
@@ -256,7 +256,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
             <option value="command">{t('automation.modals.create_task.type_options.command')}</option>
           </select>
           {isEditMode && (
-            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+            <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
               {t('automation.modals.create_task.type_edit_helper')}
             </p>
           )}
@@ -265,7 +265,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
         {/* Command Input (only for command type) */}
         {type === 'command' && (
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('automation.modals.create_task.command_label')}
             </label>
             <Input
@@ -274,7 +274,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
               placeholder={t('automation.modals.create_task.command_placeholder')}
               className="w-full font-mono"
             />
-            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+            <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
               {t('automation.modals.create_task.command_helper')}
             </p>
           </div>
@@ -283,7 +283,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
         {/* Description (for backup type) */}
         {type === 'backup' && (
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('automation.modals.create_task.description_label')}
             </label>
             <Input
@@ -298,7 +298,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
         {/* Backup Limit (for backup type) */}
         {type === 'backup' && (
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('automation.modals.create_task.backup_limit_label')}
             </label>
             <Input
@@ -308,7 +308,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
               onChange={(e) => setBackupLimit(parseInt(e.target.value) || 0)}
               className="w-full"
             />
-            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+            <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
               {t('automation.modals.create_task.backup_limit_helper')}
             </p>
           </div>
@@ -316,13 +316,13 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
 
         {/* Schedule Preset */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('automation.modals.create_task.schedule_label')}
           </label>
           <select
             value={cronPreset}
             onChange={(e) => setCronPreset(e.target.value)}
-            className="w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
+            className="w-full px-3 py-2 bg-white dark:bg-surface border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent"
           >
             {CRON_PRESETS.map((preset) => (
               <option key={preset.value} value={preset.value}>
@@ -335,7 +335,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
         {/* Custom Cron Expression */}
         {cronPreset === 'custom' && (
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('automation.modals.create_task.custom_cron_label')}
             </label>
             <Input
@@ -344,7 +344,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
               placeholder={t('automation.modals.create_task.custom_cron_placeholder')}
               className="w-full font-mono"
             />
-            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+            <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
               {t('automation.modals.create_task.custom_cron_helper')}
             </p>
           </div>
@@ -354,29 +354,29 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
         {selectedServer && name && (
           <div className="bg-gray-100 dark:bg-gray-900 rounded-lg p-4">
             <div className="flex items-start gap-3">
-              <Clock className="text-accent-primary shrink-0 mt-0.5" size={20} />
+              <Clock className="text-accent shrink-0 mt-0.5" size={20} />
               <div className="flex-1">
-                <p className="text-sm font-medium text-text-light-primary dark:text-text-primary">
+                <p className="text-sm font-medium text-fg-light dark:text-fg">
                   {t('automation.modals.create_task.preview.title')}
                 </p>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                   {t('automation.modals.create_task.preview.server', { server: selectedServer.name })}
                 </p>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                   {t('automation.modals.create_task.preview.name', { name })}
                 </p>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                   {t('automation.modals.create_task.preview.type', {
                     type: t(`automation.modals.create_task.type_options.${type}`),
                   })}
                 </p>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                   {t('automation.modals.create_task.preview.schedule', {
                     schedule: cronPreset === 'custom' ? customCron : CRON_PRESETS.find(p => p.value === cronPreset)?.label,
                   })}
                 </p>
                 {type === 'command' && command && (
-                  <p className="text-sm text-text-light-muted dark:text-text-muted mt-1 font-mono">
+                  <p className="text-sm text-fg-muted dark:text-fg-muted mt-1 font-mono">
                     {t('automation.modals.create_task.preview.command', { command })}
                   </p>
                 )}

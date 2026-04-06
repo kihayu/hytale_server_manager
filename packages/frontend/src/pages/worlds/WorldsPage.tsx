@@ -104,8 +104,8 @@ export const WorldsPage = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-text-primary">{t('worlds.title')}</h1>
-        <p className="text-text-secondary mt-1">{t('worlds.subtitle')}</p>
+        <h1 className="text-3xl font-bold text-fg">{t('worlds.title')}</h1>
+        <p className="text-fg-muted mt-1">{t('worlds.subtitle')}</p>
       </div>
 
       <Card>
@@ -145,9 +145,9 @@ export const WorldsPage = () => {
             {error && <div className="bg-red-500/10 text-red-500 p-3 rounded mb-4">{error}</div>}
 
             {loading ? (
-              <div className="text-center py-8 text-text-secondary">{t('worlds.list.loading')}</div>
+              <div className="text-center py-8 text-fg-muted">{t('worlds.list.loading')}</div>
             ) : worlds.length === 0 ? (
-              <div className="text-center py-8 text-text-secondary">
+              <div className="text-center py-8 text-fg-muted">
                 <Globe size={48} className="mx-auto mb-2 opacity-50" />
                 <p>{t('worlds.list.empty')}</p>
               </div>
@@ -156,10 +156,10 @@ export const WorldsPage = () => {
                 {worlds.map(world => (
                   <div key={world.id} className="flex items-center justify-between p-4 bg-bg-secondary rounded-lg border border-border-subtle">
                     <div className="flex items-center gap-4 flex-1">
-                      <Globe size={24} className={world.isActive ? 'text-accent-primary' : 'text-text-secondary'} />
+                      <Globe size={24} className={world.isActive ? 'text-accent' : 'text-fg-muted'} />
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <h3 className="font-medium text-text-primary">{world.name}</h3>
+                          <h3 className="font-medium text-fg">{world.name}</h3>
                           {world.isActive && (
                             <Badge variant="success" size="sm">
                               <Check size={12} className="mr-1" />
@@ -167,7 +167,7 @@ export const WorldsPage = () => {
                             </Badge>
                           )}
                         </div>
-                        <div className="text-sm text-text-secondary mt-1">
+                        <div className="text-sm text-fg-muted mt-1">
                           <span>{t('worlds.size', { size: formatSize(world.sizeBytes) })}</span>
                         </div>
                       </div>

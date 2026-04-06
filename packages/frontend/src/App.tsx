@@ -55,8 +55,8 @@ function PageLoader() {
   return (
     <div className="flex items-center justify-center min-h-[400px]">
       <div className="flex flex-col items-center gap-4">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent-primary" />
-        <p className="text-text-light-muted dark:text-text-muted text-sm">{t('app.loading')}</p>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent" />
+        <p className="text-fg-muted dark:text-fg-muted text-sm">{t('app.loading')}</p>
       </div>
     </div>
   );
@@ -75,10 +75,10 @@ function ProtectedRoute({ children, pageName }: { children: React.ReactNode; pag
   // Show loading while initializing auth state
   if (isInitializing) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-primary-light-bg dark:bg-primary-bg">
+      <div className="min-h-screen flex items-center justify-center bg-canvas-light dark:bg-canvas">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-primary" />
-          <p className="text-text-light-muted dark:text-text-muted">{t('app.initializing')}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent" />
+          <p className="text-fg-muted dark:text-fg-muted">{t('app.initializing')}</p>
         </div>
       </div>
     );
@@ -134,7 +134,7 @@ function App() {
       name="Application"
       onError={handleGlobalError}
       fallback={(error, reset) => (
-        <div className="min-h-screen flex items-center justify-center bg-primary-light-bg dark:bg-primary-bg p-4">
+        <div className="min-h-screen flex items-center justify-center bg-canvas-light dark:bg-canvas p-4">
           <div className="max-w-md w-full text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-danger/20 rounded-full mb-6">
               <svg
@@ -152,30 +152,30 @@ function App() {
               </svg>
             </div>
 
-            <h1 className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary mb-2">
+            <h1 className="text-2xl font-heading font-bold text-fg-light dark:text-fg mb-2">
               {t('app.error.title')}
             </h1>
-            <p className="text-text-light-muted dark:text-text-muted mb-6">
+            <p className="text-fg-muted dark:text-fg-muted mb-6">
               {error.message || t('app.error.unexpected')}
             </p>
 
             <div className="flex flex-col gap-3">
               <button
                 onClick={reset}
-                className="w-full px-4 py-3 bg-accent-primary text-black font-medium rounded-lg hover:bg-accent-primary/90 transition-colors"
+                className="w-full px-4 py-3 bg-accent text-black font-medium rounded-lg hover:bg-accent/90 transition-colors"
               >
                 {t('app.error.try_again')}
               </button>
               <button
                 onClick={() => window.location.reload()}
-                className="w-full px-4 py-3 bg-white dark:bg-primary-bg-secondary text-text-light-primary dark:text-text-primary font-medium rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="w-full px-4 py-3 bg-white dark:bg-surface text-fg-light dark:text-fg font-medium rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 {t('app.error.reload')}
               </button>
             </div>
 
             {env.isDevelopment && error.stack && (
-              <pre className="mt-6 p-4 bg-primary-bg dark:bg-primary-bg-secondary rounded-lg text-left text-xs text-danger overflow-auto max-h-48">
+              <pre className="mt-6 p-4 bg-canvas dark:bg-surface rounded-lg text-left text-xs text-danger overflow-auto max-h-48">
                 {error.stack}
               </pre>
             )}

@@ -154,7 +154,7 @@ export const ActivityLogPage = () => {
       label: t('activity.table.time'),
       sortable: true,
       render: (entry) => (
-        <span className="text-text-secondary text-sm">
+        <span className="text-fg-muted text-sm">
           {formatDistanceToNow(new Date(entry.timestamp), { addSuffix: true })}
         </span>
       ),
@@ -165,7 +165,7 @@ export const ActivityLogPage = () => {
       sortable: true,
       render: (entry) => (
         <div className="flex items-center gap-2">
-          <User size={14} className="text-text-muted" />
+          <User size={14} className="text-fg-muted" />
           <span className="font-medium">{entry.username}</span>
           <Badge variant="default" className="text-xs">
             {entry.userRole}
@@ -193,7 +193,7 @@ export const ActivityLogPage = () => {
       key: 'resourceName',
       label: t('activity.table.resource'),
       render: (entry) => (
-        <span className="text-text-secondary">
+        <span className="text-fg-muted">
           {entry.resourceName || entry.resourceId || '-'}
         </span>
       ),
@@ -221,7 +221,7 @@ export const ActivityLogPage = () => {
       key: 'ipAddress',
       label: t('activity.table.ip_address'),
       render: (entry) => (
-        <span className="text-text-muted text-sm font-mono">
+        <span className="text-fg-muted text-sm font-mono">
           {entry.ipAddress || '-'}
         </span>
       ),
@@ -232,11 +232,11 @@ export const ActivityLogPage = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-text-primary flex items-center gap-2">
+        <h1 className="text-3xl font-bold text-fg flex items-center gap-2">
           <History className="text-primary" />
           {t('activity.title')}
         </h1>
-        <p className="text-text-secondary mt-1">
+        <p className="text-fg-muted mt-1">
           {t('activity.subtitle')}
         </p>
       </div>
@@ -267,14 +267,14 @@ export const ActivityLogPage = () => {
               <div className="relative">
                 <Search
                   size={16}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-muted"
                 />
                 <input
                   type="text"
                   placeholder={t('activity.filters.search_placeholder')}
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
-                  className="pl-9 pr-4 py-2 border border-border rounded-lg bg-background text-text-primary w-64 focus:outline-hidden focus:ring-2 focus:ring-primary/50"
+                  className="pl-9 pr-4 py-2 border border-border rounded-lg bg-background text-fg w-64 focus:outline-hidden focus:ring-2 focus:ring-primary/50"
                 />
               </div>
               <Button type="submit" variant="secondary">
@@ -283,14 +283,14 @@ export const ActivityLogPage = () => {
             </form>
 
             <div className="flex items-center gap-2">
-              <Filter size={16} className="text-text-muted" />
+              <Filter size={16} className="text-fg-muted" />
               <select
                 value={categoryFilter}
                 onChange={(e) => {
                   setCategoryFilter(e.target.value);
                   setFilters(prev => ({ ...prev, page: 1 }));
                 }}
-                className="px-3 py-2 border border-border rounded-lg bg-background text-text-primary focus:outline-hidden focus:ring-2 focus:ring-primary/50"
+                className="px-3 py-2 border border-border rounded-lg bg-background text-fg focus:outline-hidden focus:ring-2 focus:ring-primary/50"
               >
                 {categories.map((cat) => (
                   <option key={cat.value} value={cat.value}>
@@ -305,7 +305,7 @@ export const ActivityLogPage = () => {
                   setStatusFilter(e.target.value);
                   setFilters(prev => ({ ...prev, page: 1 }));
                 }}
-                className="px-3 py-2 border border-border rounded-lg bg-background text-text-primary focus:outline-hidden focus:ring-2 focus:ring-primary/50"
+                className="px-3 py-2 border border-border rounded-lg bg-background text-fg focus:outline-hidden focus:ring-2 focus:ring-primary/50"
               >
                 <option value="">{t('activity.filters.statuses.all')}</option>
                 <option value="success">{t('activity.status.success')}</option>
@@ -318,7 +318,7 @@ export const ActivityLogPage = () => {
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <RefreshCw className="animate-spin text-primary" size={24} />
-              <span className="ml-2 text-text-secondary">{t('activity.loading')}</span>
+              <span className="ml-2 text-fg-muted">{t('activity.loading')}</span>
             </div>
           ) : data?.data && data.data.length > 0 ? (
             <>
@@ -339,7 +339,7 @@ export const ActivityLogPage = () => {
                   >
                     {t('table.pagination.previous')}
                   </Button>
-                  <span className="text-text-secondary px-4">
+                  <span className="text-fg-muted px-4">
                     {t('table.pagination.page_of', { page: data.pagination.page, total: data.pagination.totalPages })}
                   </span>
                   <Button
@@ -355,9 +355,9 @@ export const ActivityLogPage = () => {
             </>
           ) : (
             <div className="text-center py-12">
-              <AlertCircle size={48} className="mx-auto text-text-muted mb-4" />
-              <p className="text-text-secondary">{t('activity.empty.title')}</p>
-              <p className="text-text-muted text-sm mt-1">
+              <AlertCircle size={48} className="mx-auto text-fg-muted mb-4" />
+              <p className="text-fg-muted">{t('activity.empty.title')}</p>
+              <p className="text-fg-muted text-sm mt-1">
                 {t('activity.empty.subtitle')}
               </p>
             </div>

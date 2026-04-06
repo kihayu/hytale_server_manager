@@ -263,10 +263,10 @@ export const ModpacksPage = () => {
           />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <p className="font-medium text-text-light-primary dark:text-text-primary truncate">{modpack.title}</p>
+              <p className="font-medium text-fg-light dark:text-fg truncate">{modpack.title}</p>
               {selectedProvider === 'all' && <ProviderBadge providerId={modpack.providerId} />}
             </div>
-            <p className="text-sm text-text-light-muted dark:text-text-muted truncate">{modpack.description}</p>
+            <p className="text-sm text-fg-muted dark:text-fg-muted truncate">{modpack.description}</p>
           </div>
         </div>
       ),
@@ -350,8 +350,8 @@ export const ModpacksPage = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">{t('modpacks.title')}</h1>
-          <p className="text-text-light-muted dark:text-text-muted mt-1">
+          <h1 className="text-3xl font-heading font-bold text-fg-light dark:text-fg">{t('modpacks.title')}</h1>
+          <p className="text-fg-muted dark:text-fg-muted mt-1">
             {t('modpacks.subtitle', {
               count: totalResults,
               available: totalResults > 0 ? `(${totalResults.toLocaleString()} ${t('modpacks.available')})` : '',
@@ -368,7 +368,7 @@ export const ModpacksPage = () => {
             <div className="flex flex-col gap-4">
               {/* Search Bar */}
               <div className="relative">
-                <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-light-muted dark:text-text-muted" />
+                <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-fg-muted dark:text-fg-muted" />
                 <Input
                   type="text"
                   placeholder={t('modpacks.search.placeholder')}
@@ -380,7 +380,7 @@ export const ModpacksPage = () => {
                 {localSearchQuery && (
                   <button
                     onClick={() => setLocalSearchQuery('')}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg"
                     title={t('modpacks.search.clear')}
                   >
                     <X size={20} />
@@ -421,7 +421,7 @@ export const ModpacksPage = () => {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'downloads' | 'rating' | 'updated')}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent"
                   >
                     <option value="downloads">{t('modpacks.sort.downloads')}</option>
                     <option value="rating">{t('modpacks.sort.rating')}</option>
@@ -434,8 +434,8 @@ export const ModpacksPage = () => {
                   <button
                     onClick={() => setViewMode('card')}
                     className={`p-2 rounded-lg border transition-colors ${viewMode === 'card'
-                      ? 'bg-accent-primary text-white border-accent-primary'
-                      : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+                      ? 'bg-accent text-white border-accent'
+                      : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
                       }`}
                     title={t('modpacks.view_modes.card')}
                   >
@@ -444,8 +444,8 @@ export const ModpacksPage = () => {
                   <button
                     onClick={() => setViewMode('table')}
                     className={`p-2 rounded-lg border transition-colors ${viewMode === 'table'
-                      ? 'bg-accent-primary text-white border-accent-primary'
-                      : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+                      ? 'bg-accent text-white border-accent'
+                      : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
                       }`}
                     title={t('modpacks.view_modes.table')}
                   >
@@ -465,14 +465,14 @@ export const ModpacksPage = () => {
             <div className="flex items-center gap-4 py-4">
               <AlertCircle size={32} className="text-warning" />
               <div className="flex-1">
-                <h3 className="font-heading font-semibold text-text-light-primary dark:text-text-primary">
+                <h3 className="font-heading font-semibold text-fg-light dark:text-fg">
                   {selectedProvider === 'all'
                     ? t('modpacks.no_providers')
                     : t('modpacks.provider_not_configured', {
                       provider: providers.find(p => p.id === selectedProvider)?.displayName || t('modpacks.provider'),
                     })}
                 </h3>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                   {t('modpacks.configure_hint')}
                 </p>
               </div>
@@ -491,8 +491,8 @@ export const ModpacksPage = () => {
       {/* Loading State */}
       {searchLoading && (
         <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-accent-primary border-t-transparent"></div>
-          <p className="text-text-light-muted dark:text-text-muted mt-4">{t('modpacks.loading')}</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-accent border-t-transparent"></div>
+          <p className="text-fg-muted dark:text-fg-muted mt-4">{t('modpacks.loading')}</p>
         </div>
       )}
 
@@ -503,10 +503,10 @@ export const ModpacksPage = () => {
             <div className="flex items-center gap-4 py-4">
               <AlertCircle size={32} className="text-danger" />
               <div className="flex-1">
-                <h3 className="font-heading font-semibold text-text-light-primary dark:text-text-primary">
+                <h3 className="font-heading font-semibold text-fg-light dark:text-fg">
                   {t('modpacks.error.title')}
                 </h3>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">{searchError}</p>
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">{searchError}</p>
               </div>
               <Button variant="secondary" onClick={() => void search()}>
                 {t('modpacks.actions.retry')}
@@ -543,7 +543,7 @@ export const ModpacksPage = () => {
                     </CardHeader>
 
                     <CardContent className="space-y-3">
-                      <p className="text-sm text-text-light-muted dark:text-text-muted line-clamp-2">{modpack.description}</p>
+                      <p className="text-sm text-fg-muted dark:text-fg-muted line-clamp-2">{modpack.description}</p>
 
                       {/* Categories */}
                       {modpack.categories && modpack.categories.length > 0 && (
@@ -562,10 +562,10 @@ export const ModpacksPage = () => {
                       )}
 
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-text-light-muted dark:text-text-muted">
+                        <span className="text-fg-muted dark:text-fg-muted">
                           {modpack.rating?.toFixed(1) || '-'}
                         </span>
-                        <span className="text-text-light-muted dark:text-text-muted">
+                        <span className="text-fg-muted dark:text-fg-muted">
                           {t('modpacks.downloads', { downloads: modpack.downloads.toLocaleString() })}
                         </span>
                       </div>
@@ -596,7 +596,7 @@ export const ModpacksPage = () => {
               {/* Card View Pagination */}
               {totalCardPages > 1 && (
                 <div className="flex items-center justify-between mt-6 px-2">
-                  <span className="text-sm text-text-light-muted dark:text-text-muted">
+                  <span className="text-sm text-fg-muted dark:text-fg-muted">
                     {t('table.pagination.showing', {
                       start: (cardPage - 1) * CARD_PAGE_SIZE + 1,
                       end: Math.min(cardPage * CARD_PAGE_SIZE, filteredModpacks.length),
@@ -613,7 +613,7 @@ export const ModpacksPage = () => {
                     >
                       {t('table.pagination.previous')}
                     </Button>
-                    <span className="text-sm text-text-light-muted dark:text-text-muted px-2">
+                    <span className="text-sm text-fg-muted dark:text-fg-muted px-2">
                       {t('table.pagination.page_of', { page: cardPage, total: totalCardPages })}
                     </span>
                     <Button
@@ -645,7 +645,7 @@ export const ModpacksPage = () => {
 
           {filteredModpacks.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-text-light-muted dark:text-text-muted">{t('modpacks.empty')}</p>
+              <p className="text-fg-muted dark:text-fg-muted">{t('modpacks.empty')}</p>
             </div>
           )}
         </div>

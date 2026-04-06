@@ -114,10 +114,10 @@ export const FileEditorModal = ({ isOpen, onClose, onSave, serverId, file }: Fil
         {/* File Info */}
         <div className="flex items-center justify-between p-3 bg-gray-100 dark:bg-gray-900 rounded-lg">
           <div>
-            <p className="text-sm font-medium text-text-light-primary dark:text-text-primary">
+            <p className="text-sm font-medium text-fg-light dark:text-fg">
               {file.name}
             </p>
-            <p className="text-xs text-text-light-muted dark:text-text-muted">
+            <p className="text-xs text-fg-muted dark:text-fg-muted">
               {t('files.editor.meta', { lang: getFileLanguage(), size: (file.size / 1024).toFixed(2) })}
             </p>
           </div>
@@ -136,20 +136,20 @@ export const FileEditorModal = ({ isOpen, onClose, onSave, serverId, file }: Fil
         {/* Editor */}
         {loading ? (
           <div className="flex items-center justify-center h-96">
-            <p className="text-text-light-muted dark:text-text-muted">{t('files.editor.loading')}</p>
+            <p className="text-fg-muted dark:text-fg-muted">{t('files.editor.loading')}</p>
           </div>
         ) : (
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full h-[500px] bg-white dark:bg-primary-bg-secondary text-text-light-primary dark:text-text-primary font-mono text-sm p-4 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-hidden focus:ring-2 focus:ring-accent-primary resize-none"
+            className="w-full h-[500px] bg-white dark:bg-surface text-fg-light dark:text-fg font-mono text-sm p-4 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-hidden focus:ring-2 focus:ring-accent resize-none"
             spellCheck={false}
             placeholder={t('files.editor.placeholder')}
           />
         )}
 
         {/* Line Count */}
-        <div className="flex justify-between text-xs text-text-light-muted dark:text-text-muted">
+        <div className="flex justify-between text-xs text-fg-muted dark:text-fg-muted">
           <span>{t('files.editor.lines', { count: content.split('\n').length })}</span>
           <span>{t('files.editor.characters', { count: content.length })}</span>
         </div>

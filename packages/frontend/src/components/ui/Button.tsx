@@ -26,11 +26,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const baseStyles = 'font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
 
     const variants = {
-      primary: 'bg-accent-primary hover:bg-accent-primary/90 text-black font-semibold glow-accent',
-      secondary: 'bg-white dark:bg-gray-100 dark:bg-primary-bg-secondary hover:bg-gray-700 text-text-light-primary dark:text-text-primary border border-gray-300 dark:border-gray-700',
+      primary: 'bg-accent hover:bg-accent/90 text-black font-semibold glow-accent',
+      secondary: 'bg-white dark:bg-gray-100 dark:bg-surface hover:bg-gray-700 text-fg-light dark:text-fg border border-gray-300 dark:border-gray-700',
       danger: 'bg-danger hover:bg-danger/90 text-white',
       success: 'bg-success hover:bg-success/90 text-white',
-      ghost: 'hover:bg-white dark:bg-primary-bg-secondary dark:hover:bg-primary-bg-secondary-hover text-text-light-primary dark:text-text-primary',
+      ghost: 'hover:bg-white dark:bg-surface dark:hover:bg-surface-hover text-fg-light dark:text-fg',
     };
 
     const sizes = {

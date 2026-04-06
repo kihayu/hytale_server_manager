@@ -350,7 +350,7 @@ export const ServerDetailPage = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <h2 className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+          <h2 className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
             {t('common.loading')}
           </h2>
         </div>
@@ -362,10 +362,10 @@ export const ServerDetailPage = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <h2 className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+          <h2 className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
             {error || t('servers.detail.errors.not_found')}
           </h2>
-          <Link to="/servers" className="text-accent-primary hover:underline mt-4 inline-block">
+          <Link to="/servers" className="text-accent hover:underline mt-4 inline-block">
             ← {t('servers.detail.back_to_servers')}
           </Link>
         </div>
@@ -390,11 +390,11 @@ export const ServerDetailPage = () => {
             </Button>
           </Link>
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl sm:text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary truncate">
+            <h1 className="text-2xl sm:text-3xl font-heading font-bold text-fg-light dark:text-fg truncate">
               {server.name}
             </h1>
             <div className="flex items-center gap-2 mt-1">
-              <p className="text-sm sm:text-base text-text-light-muted dark:text-text-muted">
+              <p className="text-sm sm:text-base text-fg-muted dark:text-fg-muted">
                 {server.address}:{server.port}
               </p>
               <StatusIndicator status={server.status} showLabel size="sm" />
@@ -434,21 +434,21 @@ export const ServerDetailPage = () => {
         <Card variant="glass" className="opacity-50">
           <CardContent className="flex items-center justify-between">
             <div>
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('servers.detail.stats.players')}</p>
-              <p className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('servers.detail.stats.players')}</p>
+              <p className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
                 - / -
               </p>
-              <p className="text-xs text-text-light-muted dark:text-text-muted">{t('common.coming_soon')}</p>
+              <p className="text-xs text-fg-muted dark:text-fg-muted">{t('common.coming_soon')}</p>
             </div>
-            <Users size={32} className="text-text-muted" />
+            <Users size={32} className="text-fg-muted" />
           </CardContent>
         </Card>
 
         <Card variant="glass">
           <CardContent className="flex items-center justify-between">
             <div>
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('servers.detail.stats.tps')}</p>
-              <p className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('servers.detail.stats.tps')}</p>
+              <p className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
                 {server.status === 'running' ? currentTps.toFixed(1) : '-'}
               </p>
             </div>
@@ -459,20 +459,20 @@ export const ServerDetailPage = () => {
         <Card variant="glass">
           <CardContent className="flex items-center justify-between">
             <div>
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('servers.detail.stats.memory')}</p>
-              <p className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('servers.detail.stats.memory')}</p>
+              <p className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
                 {server.status === 'running' ? `${Math.round(currentMemory)} MB` : '-'}
               </p>
             </div>
-            <Terminal size={32} className="text-accent-secondary" />
+            <Terminal size={32} className="text-accent-alt" />
           </CardContent>
         </Card>
 
         <Card variant="glass">
           <CardContent className="flex items-center justify-between">
             <div>
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('servers.detail.stats.uptime')}</p>
-              <p className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('servers.detail.stats.uptime')}</p>
+              <p className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
                 {server.status === 'running' ? formatUptime(currentUptime) : t('servers.detail.stats.offline')}
               </p>
             </div>
@@ -489,7 +489,7 @@ export const ServerDetailPage = () => {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-text-light-muted dark:text-text-muted">{t('servers.detail.info.version')}</span>
+              <span className="text-fg-muted dark:text-fg-muted">{t('servers.detail.info.version')}</span>
               <div className="flex items-center gap-2">
                 <Badge variant="info">{server.version}</Badge>
                 <ServerUpdateBadge
@@ -501,18 +501,18 @@ export const ServerDetailPage = () => {
               </div>
             </div>
             <div className="flex justify-between">
-              <span className="text-text-light-muted dark:text-text-muted">{t('servers.detail.info.game_mode')}</span>
+              <span className="text-fg-muted dark:text-fg-muted">{t('servers.detail.info.game_mode')}</span>
               <Badge variant="default">{server.gameMode}</Badge>
             </div>
             <div className="flex justify-between">
-              <span className="text-text-light-muted dark:text-text-muted">{t('servers.detail.info.adapter_type')}</span>
+              <span className="text-fg-muted dark:text-fg-muted">{t('servers.detail.info.adapter_type')}</span>
               <Badge variant="default">
                 {server.adapterType === 'java' ? t('servers.detail.info.adapter_java') : server.adapterType}
               </Badge>
             </div>
             <div className="flex justify-between">
-              <span className="text-text-light-muted dark:text-text-muted">{t('servers.detail.info.created')}</span>
-              <span className="text-text-light-primary dark:text-text-primary">
+              <span className="text-fg-muted dark:text-fg-muted">{t('servers.detail.info.created')}</span>
+              <span className="text-fg-light dark:text-fg">
                 {new Date(server.createdAt).toLocaleString()}
               </span>
             </div>
@@ -526,8 +526,8 @@ export const ServerDetailPage = () => {
           <CardContent className="space-y-4">
             <div>
               <div className="flex justify-between mb-2">
-                <span className="text-text-light-muted dark:text-text-muted text-sm">{t('servers.detail.resources.cpu')}</span>
-                <span className="text-text-light-primary dark:text-text-primary font-medium">
+                <span className="text-fg-muted dark:text-fg-muted text-sm">{t('servers.detail.resources.cpu')}</span>
+                <span className="text-fg-light dark:text-fg font-medium">
                   {server.status === 'running' ? `${currentCpu.toFixed(1)}%` : '-'}
                 </span>
               </div>
@@ -545,15 +545,15 @@ export const ServerDetailPage = () => {
 
             <div>
               <div className="flex justify-between mb-2">
-                <span className="text-text-light-muted dark:text-text-muted text-sm">{t('servers.detail.resources.memory')}</span>
-                <span className="text-text-light-primary dark:text-text-primary font-medium">
+                <span className="text-fg-muted dark:text-fg-muted text-sm">{t('servers.detail.resources.memory')}</span>
+                <span className="text-fg-light dark:text-fg font-medium">
                   {server.status === 'running' ? `${Math.round(currentMemory)} / ${Math.round(totalMemory)} MB` : '-'}
                 </span>
               </div>
               {server.status === 'running' && (
                 <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-accent-secondary"
+                    className="h-full bg-accent-alt"
                     style={{ width: `${(currentMemory / totalMemory) * 100}%` }}
                   />
                 </div>
@@ -562,14 +562,14 @@ export const ServerDetailPage = () => {
 
             <div className="opacity-50">
               <div className="flex justify-between mb-2">
-                <span className="text-text-light-muted dark:text-text-muted text-sm">{t('servers.detail.resources.slots')}</span>
-                <span className="text-text-light-primary dark:text-text-primary font-medium">
+                <span className="text-fg-muted dark:text-fg-muted text-sm">{t('servers.detail.resources.slots')}</span>
+                <span className="text-fg-light dark:text-fg font-medium">
                   - / - <span className="text-xs">({t('common.coming_soon')})</span>
                 </span>
               </div>
               <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-accent-primary"
+                  className="h-full bg-accent"
                   style={{ width: '0%' }}
                 />
               </div>
@@ -640,12 +640,12 @@ export const ServerDetailPage = () => {
         <CardContent>
           {modsLoading ? (
             <div className="flex items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-2 border-accent-primary border-t-transparent" />
+              <div className="animate-spin rounded-full h-8 w-8 border-2 border-accent border-t-transparent" />
             </div>
           ) : installedMods.length === 0 ? (
             <div className="text-center py-8">
-              <Package size={48} className="mx-auto text-text-light-muted dark:text-text-muted mb-3 opacity-50" />
-              <p className="text-text-light-muted dark:text-text-muted mb-4">{t('servers.detail.mods.empty')}</p>
+              <Package size={48} className="mx-auto text-fg-muted dark:text-fg-muted mb-3 opacity-50" />
+              <p className="text-fg-muted dark:text-fg-muted mb-4">{t('servers.detail.mods.empty')}</p>
               <Button
                 variant="secondary"
                 icon={<Plus size={16} />}
@@ -663,7 +663,7 @@ export const ServerDetailPage = () => {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -20 }}
-                    className="flex items-center gap-4 p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-accent-primary/50 transition-colors"
+                    className="flex items-center gap-4 p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-accent/50 transition-colors"
                   >
                     {/* Mod Icon */}
                     <img
@@ -675,7 +675,7 @@ export const ServerDetailPage = () => {
                     {/* Mod Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-medium text-text-light-primary dark:text-text-primary truncate">
+                        <h4 className="font-medium text-fg-light dark:text-fg truncate">
                           {mod.projectTitle}
                         </h4>
                         <Badge size="sm" variant={mod.classification === 'MODPACK' ? 'info' : 'default'}>
@@ -688,7 +688,7 @@ export const ServerDetailPage = () => {
                           <Badge size="sm" variant="warning">{t('servers.detail.mods.disabled')}</Badge>
                         )}
                       </div>
-                      <div className="flex items-center gap-3 text-sm text-text-light-muted dark:text-text-muted">
+                      <div className="flex items-center gap-3 text-sm text-fg-muted dark:text-fg-muted">
                         {updateStatuses[mod.id]?.updateAvailable ? (
                           <span>{t('servers.detail.mods.update_to', { from: mod.versionName, to: updateStatuses[mod.id].latestVersion })}</span>
                         ) : (

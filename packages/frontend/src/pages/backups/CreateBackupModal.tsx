@@ -57,13 +57,13 @@ export const CreateBackupModal = ({ isOpen, onClose, onSubmit, servers }: Create
       <div className="space-y-4">
         {/* Server Selection */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('backups.create.server_label')} *
           </label>
           <select
             value={serverId}
             onChange={(e) => setServerId(e.target.value)}
-            className="w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
+            className="w-full px-3 py-2 bg-white dark:bg-surface border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent"
           >
             <option value="">{t('backups.create.server_placeholder')}</option>
             {servers.map((server) => (
@@ -79,7 +79,7 @@ export const CreateBackupModal = ({ isOpen, onClose, onSubmit, servers }: Create
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('backups.create.description_label')}
           </label>
           <Input
@@ -88,7 +88,7 @@ export const CreateBackupModal = ({ isOpen, onClose, onSubmit, servers }: Create
             placeholder={t('backups.create.description_placeholder')}
             className="w-full"
           />
-          <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+          <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
             {t('backups.create.description_help')}
           </p>
         </div>
@@ -97,20 +97,20 @@ export const CreateBackupModal = ({ isOpen, onClose, onSubmit, servers }: Create
         {selectedServer && (
           <div className="bg-gray-100 dark:bg-gray-900 rounded-lg p-4">
             <div className="flex items-start gap-3">
-              <Database className="text-accent-primary shrink-0 mt-0.5" size={20} />
+              <Database className="text-accent shrink-0 mt-0.5" size={20} />
               <div className="flex-1">
-                <p className="text-sm font-medium text-text-light-primary dark:text-text-primary">
+                <p className="text-sm font-medium text-fg-light dark:text-fg">
                   {t('backups.create.preview_title')}
                 </p>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                   {t('backups.create.preview_server', { server: selectedServer.name })}
                 </p>
                 {description && (
-                  <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+                  <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                     {t('backups.create.preview_note', { note: description })}
                   </p>
                 )}
-                <p className="text-xs text-text-light-muted dark:text-text-muted mt-2">
+                <p className="text-xs text-fg-muted dark:text-fg-muted mt-2">
                   {t('backups.create.preview_info')}
                 </p>
               </div>

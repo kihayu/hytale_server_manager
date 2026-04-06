@@ -38,7 +38,7 @@ export const ServerUpdateBadge = ({
     return (
       <button
         onClick={onUpdateClick}
-        className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium text-white bg-accent-primary rounded-full hover:bg-accent-primary/80 transition-colors"
+        className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium text-white bg-accent rounded-full hover:bg-accent/80 transition-colors"
         title={t('updates.badge.available_tooltip', { version: versionCheck.availableVersion })}
       >
         <ArrowUp className="w-3 h-3" />
@@ -50,7 +50,7 @@ export const ServerUpdateBadge = ({
   return (
     <button
       onClick={onUpdateClick}
-      className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white bg-accent-primary rounded-lg hover:bg-accent-primary/80 transition-colors"
+      className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white bg-accent rounded-lg hover:bg-accent/80 transition-colors"
     >
       <ArrowUp className="w-4 h-4" />
       <span>{t('updates.badge.update_to', { version: versionCheck.availableVersion })}</span>

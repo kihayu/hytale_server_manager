@@ -96,17 +96,17 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
     >
       <div className="space-y-6">
         {/* Project Info */}
-        <div className="flex items-start gap-4 p-4 bg-primary-bg-secondary rounded-lg">
+        <div className="flex items-start gap-4 p-4 bg-surface rounded-lg">
           <img
             src={project.iconUrl || `https://via.placeholder.com/64/6366f1/ffffff?text=${project.title[0]}`}
             alt={project.title}
             className="w-16 h-16 rounded-lg object-cover"
           />
           <div className="flex-1">
-            <h3 className="font-heading font-semibold text-text-light-primary dark:text-text-primary">
+            <h3 className="font-heading font-semibold text-fg-light dark:text-fg">
               {project.title}
             </h3>
-            <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+            <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
               {t('mods.server_select.by_author', { author: project.author.username })}
             </p>
             <div className="flex gap-2 mt-2">
@@ -120,13 +120,13 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
 
         {/* Version Selection */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('mods.server_select.version_label')}
           </label>
           <select
             value={selectedVersion || ''}
             onChange={(e) => setSelectedVersion(e.target.value)}
-            className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50"
+            className="w-full px-4 py-2 bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent/50"
           >
             {project.versions?.map((version) => {
               const dateStr = version.releaseDate;
@@ -149,7 +149,7 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
 
         {/* Dependencies */}
         {loadingDeps && (
-          <div className="flex items-center gap-2 text-text-light-muted dark:text-text-muted">
+          <div className="flex items-center gap-2 text-fg-muted dark:text-fg-muted">
             <Loader2 size={16} className="animate-spin" />
             <span className="text-sm">{t('mods.server_select.deps_checking')}</span>
           </div>
@@ -164,20 +164,20 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
 
         {!loadingDeps && dependencies.length > 0 && (
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('mods.server_select.deps_label')} {hasRequiredDependencies && <span className="text-danger">*</span>}
             </label>
             <div className="space-y-2 max-h-40 overflow-y-auto">
               {dependencies.map((dep, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-3 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg"
+                  className="flex items-center justify-between p-3 bg-white dark:bg-surface border border-gray-300 dark:border-gray-700 rounded-lg"
                 >
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-text-light-primary dark:text-text-primary">
+                    <p className="text-sm font-medium text-fg-light dark:text-fg">
                       {dep.projectName}
                     </p>
-                    <p className="text-xs text-text-light-muted dark:text-text-muted">
+                    <p className="text-xs text-fg-muted dark:text-fg-muted">
                       {t('mods.server_select.deps_version', { version: dep.versionId || t('mods.server_select.any') })}
                     </p>
                   </div>
@@ -200,7 +200,7 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
 
         {/* Server Selection */}
         <div>
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {t('mods.server_select.server_label')}
           </label>
           <div className="grid grid-cols-1 gap-3 max-h-64 overflow-y-auto">
@@ -210,31 +210,31 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
                 onClick={() => setSelectedServer(server.id)}
                 className={`p-4 rounded-lg border-2 text-left transition-all ${
                   selectedServer === server.id
-                    ? 'border-accent-primary bg-accent-primary/10'
-                    : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-primary-bg hover:border-accent-primary/50'
+                    ? 'border-accent bg-accent/10'
+                    : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-canvas hover:border-accent/50'
                 }`}
               >
                 <div className="flex items-start gap-3">
                   <ServerIcon
                     size={20}
-                    className={selectedServer === server.id ? 'text-accent-primary' : 'text-text-light-muted dark:text-text-muted'}
+                    className={selectedServer === server.id ? 'text-accent' : 'text-fg-muted dark:text-fg-muted'}
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                     <h4 className="font-medium text-text-light-primary dark:text-text-primary truncate">
+                     <h4 className="font-medium text-fg-light dark:text-fg truncate">
                        {server.name}
                      </h4>
                      <StatusIndicator status={server.status as Parameters<typeof StatusIndicator>[0]['status']} />
                    </div>
-                   <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                   <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                       {t('mods.server_select.server_meta', { address: server.address, port: server.port, version: server.version })}
                    </p>
-                   <div className="flex gap-3 mt-2 text-xs text-text-light-muted dark:text-text-muted">
+                   <div className="flex gap-3 mt-2 text-xs text-fg-muted dark:text-fg-muted">
                       <span>{t('mods.server_select.players', { current: 0, max: server.maxPlayers })}</span>
                    </div>
                  </div>
                   {selectedServer === server.id && (
-                    <CheckCircle2 size={20} className="text-accent-primary shrink-0" />
+                    <CheckCircle2 size={20} className="text-accent shrink-0" />
                   )}
                 </div>
               </button>

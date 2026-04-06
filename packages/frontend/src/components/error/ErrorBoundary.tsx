@@ -239,10 +239,10 @@ ${error.componentStack || t('error.not_available')}
             <AlertTriangle size={32} className="text-danger" />
           </motion.div>
 
-          <h2 className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary mb-2">
+          <h2 className="text-2xl font-heading font-bold text-fg-light dark:text-fg mb-2">
             {t('error.title')}
           </h2>
-          <p className="text-text-light-muted dark:text-text-muted">
+          <p className="text-fg-muted dark:text-fg-muted">
             {error.message}
           </p>
         </div>
@@ -251,7 +251,7 @@ ${error.componentStack || t('error.not_available')}
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
           <button
             onClick={onReset}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-accent-primary text-black font-medium rounded-lg hover:bg-accent-primary/90 transition-colors"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-accent text-black font-medium rounded-lg hover:bg-accent/90 transition-colors"
           >
             <RefreshCw size={18} />
             {t('error.actions.try_again')}
@@ -259,7 +259,7 @@ ${error.componentStack || t('error.not_available')}
 
           <button
             onClick={handleRefresh}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-primary-bg-secondary text-text-light-primary dark:text-text-primary font-medium rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-surface text-fg-light dark:text-fg font-medium rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
             <RefreshCw size={18} />
             {t('error.actions.refresh')}
@@ -267,7 +267,7 @@ ${error.componentStack || t('error.not_available')}
 
           <button
             onClick={handleGoHome}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-primary-bg-secondary text-text-light-primary dark:text-text-primary font-medium rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-surface text-fg-light dark:text-fg font-medium rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
             <Home size={18} />
             {t('error.actions.home')}
@@ -282,22 +282,22 @@ ${error.componentStack || t('error.not_available')}
             className="mt-6"
           >
             <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2 text-sm text-text-light-muted dark:text-text-muted">
+              <div className="flex items-center gap-2 text-sm text-fg-muted dark:text-fg-muted">
                 <Bug size={16} />
                 <span>{t('error.details_title')}</span>
               </div>
               <button
                 onClick={() => void copyErrorDetails()}
-                className="inline-flex items-center gap-1 text-sm text-accent-primary hover:text-accent-primary/80 transition-colors"
+                className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent/80 transition-colors"
               >
                 {copied ? <Check size={14} /> : <Copy size={14} />}
                 {copied ? t('error.copied') : t('error.copy')}
               </button>
             </div>
 
-            <div className="bg-primary-bg dark:bg-primary-bg-secondary rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+            <div className="bg-canvas dark:bg-surface rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
               <div className="p-3 border-b border-gray-200 dark:border-gray-800">
-                <p className="text-xs text-text-light-muted dark:text-text-muted">
+                <p className="text-xs text-fg-muted dark:text-fg-muted">
                   {error.timestamp.toLocaleString()}
                 </p>
               </div>
@@ -310,7 +310,7 @@ ${error.componentStack || t('error.not_available')}
 
               {error.componentStack && (
                 <div className="border-t border-gray-200 dark:border-gray-800">
-                  <pre className="p-3 text-xs text-text-light-muted dark:text-text-muted overflow-x-auto max-h-32 font-mono">
+                  <pre className="p-3 text-xs text-fg-muted dark:text-fg-muted overflow-x-auto max-h-32 font-mono">
                     {error.componentStack}
                   </pre>
                 </div>
@@ -336,7 +336,7 @@ export function PageErrorBoundary({ children, name }: { children: ReactNode; nam
     <ErrorBoundary
       name={`Page:${name}`}
       fallback={(error, reset) => (
-        <div className="min-h-screen flex items-center justify-center bg-primary-light-bg dark:bg-primary-bg p-4">
+        <div className="min-h-screen flex items-center justify-center bg-canvas-light dark:bg-canvas p-4">
           <DefaultErrorFallback
             error={error}
             onReset={reset}
@@ -375,7 +375,7 @@ export function WidgetErrorBoundary({
               <p className="text-sm font-medium text-danger">
                 Failed to load {name}
               </p>
-              <p className="text-xs text-text-light-muted dark:text-text-muted mt-1 truncate">
+              <p className="text-xs text-fg-muted dark:text-fg-muted mt-1 truncate">
                 {error.message}
               </p>
             </div>
@@ -415,7 +415,7 @@ export function AsyncBoundary({
         fallback={
           loadingFallback || (
             <div className="flex items-center justify-center p-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-primary" />
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" />
             </div>
           )
         }

@@ -113,17 +113,17 @@ export const LoginPage = () => {
 
   if (isSetupLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-primary-light-bg dark:bg-primary-bg">
+      <div className="min-h-screen flex items-center justify-center bg-canvas-light dark:bg-canvas">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-primary" />
-          <p className="text-text-light-muted dark:text-text-muted">{t('auth.login.checking_setup')}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent" />
+          <p className="text-fg-muted dark:text-fg-muted">{t('auth.login.checking_setup')}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-primary-bg via-primary-bg-secondary to-primary-bg">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-canvas via-surface to-canvas">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -137,12 +137,12 @@ export const LoginPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <div className="w-16 h-16 bg-accent-primary rounded-lg flex items-center justify-center shadow-lg shadow-accent-primary/30">
+              <div className="w-16 h-16 bg-accent rounded-lg flex items-center justify-center shadow-lg shadow-accent/30">
                 <Gamepad2 size={32} className="text-black" />
               </div>
             </motion.div>
             <h1 className="text-3xl font-heading font-bold text-gradient">{t('auth.login.title')}</h1>
-            <p className="text-text-light-muted dark:text-text-muted mt-2">{subtitle}</p>
+            <p className="text-fg-muted dark:text-fg-muted mt-2">{subtitle}</p>
           </div>
 
           {isSetupMode ? (
@@ -207,7 +207,7 @@ export const LoginPage = () => {
                 disabled={isSettingUp}
               />
 
-              <div className="text-xs text-text-light-muted dark:text-text-muted">
+              <div className="text-xs text-fg-muted dark:text-fg-muted">
                 {t('auth.setup.requirements')}
               </div>
 
@@ -292,11 +292,11 @@ export const LoginPage = () => {
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
                     disabled={isLoading}
-                    className="w-4 h-4 rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-primary-bg text-accent-primary focus:ring-accent-primary focus:ring-2"
+                    className="w-4 h-4 rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-canvas text-accent focus:ring-accent focus:ring-2"
                   />
                   <label
                     htmlFor="remember"
-                    className="ml-2 text-sm text-text-light-muted dark:text-text-muted cursor-pointer"
+                    className="ml-2 text-sm text-fg-muted dark:text-fg-muted cursor-pointer"
                   >
                     {t('auth.form.remember_me')}
                   </label>
@@ -304,7 +304,7 @@ export const LoginPage = () => {
 
                 <button
                   type="button"
-                  className="text-sm text-accent-primary hover:text-accent-primary/80 transition-colors"
+                  className="text-sm text-accent hover:text-accent/80 transition-colors"
                   onClick={() => {/* TODO: Implement forgot password */ }}
                 >
                   {t('auth.form.forgot_password')}
@@ -344,7 +344,7 @@ export const LoginPage = () => {
                 type="submit"
                 variant="primary"
                 size="lg"
-                className="w-full"
+                className="w-full cursor-pointer"
                 loading={isLoading}
                 icon={<LogIn size={20} />}
               >
@@ -355,7 +355,7 @@ export const LoginPage = () => {
         </Card>
 
         {/* Footer */}
-        <div className="mt-6 text-center text-xs text-text-light-muted dark:text-text-muted">
+        <div className="mt-6 text-center text-xs text-fg-muted dark:text-fg-muted">
           <p>{env.app.name} &copy; {new Date().getFullYear()}</p>
 
         </div>

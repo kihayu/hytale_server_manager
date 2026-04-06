@@ -77,7 +77,7 @@ export const NetworkCard = ({
       case 'stopping':
         return 'bg-warning';
       case 'partial':
-        return 'bg-accent-secondary';
+        return 'bg-accent-alt';
       default:
         return 'bg-gray-500';
     }
@@ -117,7 +117,7 @@ export const NetworkCard = ({
         >
           <div className="flex items-center gap-4 flex-1 min-w-0">
             {/* Expand/Collapse Icon */}
-            <div className="text-text-light-muted dark:text-text-muted">
+            <div className="text-fg-muted dark:text-fg-muted">
               {expanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
             </div>
 
@@ -130,7 +130,7 @@ export const NetworkCard = ({
             {/* Network Info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-heading font-bold text-text-light-primary dark:text-text-primary truncate">
+                <h3 className="font-heading font-bold text-fg-light dark:text-fg truncate">
                   {network.name}
                 </h3>
                 <Badge variant={network.networkType === 'proxy' ? 'info' : 'default'} size="sm">
@@ -138,7 +138,7 @@ export const NetworkCard = ({
                 </Badge>
                 {getStatusBadge()}
               </div>
-              <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+              <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                 {t('networks.card.member_count', {
                   count: network.members.length
                 })}
@@ -152,45 +152,45 @@ export const NetworkCard = ({
             {/* Total Players */}
             <div className="text-center min-w-[60px]">
               <div className="flex items-center justify-center gap-1">
-                <Users size={14} className="text-accent-primary" />
-                <span className="text-lg font-bold text-text-light-primary dark:text-text-primary">
+                <Users size={14} className="text-accent" />
+                <span className="text-lg font-bold text-fg-light dark:text-fg">
                   {metrics?.totalPlayers ?? 0}
                 </span>
               </div>
-              <p className="text-xs text-text-light-muted dark:text-text-muted">{t('networks.card.stats.players')}</p>
+              <p className="text-xs text-fg-muted dark:text-fg-muted">{t('networks.card.stats.players')}</p>
             </div>
 
             {/* Average CPU */}
             <div className="text-center min-w-[60px]">
               <div className="flex items-center justify-center gap-1">
                 <Cpu size={14} className="text-warning" />
-                <span className="text-lg font-bold text-text-light-primary dark:text-text-primary">
+                <span className="text-lg font-bold text-fg-light dark:text-fg">
                   {metrics?.averageCpuUsage?.toFixed(1) ?? '0'}%
                 </span>
               </div>
-              <p className="text-xs text-text-light-muted dark:text-text-muted">{t('networks.card.stats.avg_cpu')}</p>
+              <p className="text-xs text-fg-muted dark:text-fg-muted">{t('networks.card.stats.avg_cpu')}</p>
             </div>
 
             {/* Total Memory */}
             <div className="text-center min-w-[80px]">
               <div className="flex items-center justify-center gap-1">
-                <HardDrive size={14} className="text-accent-secondary" />
-                <span className="text-lg font-bold text-text-light-primary dark:text-text-primary">
+                <HardDrive size={14} className="text-accent-alt" />
+                <span className="text-lg font-bold text-fg-light dark:text-fg">
                   {formatMemory(metrics?.totalMemoryUsage ?? 0)}
                 </span>
               </div>
-              <p className="text-xs text-text-light-muted dark:text-text-muted">{t('networks.card.stats.memory')}</p>
+              <p className="text-xs text-fg-muted dark:text-fg-muted">{t('networks.card.stats.memory')}</p>
             </div>
 
             {/* Server Status Summary */}
             <div className="text-center min-w-[60px]">
               <div className="flex items-center justify-center gap-1">
                 <div className={`w-2 h-2 rounded-full ${getStatusColor()}`} />
-                <span className="text-lg font-bold text-text-light-primary dark:text-text-primary">
+                <span className="text-lg font-bold text-fg-light dark:text-fg">
                   {status?.runningServers ?? 0}/{status?.totalServers ?? network.members.length}
                 </span>
               </div>
-              <p className="text-xs text-text-light-muted dark:text-text-muted">{t('networks.card.stats.online')}</p>
+              <p className="text-xs text-fg-muted dark:text-fg-muted">{t('networks.card.stats.online')}</p>
             </div>
           </div>
 
@@ -246,22 +246,22 @@ export const NetworkCard = ({
         {!expanded && (
           <div className="lg:hidden flex items-center justify-around px-4 pb-4 border-t border-gray-800 pt-3">
             <div className="text-center">
-              <span className="text-sm font-bold text-text-light-primary dark:text-text-primary">
+              <span className="text-sm font-bold text-fg-light dark:text-fg">
                 {metrics?.totalPlayers ?? 0}
               </span>
-              <p className="text-xs text-text-light-muted dark:text-text-muted">Players</p>
+              <p className="text-xs text-fg-muted dark:text-fg-muted">Players</p>
             </div>
             <div className="text-center">
-              <span className="text-sm font-bold text-text-light-primary dark:text-text-primary">
+              <span className="text-sm font-bold text-fg-light dark:text-fg">
                 {metrics?.averageCpuUsage?.toFixed(1) ?? '0'}%
               </span>
-              <p className="text-xs text-text-light-muted dark:text-text-muted">{t('networks.card.stats.cpu')}</p>
+              <p className="text-xs text-fg-muted dark:text-fg-muted">{t('networks.card.stats.cpu')}</p>
             </div>
             <div className="text-center">
-              <span className="text-sm font-bold text-text-light-primary dark:text-text-primary">
+              <span className="text-sm font-bold text-fg-light dark:text-fg">
                 {status?.runningServers ?? 0}/{status?.totalServers ?? 0}
               </span>
-              <p className="text-xs text-text-light-muted dark:text-text-muted">Online</p>
+              <p className="text-xs text-fg-muted dark:text-fg-muted">Online</p>
             </div>
           </div>
         )}
@@ -270,7 +270,7 @@ export const NetworkCard = ({
         {expanded && (
           <div className="border-t border-gray-800">
             {network.members.length === 0 ? (
-              <div className="p-4 text-center text-text-light-muted dark:text-text-muted">
+              <div className="p-4 text-center text-fg-muted dark:text-fg-muted">
                 {t('networks.card.empty')}
               </div>
             ) : (

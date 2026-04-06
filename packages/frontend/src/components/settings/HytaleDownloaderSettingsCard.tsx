@@ -187,8 +187,8 @@ export const HytaleDownloaderSettingsCard = () => {
 
           {isLoading && !status ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-accent-primary" />
-              <span className="ml-2 text-text-light-secondary dark:text-text-secondary">
+              <Loader2 className="w-6 h-6 animate-spin text-accent" />
+              <span className="ml-2 text-fg-muted dark:text-fg-muted">
                 {t('settings.downloader.loading')}
               </span>
             </div>
@@ -196,17 +196,17 @@ export const HytaleDownloaderSettingsCard = () => {
             <div className="space-y-6">
               {/* Binary Status */}
               <div className="border rounded-lg p-4 dark:border-gray-700">
-                <h4 className="font-medium text-text-light-primary dark:text-text-primary mb-3">
+                <h4 className="font-medium text-fg-light dark:text-fg mb-3">
                   {t('settings.downloader.tool')}
                 </h4>
 
                 {status?.binaryInstalled ? (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-text-light-secondary dark:text-text-secondary">
+                      <span className="text-sm text-fg-muted dark:text-fg-muted">
                         {t('settings.downloader.version')}
                       </span>
-                      <span className="text-sm font-mono text-text-light-primary dark:text-text-primary">
+                      <span className="text-sm font-mono text-fg-light dark:text-fg">
                         {status.binaryVersion || t('settings.downloader.unknown')}
                       </span>
                     </div>
@@ -226,7 +226,7 @@ export const HytaleDownloaderSettingsCard = () => {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    <p className="text-sm text-text-light-muted dark:text-text-muted">
+                    <p className="text-sm text-fg-muted dark:text-fg-muted">
                       {t('settings.downloader.not_installed')}
                     </p>
                     <Button
@@ -247,7 +247,7 @@ export const HytaleDownloaderSettingsCard = () => {
 
               {/* Authentication Status */}
               <div className="border rounded-lg p-4 dark:border-gray-700">
-                <h4 className="font-medium text-text-light-primary dark:text-text-primary mb-3">
+                <h4 className="font-medium text-fg-light dark:text-fg mb-3">
                   {t('settings.downloader.account_title')}
                 </h4>
 
@@ -258,7 +258,7 @@ export const HytaleDownloaderSettingsCard = () => {
                       <span className="text-sm">{t('settings.downloader.connected')}</span>
                     </div>
                     {status.accountEmail && (
-                      <p className="text-sm text-text-light-muted dark:text-text-muted">
+                      <p className="text-sm text-fg-muted dark:text-fg-muted">
                         {t('settings.downloader.account_label', { email: status.accountEmail })}
                       </p>
                     )}
@@ -266,12 +266,12 @@ export const HytaleDownloaderSettingsCard = () => {
                     {/* Token Status */}
                     {status.tokenInfo && (
                       <div className="space-y-2 pt-2 border-t dark:border-gray-700">
-                        <h5 className="text-xs font-medium text-text-light-secondary dark:text-text-secondary uppercase tracking-wide">
+                        <h5 className="text-xs font-medium text-fg-muted dark:text-fg-muted uppercase tracking-wide">
                           {t('settings.downloader.token_status')}
                         </h5>
 
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-text-light-muted dark:text-text-muted">
+                          <span className="text-sm text-fg-muted dark:text-fg-muted">
                             {t('settings.downloader.access_token')}
                           </span>
                           <TokenExpiryBadge
@@ -282,7 +282,7 @@ export const HytaleDownloaderSettingsCard = () => {
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-text-light-muted dark:text-text-muted">
+                          <span className="text-sm text-fg-muted dark:text-fg-muted">
                             {t('settings.downloader.refresh_token')}
                           </span>
                           <TokenExpiryBadge
@@ -294,10 +294,10 @@ export const HytaleDownloaderSettingsCard = () => {
 
                         {status.tokenInfo.branch && (
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-text-light-muted dark:text-text-muted">
+                            <span className="text-sm text-fg-muted dark:text-fg-muted">
                               {t('settings.downloader.branch')}
                             </span>
-                            <span className="text-sm text-text-light-primary dark:text-text-primary">
+                            <span className="text-sm text-fg-light dark:text-fg">
                               {status.tokenInfo.branch}
                             </span>
                           </div>
@@ -306,8 +306,8 @@ export const HytaleDownloaderSettingsCard = () => {
                         {/* Auto-refresh toggle */}
                         <div className="flex items-center justify-between pt-2 border-t dark:border-gray-700">
                           <div className="flex items-center gap-2">
-                            <Clock size={16} className="text-text-light-muted dark:text-text-muted" />
-                            <span className="text-sm text-text-light-muted dark:text-text-muted">
+                            <Clock size={16} className="text-fg-muted dark:text-fg-muted" />
+                            <span className="text-sm text-fg-muted dark:text-fg-muted">
                               {t('settings.downloader.auto_refresh')}
                             </span>
                           </div>
@@ -315,7 +315,7 @@ export const HytaleDownloaderSettingsCard = () => {
                             onClick={() => void handleToggleAutoRefresh()}
                             disabled={isUpdatingAutoRefresh}
                             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${status.autoRefresh?.enabled
-                              ? 'bg-accent-primary'
+                              ? 'bg-accent'
                               : 'bg-gray-300 dark:bg-gray-600'
                               } ${isUpdatingAutoRefresh ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                           >
@@ -373,7 +373,7 @@ export const HytaleDownloaderSettingsCard = () => {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    <p className="text-sm text-text-light-muted dark:text-text-muted">
+                    <p className="text-sm text-fg-muted dark:text-fg-muted">
                       {t('settings.downloader.connect_message')}
                     </p>
                     <Button
@@ -385,7 +385,7 @@ export const HytaleDownloaderSettingsCard = () => {
                       {t('settings.downloader.connect_account')}
                     </Button>
                     {!status?.binaryInstalled && (
-                      <p className="text-xs text-text-light-muted dark:text-text-muted">
+                      <p className="text-xs text-fg-muted dark:text-fg-muted">
                         {t('settings.downloader.install_first')}
                       </p>
                     )}
@@ -402,7 +402,7 @@ export const HytaleDownloaderSettingsCard = () => {
                   href="https://support.hytale.com/hc/en-us/articles/45326769420827-Hytale-Server-Manual"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 mt-2 text-accent-primary hover:underline"
+                  className="inline-flex items-center gap-1 mt-2 text-accent hover:underline"
                 >
                   {t('settings.downloader.view_manual')}
                   <ExternalLink size={12} />

@@ -63,9 +63,9 @@ export const HytaleDownloadProgress = ({
     switch (downloadSession.status) {
       case 'downloading':
         return {
-          icon: <Download className="w-5 h-5 text-accent-primary" />,
+          icon: <Download className="w-5 h-5 text-accent" />,
           label: t('hytale_downloader.progress.downloading'),
-          color: 'bg-accent-primary',
+          color: 'bg-accent',
         };
       case 'extracting':
         return {
@@ -109,7 +109,7 @@ export const HytaleDownloadProgress = ({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           {statusInfo.icon}
-          <span className="font-medium text-text-light-primary dark:text-text-primary">
+          <span className="font-medium text-fg-light dark:text-fg">
             {statusInfo.label}
           </span>
         </div>
@@ -133,7 +133,7 @@ export const HytaleDownloadProgress = ({
       )}
 
       {/* Stats */}
-      <div className="flex flex-wrap gap-4 text-sm text-text-light-muted dark:text-text-muted">
+      <div className="flex flex-wrap gap-4 text-sm text-fg-muted dark:text-fg-muted">
         {/* Progress percentage */}
         <div>
           <span className="font-medium">{downloadSession.progress.toFixed(1)}%</span>
@@ -196,7 +196,7 @@ export const HytaleDownloadProgressInline = () => {
   }
 
   return (
-    <div className="flex items-center gap-2 text-sm text-text-light-muted dark:text-text-muted">
+    <div className="flex items-center gap-2 text-sm text-fg-muted dark:text-fg-muted">
       <Loader2 size={14} className="animate-spin" />
       <span>
         {downloadSession.status === 'downloading' &&

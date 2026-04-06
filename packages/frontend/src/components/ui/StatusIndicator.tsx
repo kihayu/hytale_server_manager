@@ -55,7 +55,7 @@ export const StatusIndicator = ({ status, showLabel = false, size = 'md' }: Stat
   return (
     <div className="flex items-center gap-2">
       <div className={`status-indicator ${config.className} ${sizes[size]}`} />
-      {showLabel && <span className="text-sm text-text-muted">{config.label}</span>}
+      {showLabel && <span className="text-sm text-fg-muted">{config.label}</span>}
     </div>
   );
 };

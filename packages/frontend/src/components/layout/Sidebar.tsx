@@ -95,10 +95,10 @@ export const Sidebar = () => {
         to={item.path}
         className={({ isActive }) =>
           `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${isActive
-            ? 'bg-accent-primary/20 text-accent-primary border border-accent-primary/30'
+            ? 'bg-accent/20 text-accent border border-accent/30'
             : isComingSoon
-              ? 'text-text-light-muted/60 dark:text-text-muted/60 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-light-muted dark:hover:text-text-muted'
-              : 'text-text-light-muted dark:text-text-muted hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-light-primary dark:hover:text-text-primary'
+              ? 'text-fg-muted/60 dark:text-fg-muted/60 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-fg-muted dark:hover:text-fg-muted'
+              : 'text-fg-muted dark:text-fg-muted hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-fg-light dark:hover:text-fg'
           }`
         }
       >
@@ -128,23 +128,23 @@ export const Sidebar = () => {
 
       {/* Sidebar */}
       <aside
-        className={`w-64 ${sidebarCollapsed ? 'lg:w-20' : 'lg:w-64'} bg-white dark:bg-primary-bg-secondary border-r border-gray-300 dark:border-gray-800 flex flex-col h-screen fixed z-50 lg:relative lg:z-auto transition-all duration-200 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        className={`w-64 ${sidebarCollapsed ? 'lg:w-20' : 'lg:w-64'} bg-white dark:bg-surface border-r border-gray-300 dark:border-gray-800 flex flex-col h-screen fixed z-50 lg:relative lg:z-auto transition-all duration-200 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
           }`}
       >
         {/* Logo */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-gray-300 dark:border-gray-800">
           {sidebarCollapsed ? (
-            <Gamepad2 size={32} className="text-accent-primary mx-auto" />
+            <Gamepad2 size={32} className="text-accent mx-auto" />
           ) : (
             <>
               <div className="flex items-center gap-2">
-                <Gamepad2 size={32} className="text-accent-primary" />
+                <Gamepad2 size={32} className="text-accent" />
                 <span className="text-xl font-heading font-bold text-gradient">HytalePanel</span>
               </div>
               {/* Mobile close button */}
               <button
                 onClick={closeMobileMenu}
-                className="lg:hidden p-2 -mr-2 text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary transition-colors"
+                className="lg:hidden p-2 -mr-2 text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg transition-colors"
                 aria-label="Close menu"
               >
                 <X size={24} />
@@ -163,14 +163,14 @@ export const Sidebar = () => {
           {visibleComingSoon.length > 0 && (
             <div className="mt-6">
               {!sidebarCollapsed && (
-                <div className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-text-light-muted/60 dark:text-text-muted/60 uppercase tracking-wider">
+                <div className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-fg-muted/60 dark:text-fg-muted/60 uppercase tracking-wider">
                   <Construction size={14} />
                   <span>{t('nav.coming_soon')}</span>
                 </div>
               )}
               {sidebarCollapsed && (
                 <div className="flex justify-center py-2">
-                  <Construction size={16} className="text-text-light-muted/60 dark:text-text-muted/60" />
+                  <Construction size={16} className="text-fg-muted/60 dark:text-fg-muted/60" />
                 </div>
               )}
               <ul className="space-y-1">
@@ -184,7 +184,7 @@ export const Sidebar = () => {
         <div className="hidden lg:block p-3 border-t border-gray-300 dark:border-gray-800">
           <button
             onClick={toggleSidebar}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-text-light-muted dark:text-text-muted hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-text-light-primary dark:hover:text-text-primary transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-fg-muted dark:text-fg-muted hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-fg-light dark:hover:text-fg transition-colors"
           >
             {sidebarCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
             {!sidebarCollapsed && <span className="font-medium">{t('nav.collapse')}</span>}

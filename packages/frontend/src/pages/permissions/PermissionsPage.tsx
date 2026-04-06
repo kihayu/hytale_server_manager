@@ -159,7 +159,7 @@ const handleSave = async (role: string) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="animate-spin text-accent-primary" size={48} />
+        <Loader2 className="animate-spin text-accent" size={48} />
         <span className="sr-only">{t('permissions.loading')}</span>
       </div>
     );
@@ -170,7 +170,7 @@ const handleSave = async (role: string) => {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <AlertCircle className="mx-auto text-danger mb-4" size={48} />
-          <p className="text-text-light-muted dark:text-text-muted">
+          <p className="text-fg-muted dark:text-fg-muted">
             {error || t('permissions.errors.load')}
           </p>
           <Button variant="secondary" onClick={() => void fetchData()} className="mt-4">
@@ -186,10 +186,10 @@ const handleSave = async (role: string) => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+          <h1 className="text-3xl font-heading font-bold text-fg-light dark:text-fg">
             {t('permissions.title')}
           </h1>
-          <p className="text-text-light-muted dark:text-text-muted mt-1">
+          <p className="text-fg-muted dark:text-fg-muted mt-1">
             {t('permissions.subtitle')}
           </p>
         </div>
@@ -230,13 +230,13 @@ const handleSave = async (role: string) => {
                   <div className="flex items-center gap-3">
                     <Shield className={`text-${ROLE_COLORS[roleKey]}`} size={28} />
                     <div>
-                      <h3 className="font-heading font-semibold text-text-light-primary dark:text-text-primary capitalize">
+                      <h3 className="font-heading font-semibold text-fg-light dark:text-fg capitalize">
                         {t(`permissions.roles.${roleKey}.label`, { defaultValue: role })}
                         {modified && (
                           <span className="ml-2 text-xs text-warning">{t('permissions.roles.modified')}</span>
                         )}
                       </h3>
-                      <p className="text-sm text-text-light-muted dark:text-text-muted">
+                      <p className="text-sm text-fg-muted dark:text-fg-muted">
                         {t(`permissions.roles.${roleKey}.description`)}
                       </p>
                     </div>
@@ -275,7 +275,7 @@ const handleSave = async (role: string) => {
                 )}
 
                 {isAdmin && (
-                  <p className="text-xs text-text-light-muted dark:text-text-muted mt-4 italic">
+                  <p className="text-xs text-fg-muted dark:text-fg-muted mt-4 italic">
                     {t('permissions.roles.admin_note')}
                   </p>
                 )}
@@ -303,13 +303,13 @@ const handleSave = async (role: string) => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-300 dark:border-gray-800">
-                      <th className="text-left py-3 px-4 text-sm font-heading font-semibold text-text-light-muted dark:text-text-muted">
+                      <th className="text-left py-3 px-4 text-sm font-heading font-semibold text-fg-muted dark:text-fg-muted">
                         {t('permissions.table.permission')}
                       </th>
                       {roles.map((role) => (
                         <th key={role} className="text-center py-3 px-4 min-w-[100px]">
                           <div className="flex flex-col items-center gap-1">
-                            <span className="text-sm font-heading font-semibold text-text-light-primary dark:text-text-primary capitalize">
+                            <span className="text-sm font-heading font-semibold text-fg-light dark:text-fg capitalize">
                               {t(`permissions.roles.${role as RoleType}.label`, { defaultValue: role })}
                             </span>
                             <Badge variant={ROLE_COLORS[role as RoleType]} size="sm">
@@ -326,16 +326,16 @@ const handleSave = async (role: string) => {
                     {categoryPermissions.map((perm) => (
                       <tr
                         key={perm.code}
-                        className="border-b border-gray-300 dark:border-gray-800/50 hover:bg-white/50 dark:hover:bg-primary-bg/50"
+                        className="border-b border-gray-300 dark:border-gray-800/50 hover:bg-white/50 dark:hover:bg-canvas/50"
                       >
                         <td className="py-3 px-4">
-                          <p className="text-sm font-medium text-text-light-primary dark:text-text-primary">
+                          <p className="text-sm font-medium text-fg-light dark:text-fg">
                             {perm.name}
                           </p>
-                          <p className="text-xs text-text-light-muted dark:text-text-muted mt-0.5">
+                          <p className="text-xs text-fg-muted dark:text-fg-muted mt-0.5">
                             {perm.description}
                           </p>
-                          <p className="text-xs font-mono text-text-light-muted/60 dark:text-text-muted/60 mt-1">
+                          <p className="text-xs font-mono text-fg-muted/60 dark:text-fg-muted/60 mt-1">
                             {perm.code}
                           </p>
                         </td>
@@ -385,10 +385,10 @@ const handleSave = async (role: string) => {
           <div className="flex items-start gap-3">
             <Shield className="text-info mt-1" size={20} />
             <div>
-              <h4 className="font-heading font-semibold text-text-light-primary dark:text-text-primary mb-2">
+              <h4 className="font-heading font-semibold text-fg-light dark:text-fg mb-2">
                 {t('permissions.help.title')}
               </h4>
-              <ul className="text-sm text-text-light-muted dark:text-text-muted space-y-1">
+              <ul className="text-sm text-fg-muted dark:text-fg-muted space-y-1">
                 <li>
                   <strong>{t('permissions.roles.admin.label')}:</strong> {t('permissions.help.admin')}
                 </li>

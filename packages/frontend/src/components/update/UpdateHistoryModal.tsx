@@ -71,7 +71,7 @@ export const UpdateHistoryModal = ({
       size="lg"
     >
       <div className="space-y-4">
-        <p className="text-sm text-text-light-muted dark:text-text-muted">
+        <p className="text-sm text-fg-muted dark:text-fg-muted">
           {t('updates.history.subtitle', { server: serverName })}
         </p>
 
@@ -80,7 +80,7 @@ export const UpdateHistoryModal = ({
           <div className="flex items-center justify-between p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
             <div>
               <p className="font-medium text-yellow-500">{t('updates.history.rollback_title')}</p>
-              <p className="text-sm text-text-light-muted dark:text-text-muted">
+              <p className="text-sm text-fg-muted dark:text-fg-muted">
                 {t('updates.history.rollback_description')}
               </p>
             </div>
@@ -103,7 +103,7 @@ export const UpdateHistoryModal = ({
         {/* Loading state */}
         {isLoading && (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 animate-spin text-accent-primary" />
+            <Loader2 className="w-6 h-6 animate-spin text-accent" />
           </div>
         )}
 
@@ -117,9 +117,9 @@ export const UpdateHistoryModal = ({
         {/* Empty state */}
         {!isLoading && !error && (!history || history.length === 0) && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Clock className="w-12 h-12 text-text-light-muted dark:text-text-muted mb-3" />
-            <p className="font-medium text-text-light-primary dark:text-text-primary">{t('updates.history.empty_title')}</p>
-            <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+            <Clock className="w-12 h-12 text-fg-muted dark:text-fg-muted mb-3" />
+            <p className="font-medium text-fg-light dark:text-fg">{t('updates.history.empty_title')}</p>
+            <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
               {t('updates.history.empty_description')}
             </p>
           </div>
@@ -156,11 +156,11 @@ export const UpdateHistoryModal = ({
                     {/* Details */}
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium text-text-light-primary dark:text-text-primary">
+                        <span className="font-medium text-fg-light dark:text-fg">
                           {record.fromVersion}
                         </span>
-                        <span className="text-text-light-muted dark:text-text-muted">→</span>
-                        <span className="font-medium text-text-light-primary dark:text-text-primary">
+                        <span className="text-fg-muted dark:text-fg-muted">→</span>
+                        <span className="font-medium text-fg-light dark:text-fg">
                           {record.toVersion}
                         </span>
                         <Badge variant={statusConfig.variant} size="sm">
@@ -168,7 +168,7 @@ export const UpdateHistoryModal = ({
                         </Badge>
                       </div>
 
-                      <p className="text-sm text-text-light-muted dark:text-text-muted">
+                      <p className="text-sm text-fg-muted dark:text-fg-muted">
                         {formatDate(record.startedAt)}
                        {record.completedAt && ` - ${formatDate(record.completedAt)}`}
                       </p>

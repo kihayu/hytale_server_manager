@@ -117,7 +117,7 @@ export const SearchableSelect = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary flex items-center justify-between gap-2 min-h-[42px]"
+        className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent flex items-center justify-between gap-2 min-h-[42px]"
       >
         <span className="truncate text-left">
           {getDisplayText()}
@@ -147,7 +147,7 @@ export const SearchableSelect = ({
             <div className="relative">
               <Search
                 size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-text-light-muted dark:text-text-muted"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-muted dark:text-fg-muted"
               />
               <input
                 ref={searchInputRef}
@@ -155,7 +155,7 @@ export const SearchableSelect = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={searchPlaceholder ?? t('ui.searchable_select.search')}
-                className="w-full pl-9 pr-3 py-2 bg-gray-100 dark:bg-gray-900 border-0 rounded-md text-sm text-text-light-primary dark:text-text-primary placeholder-text-light-muted dark:placeholder-text-muted focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50"
+                className="w-full pl-9 pr-3 py-2 bg-gray-100 dark:bg-gray-900 border-0 rounded-md text-sm text-fg-light dark:text-fg placeholder-fg-muted dark:placeholder-fg-muted focus:outline-hidden focus:ring-2 focus:ring-accent/50"
               />
             </div>
           </div>
@@ -167,7 +167,7 @@ export const SearchableSelect = ({
               type="button"
               onClick={handleSelectAll}
               className={`w-full px-4 py-2 text-left text-sm flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                !hasSelection ? 'bg-accent-primary/10 text-accent-primary' : 'text-text-light-primary dark:text-text-primary'
+                !hasSelection ? 'bg-accent/10 text-accent' : 'text-fg-light dark:text-fg'
               }`}
             >
               <span>{allLabel ?? t('ui.searchable_select.all')}</span>
@@ -182,7 +182,7 @@ export const SearchableSelect = ({
                   type="button"
                   onClick={() => handleSelect(option)}
                   className={`w-full px-4 py-2 text-left text-sm flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    isSelected(option) ? 'bg-accent-primary/10 text-accent-primary' : 'text-text-light-primary dark:text-text-primary'
+                    isSelected(option) ? 'bg-accent/10 text-accent' : 'text-fg-light dark:text-fg'
                   }`}
                 >
                   <span className="truncate">{option}</span>
@@ -190,7 +190,7 @@ export const SearchableSelect = ({
                 </button>
               ))
             ) : (
-              <div className="px-4 py-3 text-sm text-text-light-muted dark:text-text-muted text-center">
+              <div className="px-4 py-3 text-sm text-fg-muted dark:text-fg-muted text-center">
                 {t('ui.searchable_select.no_results')}
               </div>
             )}
@@ -198,7 +198,7 @@ export const SearchableSelect = ({
 
           {/* Selected count for multi-select */}
           {multiple && (value as string[]).length > 0 && (
-            <div className="p-2 border-t border-gray-200 dark:border-gray-700 text-xs text-text-light-muted dark:text-text-muted">
+            <div className="p-2 border-t border-gray-200 dark:border-gray-700 text-xs text-fg-muted dark:text-fg-muted">
               {t('ui.searchable_select.selected_count', { count: (value as string[]).length })}
             </div>
           )}

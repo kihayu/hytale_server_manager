@@ -67,7 +67,7 @@ export const UpdateSettingsCard = () => {
             </CardDescription>
           </div>
           {updateInfo?.updateAvailable && !dismissed && (
-            <span className="flex items-center gap-1 px-2 py-1 bg-accent-primary/20 text-accent-primary rounded text-sm">
+            <span className="flex items-center gap-1 px-2 py-1 bg-accent/20 text-accent rounded text-sm">
               <Download size={14} />
               {t('settings.updates.update_available')}
             </span>
@@ -91,10 +91,10 @@ export const UpdateSettingsCard = () => {
               <div className="flex items-center gap-3">
                 <Container size={24} className="text-blue-400" />
                 <div>
-                  <p className="text-lg font-semibold text-text-light-primary dark:text-text-primary">
+                  <p className="text-lg font-semibold text-fg-light dark:text-fg">
                     v{updateInfo.currentVersion}
                   </p>
-                  <p className="text-sm text-text-light-muted dark:text-text-muted">
+                  <p className="text-sm text-fg-muted dark:text-fg-muted">
                     {t('settings.updates.docker_mode')}
                   </p>
                 </div>
@@ -117,14 +117,14 @@ export const UpdateSettingsCard = () => {
             {/* Version Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <p className="text-sm text-text-light-muted dark:text-text-muted mb-1">{t('settings.updates.current_version')}</p>
-                <p className="text-lg font-semibold text-text-light-primary dark:text-text-primary">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mb-1">{t('settings.updates.current_version')}</p>
+                <p className="text-lg font-semibold text-fg-light dark:text-fg">
                   v{updateInfo?.currentVersion || '...'}
                 </p>
               </div>
               <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <p className="text-sm text-text-light-muted dark:text-text-muted mb-1">{t('settings.updates.latest_version')}</p>
-                <p className="text-lg font-semibold text-text-light-primary dark:text-text-primary">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mb-1">{t('settings.updates.latest_version')}</p>
+                <p className="text-lg font-semibold text-fg-light dark:text-fg">
                   {updateInfo?.latestVersion ? `v${updateInfo.latestVersion}` : isLoading ? t('settings.updates.checking') : 'Unknown'}
                 </p>
               </div>
@@ -132,14 +132,14 @@ export const UpdateSettingsCard = () => {
 
             {/* Update Available Section */}
             {updateInfo?.updateAvailable && (
-              <div className="border border-accent-primary/30 rounded-lg p-4 mb-6">
+              <div className="border border-accent/30 rounded-lg p-4 mb-6">
                 <div className="flex items-start gap-3 mb-4">
-                  <Download size={20} className="text-accent-primary mt-1 shrink-0" />
+                  <Download size={20} className="text-accent mt-1 shrink-0" />
                   <div>
-                    <h4 className="font-medium text-text-light-primary dark:text-text-primary">
+                    <h4 className="font-medium text-fg-light dark:text-fg">
                       {updateInfo.releaseName || t('settings.updates.version_name', { version: updateInfo.latestVersion })}
                     </h4>
-                    <p className="text-sm text-text-light-muted dark:text-text-muted">
+                    <p className="text-sm text-fg-muted dark:text-fg-muted">
                       {updateInfo.publishedAt
                         ? t('settings.updates.released_on', { date: new Date(updateInfo.publishedAt).toLocaleDateString() })
                         : t('settings.updates.released_recently')}
@@ -150,9 +150,9 @@ export const UpdateSettingsCard = () => {
                 {/* Release Notes */}
                 {updateInfo.releaseNotes && (
                   <div className="mb-4">
-                    <h5 className="text-sm font-medium mb-2 text-text-light-primary dark:text-text-primary">{t('settings.updates.release_notes')}</h5>
+                    <h5 className="text-sm font-medium mb-2 text-fg-light dark:text-fg">{t('settings.updates.release_notes')}</h5>
                     <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm max-h-40 overflow-y-auto">
-                      <pre className="whitespace-pre-wrap font-sans text-text-light-secondary dark:text-text-secondary">
+                      <pre className="whitespace-pre-wrap font-sans text-fg-muted dark:text-fg-muted">
                         {updateInfo.releaseNotes}
                       </pre>
                     </div>
@@ -171,7 +171,7 @@ export const UpdateSettingsCard = () => {
 
                 {/* Update In Progress */}
                 {isUpdating && (
-                  <div className="bg-accent-primary/10 text-accent-primary p-4 rounded mb-4">
+                  <div className="bg-accent/10 text-accent p-4 rounded mb-4">
                     <div className="flex items-center gap-3 mb-2">
                       <Loader2 size={20} className="animate-spin" />
                       <span className="font-medium">{t('settings.updates.updating')}</span>
@@ -199,7 +199,7 @@ export const UpdateSettingsCard = () => {
                     <div className="flex gap-3 ml-8">
                       <Button
                         onClick={() => void handleApplyUpdate()}
-                        className="bg-accent-primary hover:bg-accent-primary/90 text-black"
+                        className="bg-accent hover:bg-accent/90 text-black"
                       >
                         <Play size={16} />
                         {t('settings.updates.confirm_yes')}
@@ -219,7 +219,7 @@ export const UpdateSettingsCard = () => {
                   <div className="flex flex-wrap gap-3">
                     <Button
                       onClick={() => setShowConfirm(true)}
-                      className="bg-accent-primary hover:bg-accent-primary/90 text-black"
+                      className="bg-accent hover:bg-accent/90 text-black"
                     >
                       <Play size={16} />
                       {t('settings.updates.update_now')}
@@ -229,7 +229,7 @@ export const UpdateSettingsCard = () => {
                         href={updateInfo.downloadUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-text-light-primary dark:text-text-primary rounded-lg transition-colors"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-fg-light dark:text-fg rounded-lg transition-colors"
                       >
                         <Download size={16} />
                         {t('settings.updates.download_manually')}
@@ -240,7 +240,7 @@ export const UpdateSettingsCard = () => {
                         href={updateInfo.releaseUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-text-light-primary dark:text-text-primary rounded-lg transition-colors"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-fg-light dark:text-fg rounded-lg transition-colors"
                       >
                         <ExternalLink size={16} />
                         {t('settings.updates.view_github')}
@@ -284,7 +284,7 @@ export const UpdateSettingsCard = () => {
       </CardContent>
       {!updateInfo?.isDocker && (
         <CardFooter className="flex items-center justify-between flex-wrap gap-4">
-          <div className="text-sm text-text-light-muted dark:text-text-muted">
+          <div className="text-sm text-fg-muted dark:text-fg-muted">
             {lastChecked && (
               <span>{t('settings.updates.last_checked', { date: lastChecked.toLocaleString() })}</span>
             )}

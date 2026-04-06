@@ -263,9 +263,9 @@ export const ModsPage = () => {
   };
 
   const modTypeColors: Record<ModType, string> = {
-    plugin: 'bg-accent-primary/20 text-accent-primary border-accent-primary/30',
+    plugin: 'bg-accent/20 text-accent border-accent/30',
     'data-asset': 'bg-success/20 text-success border-success/30',
-    'art-asset': 'bg-accent-secondary/20 text-accent-secondary border-accent-secondary/30',
+    'art-asset': 'bg-accent-alt/20 text-accent-alt border-accent-alt/30',
     'world-save': 'bg-warning/20 text-warning border-warning/30',
   };
 
@@ -292,10 +292,10 @@ export const ModsPage = () => {
           />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <p className="font-medium text-text-light-primary dark:text-text-primary truncate">{mod.title}</p>
+              <p className="font-medium text-fg-light dark:text-fg truncate">{mod.title}</p>
               {selectedProvider === 'all' && <ProviderBadge providerId={mod.providerId} />}
             </div>
-            <p className="text-sm text-text-light-muted dark:text-text-muted truncate">{mod.description}</p>
+            <p className="text-sm text-fg-muted dark:text-fg-muted truncate">{mod.description}</p>
           </div>
         </div>
       ),
@@ -393,8 +393,8 @@ export const ModsPage = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">{t('mods.title')}</h1>
-          <p className="text-text-light-muted dark:text-text-muted mt-1">
+          <h1 className="text-3xl font-heading font-bold text-fg-light dark:text-fg">{t('mods.title')}</h1>
+          <p className="text-fg-muted dark:text-fg-muted mt-1">
             {t('mods.subtitle', {
               available: totalResults > 0 ? t('mods.available_suffix', { count: totalResults }) : '',
             })}
@@ -410,7 +410,7 @@ export const ModsPage = () => {
             <div className="flex flex-col gap-4">
               {/* Search Bar */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-light-muted dark:text-text-muted" size={20} />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-fg-muted dark:text-fg-muted" size={20} />
                 <Input
                   type="text"
                   placeholder={t('mods.search.placeholder')}
@@ -422,7 +422,7 @@ export const ModsPage = () => {
                 {localSearchQuery && (
                   <button
                     onClick={() => setLocalSearchQuery('')}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg"
                     title={t('mods.search.clear')}
                   >
                     <X size={20} />
@@ -441,7 +441,7 @@ export const ModsPage = () => {
                       setSearchClassification(val === 'all' ? null : val as UnifiedClassification);
                       void search();
                     }}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent"
                   >
                     <option value="all">{t('mods.types.all')}</option>
                     <option value="PLUGIN">{t('mods.types.plugin')}</option>
@@ -482,7 +482,7 @@ export const ModsPage = () => {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'downloads' | 'rating' | 'updated')}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent"
                   >
                     <option value="downloads">{t('mods.sort.downloads')}</option>
                     <option value="rating">{t('mods.sort.rating')}</option>
@@ -495,8 +495,8 @@ export const ModsPage = () => {
                   <button
                     onClick={() => setViewMode('card')}
                     className={`p-2 rounded-lg border transition-colors ${viewMode === 'card'
-                      ? 'bg-accent-primary text-white border-accent-primary'
-                      : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+                      ? 'bg-accent text-white border-accent'
+                      : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
                       }`}
                     title={t('mods.view_modes.card')}
                   >
@@ -505,8 +505,8 @@ export const ModsPage = () => {
                   <button
                     onClick={() => setViewMode('table')}
                     className={`p-2 rounded-lg border transition-colors ${viewMode === 'table'
-                      ? 'bg-accent-primary text-white border-accent-primary'
-                      : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+                      ? 'bg-accent text-white border-accent'
+                      : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
                       }`}
                     title={t('mods.view_modes.table')}
                   >
@@ -526,14 +526,14 @@ export const ModsPage = () => {
             <div className="flex items-center gap-4 py-4">
               <AlertCircle size={32} className="text-warning" />
               <div className="flex-1">
-                <h3 className="font-heading font-semibold text-text-light-primary dark:text-text-primary">
+                <h3 className="font-heading font-semibold text-fg-light dark:text-fg">
                   {selectedProvider === 'all'
                     ? t('mods.no_providers')
                     : t('mods.provider_not_configured', {
                       provider: providers.find(p => p.id === selectedProvider)?.displayName || t('mods.provider'),
                     })}
                 </h3>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">
                   {t('mods.configure_hint')}
                 </p>
               </div>
@@ -552,8 +552,8 @@ export const ModsPage = () => {
       {/* Loading State */}
       {searchLoading && (
         <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-accent-primary border-t-transparent"></div>
-          <p className="text-text-light-muted dark:text-text-muted mt-4">{t('mods.loading')}</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-accent border-t-transparent"></div>
+          <p className="text-fg-muted dark:text-fg-muted mt-4">{t('mods.loading')}</p>
         </div>
       )}
 
@@ -564,10 +564,10 @@ export const ModsPage = () => {
             <div className="flex items-center gap-4 py-4">
               <AlertCircle size={32} className="text-danger" />
               <div className="flex-1">
-                <h3 className="font-heading font-semibold text-text-light-primary dark:text-text-primary">
+                <h3 className="font-heading font-semibold text-fg-light dark:text-fg">
                   {t('mods.error.title')}
                 </h3>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">{searchError}</p>
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">{searchError}</p>
               </div>
               <Button variant="secondary" onClick={() => void search()}>
                 {t('mods.actions.retry')}
@@ -614,7 +614,7 @@ export const ModsPage = () => {
                         </CardHeader>
 
                         <CardContent className="space-y-3 flex-1 flex flex-col">
-                          <p className="text-sm text-text-light-muted dark:text-text-muted truncate">
+                          <p className="text-sm text-fg-muted dark:text-fg-muted truncate">
                             {mod.description}
                           </p>
 
@@ -632,7 +632,7 @@ export const ModsPage = () => {
                             ))}
                           </div>
 
-                          <div className="flex items-center justify-between text-xs text-text-light-muted dark:text-text-muted">
+                          <div className="flex items-center justify-between text-xs text-fg-muted dark:text-fg-muted">
                             <span>{t('mods.downloads', { downloads: mod.downloads.toLocaleString() })}</span>
                             <span>{mod.rating?.toFixed(1) || '-'}</span>
                           </div>
@@ -666,7 +666,7 @@ export const ModsPage = () => {
               {/* Card View Pagination */}
               {totalCardPages > 1 && (
                 <div className="flex items-center justify-between mt-6 px-2">
-                  <span className="text-sm text-text-light-muted dark:text-text-muted">
+                  <span className="text-sm text-fg-muted dark:text-fg-muted">
                     {t('table.pagination.showing', {
                       start: (cardPage - 1) * searchPageSize + 1,
                       end: Math.min(cardPage * searchPageSize, totalResults),
@@ -686,7 +686,7 @@ export const ModsPage = () => {
                     >
                       {t('table.pagination.previous')}
                     </Button>
-                    <span className="text-sm text-text-light-muted dark:text-text-muted px-2">
+                    <span className="text-sm text-fg-muted dark:text-fg-muted px-2">
                       {t('table.pagination.page_of', { page: cardPage, total: totalCardPages })}
                     </span>
                     <Button
@@ -721,7 +721,7 @@ export const ModsPage = () => {
 
           {filteredMods.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-text-light-muted dark:text-text-muted">{t('mods.empty')}</p>
+              <p className="text-fg-muted dark:text-fg-muted">{t('mods.empty')}</p>
             </div>
           )}
         </>

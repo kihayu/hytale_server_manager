@@ -362,18 +362,18 @@ export const UploadFileModal = ({
         <div
           className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
             isDragging
-              ? 'border-accent-primary bg-accent-primary/5'
+              ? 'border-accent bg-accent/5'
               : 'border-gray-300 dark:border-gray-700'
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
-          <Upload size={32} className="mx-auto mb-3 text-text-light-muted dark:text-text-muted" />
-          <p className="text-text-light-primary dark:text-text-primary font-medium mb-1">
+          <Upload size={32} className="mx-auto mb-3 text-fg-muted dark:text-fg-muted" />
+          <p className="text-fg-light dark:text-fg font-medium mb-1">
             {t('files.upload.drag_drop')}
           </p>
-          <p className="text-sm text-text-light-muted dark:text-text-muted mb-4">
+          <p className="text-sm text-fg-muted dark:text-fg-muted mb-4">
             {t('files.upload.click_select')}
           </p>
           <Button
@@ -429,7 +429,7 @@ export const UploadFileModal = ({
               onChange={(e) => setAutoExtractZip(e.target.checked)}
               className="rounded border-gray-300 dark:border-gray-700"
             />
-            <span className="text-sm text-text-light-primary dark:text-text-primary">
+            <span className="text-sm text-fg-light dark:text-fg">
               {t('files.upload.auto_extract')}
             </span>
           </label>
@@ -439,13 +439,13 @@ export const UploadFileModal = ({
         {uploads.length > 0 && (
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <h3 className="font-medium text-text-light-primary dark:text-text-primary">
+              <h3 className="font-medium text-fg-light dark:text-fg">
                 {t('files.upload.list_title', { count: uploads.length })}
               </h3>
               {completedCount > 0 && (
                 <button
                   onClick={clearCompleted}
-                  className="text-xs text-accent-primary hover:underline"
+                  className="text-xs text-accent hover:underline"
                 >
                   {t('files.upload.clear_completed')}
                 </button>
@@ -460,7 +460,7 @@ export const UploadFileModal = ({
                       <File size={16} className="text-gray-500 shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
-                          <p className="text-sm font-medium text-text-light-primary dark:text-text-primary truncate">
+                          <p className="text-sm font-medium text-fg-light dark:text-fg truncate">
                             {upload.file.name}
                           </p>
                           {upload.status === 'success' && (
@@ -480,11 +480,11 @@ export const UploadFileModal = ({
                           <>
                             <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-1.5">
                               <div
-                                className="bg-accent-primary rounded-full h-1.5 transition-all"
+                                className="bg-accent rounded-full h-1.5 transition-all"
                                 style={{ width: `${upload.progress}%` }}
                               />
                             </div>
-                            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                            <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                               {upload.status === 'uploading'
                                 ? `${Math.round(upload.progress)}%`
                                 : t('files.upload.waiting')}
@@ -493,7 +493,7 @@ export const UploadFileModal = ({
                         ) : null}
 
                         {upload.status === 'extracting' && upload.extractedFiles && (
-                          <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                          <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                             {t('files.upload.extracted_count', { count: upload.extractedFiles.length })}
                           </p>
                         )}

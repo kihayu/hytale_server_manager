@@ -156,8 +156,8 @@ export const ConsolePage = () => {
     switch (level.toLowerCase()) {
       case 'error': return 'text-danger';
       case 'warn': return 'text-warning';
-      case 'debug': return 'text-accent-secondary';
-      default: return 'text-text-light-primary dark:text-text-primary';
+      case 'debug': return 'text-accent-alt';
+      default: return 'text-fg-light dark:text-fg';
     }
   };
 
@@ -168,8 +168,8 @@ export const ConsolePage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">{t('console.title')}</h1>
-          <p className="text-text-light-muted dark:text-text-muted mt-1">{t('console.subtitle')}</p>
+          <h1 className="text-3xl font-heading font-bold text-fg-light dark:text-fg">{t('console.title')}</h1>
+          <p className="text-fg-muted dark:text-fg-muted mt-1">{t('console.subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="ghost" size="sm" icon={<Download size={16} />} onClick={handleDownloadLogs} disabled={logs.length === 0}>
@@ -188,8 +188,8 @@ export const ConsolePage = () => {
             key={server.id}
             onClick={() => setSelectedServer(server.id)}
             className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${selectedServer === server.id
-                ? 'bg-accent-primary text-black'
-                : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted hover:text-text-light-primary dark:text-text-primary dark:hover:text-text-primary dark:hover:bg-primary-bg-secondary-hover'
+                ? 'bg-accent text-black cursor-default!'
+                : 'bg-white dark:bg-surface text-fg-muted hover:text-fg-light dark:text-fg dark:hover:text-fg dark:hover:bg-surface-hover'
               }`}
           >
             {server.name}
@@ -213,9 +213,9 @@ export const ConsolePage = () => {
         </CardHeader>
         <CardContent>
           {/* Console Output */}
-          <div className="bg-white dark:bg-primary-bg rounded-lg p-4 font-mono text-sm h-96 overflow-y-auto custom-scrollbar">
+          <div className="bg-white dark:bg-canvas rounded-lg p-4 font-mono text-sm h-96 overflow-y-auto custom-scrollbar">
             {logs.length === 0 ? (
-              <div className="text-text-light-muted dark:text-text-muted text-center py-8">
+              <div className="text-fg-muted dark:text-fg-muted text-center py-8">
                 {['running', 'starting'].includes(selectedServerData?.status || '')
                   ? t('console.waiting_for_logs')
                   : t('console.start_server_prompt')}
@@ -223,12 +223,12 @@ export const ConsolePage = () => {
             ) : (
               logs.map((log, index) => (
                 <div key={log.id || index} className="mb-1 flex gap-2">
-                  <span className="text-text-light-muted dark:text-text-muted">
+                  <span className="text-fg-muted dark:text-fg-muted">
                     [{new Date(log.timestamp).toLocaleTimeString()}]
                   </span>
                   <span className={getLogLevelColor(log.level)}>[{log.level.toUpperCase()}]</span>
-                  <span className="text-accent-secondary">[{log.source || t('console.server_default')}]</span>
-                  <span className="text-text-light-primary dark:text-text-primary">{formatLogMessage(log.message)}</span>
+                  <span className="text-accent-alt">[{log.source || t('console.server_default')}]</span>
+                  <span className="text-fg-light dark:text-fg">{formatLogMessage(log.message)}</span>
                 </div>
               ))
             )}
@@ -243,7 +243,7 @@ export const ConsolePage = () => {
               onChange={(e) => setCommand(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendCommand()}
               placeholder={t('console.command_placeholder')}
-              className="flex-1 px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary placeholder-text-muted focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 font-mono"
+              className="flex-1 px-4 py-2 bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg placeholder-fg-muted focus:outline-hidden focus:ring-2 focus:ring-accent/50 font-mono"
               disabled={!['running', 'starting'].includes(selectedServerData?.status || '')}
             />
             <Button

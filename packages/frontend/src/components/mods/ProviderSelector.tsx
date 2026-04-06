@@ -41,7 +41,7 @@ export const ProviderSelector = ({
   if (providersLoading) {
     return (
       <div className={`px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 ${className}`}>
-        <span className="text-text-light-muted dark:text-text-muted text-sm">
+        <span className="text-fg-muted dark:text-fg-muted text-sm">
           {t('providers.loading')}
         </span>
       </div>
@@ -55,7 +55,7 @@ export const ProviderSelector = ({
           <select
             value={selectedProvider}
             onChange={(e) => setSelectedProvider(e.target.value)}
-            className="appearance-none px-4 py-2 pr-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary cursor-pointer min-w-[180px]"
+            className="appearance-none px-4 py-2 pr-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent cursor-pointer min-w-[180px]"
           >
             <option value="all">{t('providers.all')}</option>
             {providers.map((provider) => (
@@ -67,7 +67,7 @@ export const ProviderSelector = ({
           </select>
           <ChevronDown
             size={16}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-text-light-muted dark:text-text-muted pointer-events-none"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-muted dark:text-fg-muted pointer-events-none"
           />
         </div>
 
@@ -94,7 +94,7 @@ export const ProviderSelector = ({
         )}
 
         {selectedProvider === 'all' && (
-          <span className="flex items-center gap-1 text-text-light-muted dark:text-text-muted text-xs">
+          <span className="flex items-center gap-1 text-fg-muted dark:text-fg-muted text-xs">
             <Globe size={14} />
             {t('providers.search_all')}
           </span>
@@ -138,7 +138,7 @@ export const ProviderSelectorCompact = ({
       <select
         value={selectedProvider}
         onChange={(e) => setSelectedProvider(e.target.value)}
-        className="appearance-none px-3 py-1.5 pr-8 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary cursor-pointer text-sm"
+        className="appearance-none px-3 py-1.5 pr-8 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent cursor-pointer text-sm"
       >
         <option value="all">{t('providers.all')}</option>
         {providers.map((provider) => (
@@ -149,7 +149,7 @@ export const ProviderSelectorCompact = ({
       </select>
       <ChevronDown
         size={14}
-        className="absolute right-2 top-1/2 -translate-y-1/2 text-text-light-muted dark:text-text-muted pointer-events-none"
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-fg-muted dark:text-fg-muted pointer-events-none"
       />
     </div>
   );
@@ -171,7 +171,7 @@ export const ProviderBadge = ({
   if (!provider) {
     return (
       <span
-        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-text-light-secondary dark:text-text-secondary ${className}`}
+        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-fg-muted dark:text-fg-muted ${className}`}
       >
         {providerId}
       </span>
@@ -186,7 +186,7 @@ export const ProviderBadge = ({
 
   const colorClass =
     colorClasses[providerId] ||
-    'bg-gray-100 dark:bg-gray-700 text-text-light-secondary dark:text-text-secondary';
+    'bg-gray-100 dark:bg-gray-700 text-fg-muted dark:text-fg-muted';
 
   return (
     <span

@@ -23,10 +23,10 @@ export const InstallationQueueWidget = () => {
   const getStatusIcon = (status: InstallationStatus) => {
     switch (status) {
       case 'pending':
-        return <Download size={16} className="text-text-light-muted dark:text-text-muted" />;
+        return <Download size={16} className="text-fg-muted dark:text-fg-muted" />;
       case 'downloading':
       case 'installing':
-        return <Loader2 size={16} className="text-accent-primary animate-spin" />;
+        return <Loader2 size={16} className="text-accent animate-spin" />;
       case 'completed':
         return <CheckCircle2 size={16} className="text-success" />;
       case 'failed':
@@ -55,11 +55,11 @@ export const InstallationQueueWidget = () => {
       exit={{ opacity: 0, y: 20 }}
       className="fixed bottom-6 right-6 w-96 z-50"
     >
-      <Card variant="glass" className="shadow-2xl border-2 border-accent-primary/20">
+      <Card variant="glass" className="shadow-2xl border-2 border-accent/20">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Download size={20} className="text-accent-primary" />
+              <Download size={20} className="text-accent" />
               <CardTitle className="text-base">{t('installation_queue.title')}</CardTitle>
             </div>
             <div className="flex items-center gap-2">
@@ -94,7 +94,7 @@ export const InstallationQueueWidget = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
-                      className="flex items-start gap-3 p-3 bg-white dark:bg-primary-bg-secondary rounded-lg border border-gray-300 dark:border-gray-700"
+                      className="flex items-start gap-3 p-3 bg-white dark:bg-surface rounded-lg border border-gray-300 dark:border-gray-700"
                     >
                       <img
                         src={item.projectIconUrl || `https://via.placeholder.com/40/6366f1/ffffff?text=${item.projectTitle[0]}`}
@@ -104,10 +104,10 @@ export const InstallationQueueWidget = () => {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm text-text-light-primary dark:text-text-primary truncate">
+                            <p className="font-medium text-sm text-fg-light dark:text-fg truncate">
                               {item.projectTitle}
                             </p>
-                            <p className="text-xs text-text-light-muted dark:text-text-muted truncate">
+                            <p className="text-xs text-fg-muted dark:text-fg-muted truncate">
                               {item.serverName} • v{item.versionName}
                             </p>
                           </div>
@@ -118,7 +118,7 @@ export const InstallationQueueWidget = () => {
                                 onClick={() => removeFromQueue(item.id)}
                                 className="p-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded transition-colors"
                               >
-                                <X size={14} className="text-text-light-muted dark:text-text-muted" />
+                                <X size={14} className="text-fg-muted dark:text-fg-muted" />
                               </button>
                             )}
                           </div>
@@ -136,10 +136,10 @@ export const InstallationQueueWidget = () => {
                               <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${item.progress}%` }}
-                                className="h-full bg-accent-primary"
+                                className="h-full bg-accent"
                               />
                             </div>
-                            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                            <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                               {item.progress}%
                             </p>
                           </div>

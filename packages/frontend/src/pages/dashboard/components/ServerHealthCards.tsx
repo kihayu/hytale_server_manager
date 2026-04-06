@@ -45,7 +45,7 @@ export const ServerHealthCards = ({ servers, loading }: ServerHealthCardsProps) 
           <CardTitle>{t('dashboard.health.title')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-text-light-muted dark:text-text-muted">
+          <div className="text-center py-8 text-fg-muted dark:text-fg-muted">
             {t('dashboard.health.loading')}
           </div>
         </CardContent>
@@ -60,7 +60,7 @@ export const ServerHealthCards = ({ servers, loading }: ServerHealthCardsProps) 
           <CardTitle>{t('dashboard.health.title')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-text-light-muted dark:text-text-muted">
+          <div className="text-center py-8 text-fg-muted dark:text-fg-muted">
             {t('dashboard.health.empty')}
           </div>
         </CardContent>
@@ -78,13 +78,13 @@ export const ServerHealthCards = ({ servers, loading }: ServerHealthCardsProps) 
           {servers.map((server) => (
             <div
               key={server.id}
-              className="p-3 bg-white dark:bg-primary-bg-secondary rounded-lg border border-gray-200 dark:border-gray-800 hover:border-accent-primary/50 transition-colors cursor-pointer"
+              className="p-3 bg-white dark:bg-surface rounded-lg border border-gray-200 dark:border-gray-800 hover:border-accent/50 transition-colors cursor-pointer"
               onClick={() => void navigate(`/servers/${server.id}`)}
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <StatusIndicator status={server.status} size="sm" />
-                  <span className="font-medium text-text-light-primary dark:text-text-primary">
+                  <span className="font-medium text-fg-light dark:text-fg">
                     {server.name}
                   </span>
                 </div>
@@ -95,7 +95,7 @@ export const ServerHealthCards = ({ servers, loading }: ServerHealthCardsProps) 
 
               {server.status === 'running' && (
                 <div className="grid grid-cols-3 gap-4 text-sm">
-                  <div className="flex items-center gap-1 text-text-light-muted dark:text-text-muted">
+                  <div className="flex items-center gap-1 text-fg-muted dark:text-fg-muted">
                     <Cpu size={14} />
                     <span
                       className={
@@ -109,7 +109,7 @@ export const ServerHealthCards = ({ servers, loading }: ServerHealthCardsProps) 
                       {server.cpuUsage.toFixed(0)}%
                     </span>
                   </div>
-                  <div className="flex items-center gap-1 text-text-light-muted dark:text-text-muted">
+                  <div className="flex items-center gap-1 text-fg-muted dark:text-fg-muted">
                     <MemoryStick size={14} />
                     <span
                       className={
@@ -123,7 +123,7 @@ export const ServerHealthCards = ({ servers, loading }: ServerHealthCardsProps) 
                       {server.memoryUsage.toFixed(0)}%
                     </span>
                   </div>
-                  <div className="flex items-center gap-1 text-text-light-muted dark:text-text-muted">
+                  <div className="flex items-center gap-1 text-fg-muted dark:text-fg-muted">
                     <Users size={14} />
                     <span>
                       {server.playerCount}/{server.maxPlayers}

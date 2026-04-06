@@ -33,7 +33,7 @@ export const UpdateBadge = () => {
       >
         <Link
           to="/settings#updates"
-          className="flex items-center gap-2 px-3 py-2 bg-accent-primary/20 hover:bg-accent-primary/30 text-accent-primary rounded-lg transition-colors"
+          className="flex items-center gap-2 px-3 py-2 bg-accent/20 hover:bg-accent/30 text-accent rounded-lg transition-colors"
         >
           <Download size={16} />
           <span className="text-sm font-medium hidden sm:inline">

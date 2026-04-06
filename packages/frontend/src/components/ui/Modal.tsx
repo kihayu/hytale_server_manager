@@ -70,11 +70,11 @@ export const Modal = ({
             {/* Header */}
             {(title || showCloseButton) && (
               <div className="flex items-center justify-between mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-gray-300 dark:border-gray-800">
-                {title && <h2 className="text-xl sm:text-2xl font-heading font-semibold text-text-light-primary dark:text-text-primary">{title}</h2>}
+                {title && <h2 className="text-xl sm:text-2xl font-heading font-semibold text-fg-light dark:text-fg">{title}</h2>}
                 {showCloseButton && (
                   <button
                     onClick={onClose}
-                    className="ml-auto p-2 sm:p-1 -mr-2 sm:mr-0 text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:text-text-primary transition-colors"
+                    className="ml-auto p-2 sm:p-1 -mr-2 sm:mr-0 text-fg-muted dark:text-fg-muted hover:text-fg-light dark:text-fg transition-colors"
                     aria-label={t('common.close')}
                   >
                     <X size={28} className="sm:w-6 sm:h-6" />

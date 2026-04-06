@@ -159,15 +159,15 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
     >
       <div className="space-y-4">
         {/* Server Icon Header */}
-        <div className="flex items-center gap-3 p-4 bg-primary-bg-secondary rounded-lg">
-          <div className="p-3 bg-accent-primary/20 rounded-lg">
-            <ServerIcon className="text-accent-primary" size={24} />
+        <div className="flex items-center gap-3 p-4 bg-surface rounded-lg">
+          <div className="p-3 bg-accent/20 rounded-lg">
+            <ServerIcon className="text-accent" size={24} />
           </div>
           <div>
-            <h3 className="font-heading font-semibold text-text-light-primary dark:text-text-primary">
+            <h3 className="font-heading font-semibold text-fg-light dark:text-fg">
               {t('servers.create.header')}
             </h3>
-            <p className="text-sm text-text-light-muted dark:text-text-muted">
+            <p className="text-sm text-fg-muted dark:text-fg-muted">
               {t('servers.create.subtitle')}
             </p>
           </div>
@@ -177,7 +177,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
         <div className="space-y-4">
           {/* Server Name */}
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('servers.create.name_label')} *
             </label>
             <Input
@@ -193,7 +193,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
 
           {/* Server Directory Path */}
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t("servers.create.path_label")} *
             </label>
             <Input
@@ -202,7 +202,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
               value={formData.serverPath}
               onChange={(e) => updateField('serverPath', e.target.value)}
             />
-            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+            <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
               {t('servers.create.path_help')}
             </p>
             {errors.serverPath && (
@@ -223,7 +223,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
           {/* Address and Port */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+              <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
                 {t('servers.create.address_label')} *
               </label>
               <Input
@@ -238,7 +238,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+              <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
                 {t('servers.create.port_label')} *
               </label>
               <Input
@@ -255,13 +255,13 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
 
           {/* Game Mode */}
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('servers.create.gamemode_label')} *
             </label>
             <select
               value={formData.gameMode}
               onChange={(e) => updateField('gameMode', e.target.value)}
-              className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50"
+              className="w-full px-4 py-2 bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent/50"
             >
               <option value="expedition">{t('servers.create.gamemodes.expedition')}</option>
               <option value="creative">{t('servers.create.gamemodes.creative')}</option>
@@ -273,7 +273,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
 
           {/* Adapter Type */}
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('servers.create.adapter.label')}
             </label>
             <select
@@ -301,24 +301,24 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
                   }));
                 }
               }}
-              className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50"
+              className="w-full px-4 py-2 bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent/50"
             >
               <option value="java">{t('servers.create.adapter.java')}</option>
               <option value="hytale" disabled>{t('servers.create.adapter.hytale')}</option>
             </select>
-            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+            <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
               {formData.adapterType === 'java' && t('servers.create.adapter.java_help')}
             </p>
           </div>
 
           {/* Java Adapter Config */}
           {formData.adapterType === 'java' && (
-            <div className="space-y-4 p-4 bg-primary-bg-secondary rounded-lg">
-              <h4 className="font-medium text-text-light-primary dark:text-text-primary">{t('servers.create.java.title')}</h4>
+            <div className="space-y-4 p-4 bg-surface rounded-lg">
+              <h4 className="font-medium text-fg-light dark:text-fg">{t('servers.create.java.title')}</h4>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+                  <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
                     {t('servers.create.java.jar_label')}
                   </label>
                   <Input
@@ -330,13 +330,13 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
                       adapterConfig: { ...prev.adapterConfig, jarFile: e.target.value },
                     }))}
                   />
-                  <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                  <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                     {t('servers.create.java.jar_help')}
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+                  <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
                     {t('servers.create.java.assets_label')}
                   </label>
                   <Input
@@ -348,13 +348,13 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
                       adapterConfig: { ...prev.adapterConfig, assetsPath: e.target.value },
                     }))}
                   />
-                  <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                  <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                     {t('servers.create.java.assets_help')}
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+                  <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
                     {t('servers.create.java.java_label')}
                   </label>
                   <Input
@@ -366,14 +366,14 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
                       adapterConfig: { ...prev.adapterConfig, javaPath: e.target.value },
                     }))}
                   />
-                  <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                  <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                     {t('servers.create.java.java_help')}
                   </p>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+                <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
                   {t('servers.create.java.jvm_label')}
                 </label>
                 <textarea
@@ -383,10 +383,10 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
                     ...prev,
                     jvmArgs: e.target.value,
                   }))}
-                  className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 font-mono text-sm"
+                  className="w-full px-4 py-2 bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent/50 font-mono text-sm"
                   rows={2}
                 />
-                <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                   {t('servers.create.java.jvm_help')}
                 </p>
               </div>
@@ -401,13 +401,13 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
           <div className="flex items-start gap-3">
             <AlertTriangle className="w-6 h-6 text-yellow-500 shrink-0" />
             <div>
-              <h4 className="font-medium text-text-light-primary dark:text-text-primary mb-2">
+              <h4 className="font-medium text-fg-light dark:text-fg mb-2">
                 Confirm: No Server Files Downloaded
               </h4>
-              <p className="text-sm text-text-light-muted dark:text-text-muted mb-3">
+              <p className="text-sm text-fg-muted dark:text-fg-muted mb-3">
                 You are creating this server without downloading files. This means:
               </p>
-              <ul className="text-sm text-text-light-muted dark:text-text-muted list-disc list-inside space-y-1 mb-3">
+              <ul className="text-sm text-fg-muted dark:text-fg-muted list-disc list-inside space-y-1 mb-3">
                 <li>The server directory must already contain valid server files</li>
                 <li>The server JAR file must exist at the specified path</li>
                 <li>This option is only intended for migrating existing servers</li>

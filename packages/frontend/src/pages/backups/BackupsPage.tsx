@@ -227,11 +227,11 @@ export const BackupsPage = () => {
               e.stopPropagation();
               void navigate(`/servers/${backup.server.id}`);
             }}
-            className="font-medium text-accent-primary hover:text-accent-primary/80 hover:underline transition-colors text-left"
+            className="font-medium text-accent hover:text-accent/80 hover:underline transition-colors text-left"
           >
             {backup.server.name}
           </button>
-          {backup.description && <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">{backup.description}</p>}
+          {backup.description && <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">{backup.description}</p>}
         </div>
       ),
     },
@@ -239,7 +239,7 @@ export const BackupsPage = () => {
       key: 'name',
       label: t('backups.columns.name'),
       render: (backup) => (
-        <span className="text-sm font-mono text-text-light-primary dark:text-text-primary">{backup.name}</span>
+        <span className="text-sm font-mono text-fg-light dark:text-fg">{backup.name}</span>
       ),
     },
     {
@@ -252,7 +252,7 @@ export const BackupsPage = () => {
       label: t('backups.columns.files'),
       render: (backup) => {
         if (backup.totalFiles === null) {
-          return <span className="text-text-light-muted dark:text-text-muted">-</span>;
+          return <span className="text-fg-muted dark:text-fg-muted">-</span>;
         }
         const skippedCount = backup.skippedFiles ? (JSON.parse(backup.skippedFiles) as string[]).length : 0;
         return (
@@ -280,7 +280,7 @@ export const BackupsPage = () => {
       render: (backup) => (
         <div>
           <p>{new Date(backup.createdAt).toLocaleDateString()}</p>
-          <p className="text-xs text-text-light-muted dark:text-text-muted">
+          <p className="text-xs text-fg-muted dark:text-fg-muted">
             {new Date(backup.createdAt).toLocaleTimeString()}
           </p>
         </div>
@@ -356,10 +356,10 @@ export const BackupsPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+          <h1 className="text-3xl font-heading font-bold text-fg-light dark:text-fg">
             {t('backups.title')}
           </h1>
-          <p className="text-text-light-muted dark:text-text-muted mt-1">{t('backups.subtitle')}</p>
+          <p className="text-fg-muted dark:text-fg-muted mt-1">{t('backups.subtitle')}</p>
         </div>
         <Button variant="primary" icon={<Plus size={18} />} onClick={() => setShowCreateModal(true)}>
           {t('backups.actions.create_backup')}
@@ -368,12 +368,12 @@ export const BackupsPage = () => {
 
       {/* Server Selector */}
       <div className="flex flex-wrap gap-2 items-center">
-        <span className="text-sm text-text-light-muted dark:text-text-muted">{t('backups.server_selector.label')}</span>
+        <span className="text-sm text-fg-muted dark:text-fg-muted">{t('backups.server_selector.label')}</span>
         <button
           onClick={() => setSelectedServer('all')}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedServer === 'all'
-              ? 'bg-accent-primary text-black'
-              : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+              ? 'bg-accent text-black'
+              : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
             }`}
         >
           {t('backups.server_selector.all_servers')}
@@ -383,8 +383,8 @@ export const BackupsPage = () => {
             key={server.id}
             onClick={() => setSelectedServer(server.id)}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedServer === server.id
-                ? 'bg-accent-primary text-black'
-                : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+                ? 'bg-accent text-black'
+                : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
               }`}
           >
             {server.name}
@@ -398,15 +398,15 @@ export const BackupsPage = () => {
           <CardContent>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-text-light-muted dark:text-text-muted text-sm">{t('backups.stats.total')}</p>
-                <p className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary mt-1">
+                <p className="text-fg-muted dark:text-fg-muted text-sm">{t('backups.stats.total')}</p>
+                <p className="text-3xl font-heading font-bold text-fg-light dark:text-fg mt-1">
                   {stats.totalBackups}
                 </p>
-                <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                   {t('backups.stats.completed_failed', { completed: stats.completedBackups, failed: stats.failedBackups })}
                 </p>
               </div>
-              <Database size={32} className="text-accent-primary" />
+              <Database size={32} className="text-accent" />
             </div>
           </CardContent>
         </Card>
@@ -414,8 +414,8 @@ export const BackupsPage = () => {
           <CardContent>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-text-light-muted dark:text-text-muted text-sm">{t('backups.stats.storage_used')}</p>
-                <p className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary mt-1">
+                <p className="text-fg-muted dark:text-fg-muted text-sm">{t('backups.stats.storage_used')}</p>
+                <p className="text-3xl font-heading font-bold text-fg-light dark:text-fg mt-1">
                   {formatBytes(stats.totalSize)}
                 </p>
               </div>
@@ -427,12 +427,12 @@ export const BackupsPage = () => {
           <CardContent>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-text-light-muted dark:text-text-muted text-sm">{t('backups.stats.avg_size')}</p>
-                <p className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary mt-1">
+                <p className="text-fg-muted dark:text-fg-muted text-sm">{t('backups.stats.avg_size')}</p>
+                <p className="text-3xl font-heading font-bold text-fg-light dark:text-fg mt-1">
                   {stats.totalBackups > 0 ? formatBytes(stats.totalSize / stats.totalBackups) : '0 Bytes'}
                 </p>
               </div>
-              <Calendar size={32} className="text-accent-secondary" />
+              <Calendar size={32} className="text-accent-alt" />
             </div>
           </CardContent>
         </Card>
@@ -451,7 +451,7 @@ export const BackupsPage = () => {
         </CardHeader>
         <CardContent>
           {backups.length === 0 && !loading ? (
-            <div className="text-center py-12 text-text-light-muted dark:text-text-muted">
+            <div className="text-center py-12 text-fg-muted dark:text-fg-muted">
               <Database size={48} className="mx-auto mb-4 opacity-50" />
               <p>{t('backups.empty.title')}</p>
               <Button variant="primary" className="mt-4" onClick={() => setShowCreateModal(true)}>
@@ -495,13 +495,13 @@ export const BackupsPage = () => {
       {/* Skipped Files Modal */}
       {viewingSkippedFiles && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-primary-bg-secondary rounded-xl shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col">
+          <div className="bg-white dark:bg-surface rounded-xl shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
               <div>
-                <h2 className="text-lg font-heading font-bold text-text-light-primary dark:text-text-primary">
+                <h2 className="text-lg font-heading font-bold text-fg-light dark:text-fg">
                   {t('backups.skipped.title')}
                 </h2>
-                <p className="text-sm text-text-light-muted dark:text-text-muted">
+                <p className="text-sm text-fg-muted dark:text-fg-muted">
                   {viewingSkippedFiles.name}
                 </p>
               </div>
@@ -520,7 +520,7 @@ export const BackupsPage = () => {
 
                 if (skippedFiles.length === 0) {
                   return (
-                    <p className="text-text-light-muted dark:text-text-muted text-center py-8">
+                    <p className="text-fg-muted dark:text-fg-muted text-center py-8">
                       {t('backups.skipped.none')}
                     </p>
                   );
@@ -533,20 +533,20 @@ export const BackupsPage = () => {
 
                 return (
                   <div className="space-y-4">
-                    <div className="flex items-center gap-2 text-sm text-text-light-muted dark:text-text-muted">
+                    <div className="flex items-center gap-2 text-sm text-fg-muted dark:text-fg-muted">
                       <AlertCircle size={16} className="text-warning" />
                       <span>{t('backups.skipped.summary', { count: skippedFiles.length })}</span>
                     </div>
 
                     {byPattern.length > 0 && (
                       <div>
-                        <h3 className="text-sm font-semibold text-text-light-primary dark:text-text-primary mb-2">
+                        <h3 className="text-sm font-semibold text-fg-light dark:text-fg mb-2">
                           {t('backups.skipped.excluded', { count: byPattern.length })}
                         </h3>
-                        <div className="bg-gray-100 dark:bg-primary-bg rounded-lg p-3 max-h-40 overflow-y-auto">
+                        <div className="bg-gray-100 dark:bg-canvas rounded-lg p-3 max-h-40 overflow-y-auto">
                           <ul className="space-y-1">
                             {byPattern.map((file, i) => (
-                              <li key={i} className="text-xs font-mono text-text-light-muted dark:text-text-muted">
+                              <li key={i} className="text-xs font-mono text-fg-muted dark:text-fg-muted">
                                 {file.replace(' (excluded by pattern)', '')}
                               </li>
                             ))}
@@ -557,13 +557,13 @@ export const BackupsPage = () => {
 
                     {byLocked.length > 0 && (
                       <div>
-                        <h3 className="text-sm font-semibold text-text-light-primary dark:text-text-primary mb-2">
+                        <h3 className="text-sm font-semibold text-fg-light dark:text-fg mb-2">
                           {t('backups.skipped.locked', { count: byLocked.length })}
                         </h3>
-                        <div className="bg-gray-100 dark:bg-primary-bg rounded-lg p-3 max-h-40 overflow-y-auto">
+                        <div className="bg-gray-100 dark:bg-canvas rounded-lg p-3 max-h-40 overflow-y-auto">
                           <ul className="space-y-1">
                             {byLocked.map((file, i) => (
-                              <li key={i} className="text-xs font-mono text-text-light-muted dark:text-text-muted">
+                              <li key={i} className="text-xs font-mono text-fg-muted dark:text-fg-muted">
                                 {file.replace(' (locked/inaccessible)', '')}
                               </li>
                             ))}
@@ -574,13 +574,13 @@ export const BackupsPage = () => {
 
                     {other.length > 0 && (
                       <div>
-                        <h3 className="text-sm font-semibold text-text-light-primary dark:text-text-primary mb-2">
+                        <h3 className="text-sm font-semibold text-fg-light dark:text-fg mb-2">
                           {t('backups.skipped.other', { count: other.length })}
                         </h3>
-                        <div className="bg-gray-100 dark:bg-primary-bg rounded-lg p-3 max-h-40 overflow-y-auto">
+                        <div className="bg-gray-100 dark:bg-canvas rounded-lg p-3 max-h-40 overflow-y-auto">
                           <ul className="space-y-1">
                             {other.map((file, i) => (
-                              <li key={i} className="text-xs font-mono text-text-light-muted dark:text-text-muted">
+                              <li key={i} className="text-xs font-mono text-fg-muted dark:text-fg-muted">
                                 {file}
                               </li>
                             ))}

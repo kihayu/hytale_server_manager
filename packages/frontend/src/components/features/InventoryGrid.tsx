@@ -12,9 +12,9 @@ export const InventoryGrid = ({ items, columns = 9, showTooltip = true }: Invent
   const { t } = useTranslation();
   const getRarityColor = (rarity: ItemStack['rarity']) => {
     switch (rarity) {
-      case 'legendary': return 'border-accent-primary shadow-accent-primary/30';
+      case 'legendary': return 'border-accent shadow-accent/30';
       case 'epic': return 'border-purple-500 shadow-purple-500/30';
-      case 'rare': return 'border-accent-secondary shadow-accent-secondary/30';
+      case 'rare': return 'border-accent-alt shadow-accent-alt/30';
       case 'uncommon': return 'border-success shadow-success/30';
       default: return 'border-gray-700';
     }
@@ -28,7 +28,7 @@ export const InventoryGrid = ({ items, columns = 9, showTooltip = true }: Invent
       {items.map((item, index) => (
         <div
           key={index}
-          className={`aspect-square bg-primary-bg border-2 rounded-lg p-1 relative group ${
+          className={`aspect-square bg-canvas border-2 rounded-lg p-1 relative group ${
             item ? getRarityColor(item.rarity) : 'border-gray-800'
           }`}
         >
@@ -72,22 +72,22 @@ export const InventoryGrid = ({ items, columns = 9, showTooltip = true }: Invent
               {showTooltip && (
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                   <div className="glass-card p-3 min-w-max shadow-xl">
-                    <p className="font-heading font-semibold text-text-primary">{item.name}</p>
+                    <p className="font-heading font-semibold text-fg">{item.name}</p>
                     <Badge size="sm" variant="default" className="mt-1">
                       {t(`inventory.rarity.${item.rarity}`, { defaultValue: item.rarity })}
                     </Badge>
                     {item.description && (
-                      <p className="text-xs text-text-muted mt-2">{item.description}</p>
+                      <p className="text-xs text-fg-muted mt-2">{item.description}</p>
                     )}
                     {item.durability && (
-                      <p className="text-xs text-text-muted mt-1">
+                      <p className="text-xs text-fg-muted mt-1">
                         {t('inventory.durability', { current: item.durability.current, max: item.durability.max })}
                       </p>
                     )}
                     {item.enchantments && item.enchantments.length > 0 && (
                       <div className="mt-2 space-y-1">
                         {item.enchantments.map((ench) => (
-                          <p key={ench.id} className="text-xs text-accent-primary">
+                          <p key={ench.id} className="text-xs text-accent">
                             {ench.name} {ench.level}
                           </p>
                         ))}

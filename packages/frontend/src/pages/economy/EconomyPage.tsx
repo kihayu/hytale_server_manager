@@ -35,8 +35,8 @@ export const EconomyPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-        <h1 className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">{t('economy.title')}</h1>
-        <p className="text-text-light-muted dark:text-text-muted mt-1">{t('economy.subtitle')}</p>
+        <h1 className="text-3xl font-heading font-bold text-fg-light dark:text-fg">{t('economy.title')}</h1>
+        <p className="text-fg-muted dark:text-fg-muted mt-1">{t('economy.subtitle')}</p>
         </div>
         <Button variant="primary" icon={<Plus size={18} />} onClick={() => setIsCreateShopOpen(true)}>
           {t('economy.actions.create_shop')}
@@ -48,8 +48,8 @@ export const EconomyPage = () => {
         <Card variant="glass">
           <CardContent className="flex items-center justify-between">
             <div>
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('economy.stats.total_currency')}</p>
-              <p className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('economy.stats.total_currency')}</p>
+              <p className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
                 ${stats.totalCurrency.toLocaleString()}
               </p>
             </div>
@@ -60,8 +60,8 @@ export const EconomyPage = () => {
         <Card variant="glass">
           <CardContent className="flex items-center justify-between">
             <div>
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('economy.stats.avg_balance')}</p>
-              <p className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('economy.stats.avg_balance')}</p>
+              <p className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
                 ${stats.averageBalance.toLocaleString()}
               </p>
             </div>
@@ -72,8 +72,8 @@ export const EconomyPage = () => {
         <Card variant="glass">
           <CardContent className="flex items-center justify-between">
             <div>
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('economy.stats.daily_volume')}</p>
-              <p className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('economy.stats.daily_volume')}</p>
+              <p className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
                 ${stats.transactionVolume.toLocaleString()}
               </p>
               <div className="flex items-center gap-1 mt-1">
@@ -81,19 +81,19 @@ export const EconomyPage = () => {
                       <span className="text-xs text-success">+12.5%</span>
               </div>
             </div>
-            <TrendingUp size={32} className="text-accent-primary" />
+            <TrendingUp size={32} className="text-accent" />
           </CardContent>
         </Card>
 
         <Card variant="glass">
           <CardContent className="flex items-center justify-between">
             <div>
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('economy.stats.active_shops')}</p>
-              <p className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('economy.stats.active_shops')}</p>
+              <p className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
                 {shops.length}
               </p>
             </div>
-            <ShoppingBag size={32} className="text-accent-secondary" />
+            <ShoppingBag size={32} className="text-accent-alt" />
           </CardContent>
         </Card>
       </div>
@@ -150,31 +150,31 @@ export const EconomyPage = () => {
           <CardDescription>{t('economy.richest.description')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-between p-4 rounded-lg bg-white dark:bg-primary-bg">
+          <div className="flex items-center justify-between p-4 rounded-lg bg-white dark:bg-canvas">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-black bg-warning text-2xl">
                 1
               </div>
               <div>
-                <p className="text-text-light-primary dark:text-text-primary font-medium text-lg">{stats.richestPlayer.username}</p>
-                <p className="text-xs text-text-light-muted dark:text-text-muted">{stats.richestPlayer.uuid}</p>
+                <p className="text-fg-light dark:text-fg font-medium text-lg">{stats.richestPlayer.username}</p>
+                <p className="text-xs text-fg-muted dark:text-fg-muted">{stats.richestPlayer.uuid}</p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-3xl font-heading font-bold text-success">
                 ${stats.richestPlayer.balance.toLocaleString()}
               </p>
-                <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">{t('economy.richest.current_balance')}</p>
+                <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">{t('economy.richest.current_balance')}</p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 mt-4">
-            <div className="p-3 rounded-lg bg-white dark:bg-primary-bg text-center">
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('economy.stats.median_balance')}</p>
-              <p className="text-xl font-heading font-bold text-text-light-primary dark:text-text-primary">${stats.medianBalance.toLocaleString()}</p>
+            <div className="p-3 rounded-lg bg-white dark:bg-canvas text-center">
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('economy.stats.median_balance')}</p>
+              <p className="text-xl font-heading font-bold text-fg-light dark:text-fg">${stats.medianBalance.toLocaleString()}</p>
             </div>
-            <div className="p-3 rounded-lg bg-white dark:bg-primary-bg text-center">
-              <p className="text-text-light-muted dark:text-text-muted text-sm">{t('economy.stats.recent_transactions')}</p>
-              <p className="text-xl font-heading font-bold text-text-light-primary dark:text-text-primary">{stats.recentTransactions.toLocaleString()}</p>
+            <div className="p-3 rounded-lg bg-white dark:bg-canvas text-center">
+              <p className="text-fg-muted dark:text-fg-muted text-sm">{t('economy.stats.recent_transactions')}</p>
+              <p className="text-xl font-heading font-bold text-fg-light dark:text-fg">{stats.recentTransactions.toLocaleString()}</p>
             </div>
           </div>
         </CardContent>
@@ -192,8 +192,8 @@ export const EconomyPage = () => {
               <div key={shop.id} className="p-4 rounded-lg border border-gray-300 hover:border-gray-300 dark:border-gray-700 transition-colors">
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h3 className="font-heading font-semibold text-text-light-primary dark:text-text-primary">{shop.name}</h3>
-                    <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">{t('economy.shops.description_line', { count: shop.items.length })}</p>
+                    <h3 className="font-heading font-semibold text-fg-light dark:text-fg">{shop.name}</h3>
+                    <p className="text-sm text-fg-muted dark:text-fg-muted mt-1">{t('economy.shops.description_line', { count: shop.items.length })}</p>
                   </div>
                   <Badge variant="success" size="sm">
                     Active
@@ -202,30 +202,30 @@ export const EconomyPage = () => {
 
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-text-light-muted dark:text-text-muted">{t('economy.shops.labels.items')}</span>
-                    <span className="text-text-light-primary dark:text-text-primary font-medium">{shop.items.length}</span>
+                    <span className="text-fg-muted dark:text-fg-muted">{t('economy.shops.labels.items')}</span>
+                    <span className="text-fg-light dark:text-fg font-medium">{shop.items.length}</span>
                   </div>
                   {shop.location && (
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-text-light-muted dark:text-text-muted">{t('economy.shops.labels.location')}</span>
-                      <span className="text-text-light-primary dark:text-text-primary font-mono text-xs">
+                      <span className="text-fg-muted dark:text-fg-muted">{t('economy.shops.labels.location')}</span>
+                      <span className="text-fg-light dark:text-fg font-mono text-xs">
                         {shop.location.x}, {shop.location.y}, {shop.location.z}
                       </span>
                     </div>
                   )}
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-text-light-muted dark:text-text-muted">{t('economy.shops.labels.owner')}</span>
-                    <span className="text-text-light-primary dark:text-text-primary">{shop.owner}</span>
+                    <span className="text-fg-muted dark:text-fg-muted">{t('economy.shops.labels.owner')}</span>
+                    <span className="text-fg-light dark:text-fg">{shop.owner}</span>
                   </div>
                 </div>
 
                 {/* Sample Items */}
                 <div className="mb-4">
-                  <p className="text-xs text-text-light-muted dark:text-text-muted mb-2">{t('economy.shops.sample_items')}</p>
+                  <p className="text-xs text-fg-muted dark:text-fg-muted mb-2">{t('economy.shops.sample_items')}</p>
                   <div className="space-y-1">
                     {shop.items.slice(0, 3).map((item) => (
-                      <div key={item.itemId} className="flex items-center justify-between text-sm p-2 rounded bg-white dark:bg-primary-bg">
-                        <span className="text-text-light-primary dark:text-text-primary">{item.itemName}</span>
+                      <div key={item.itemId} className="flex items-center justify-between text-sm p-2 rounded bg-white dark:bg-canvas">
+                        <span className="text-fg-light dark:text-fg">{item.itemName}</span>
                         <div className="flex items-center gap-2">
                           {item.buyPrice && (
                           <Badge variant="success" size="sm">
@@ -241,7 +241,7 @@ export const EconomyPage = () => {
                       </div>
                     ))}
                     {shop.items.length > 3 && (
-                    <p className="text-xs text-text-light-muted dark:text-text-muted text-center pt-1">
+                    <p className="text-xs text-fg-muted dark:text-fg-muted text-center pt-1">
                         {t('economy.shops.more_items', { count: shop.items.length - 3 })}
                       </p>
                     )}
@@ -265,32 +265,32 @@ export const EconomyPage = () => {
       {/* Create Shop Modal */}
       <Modal isOpen={isCreateShopOpen} onClose={() => setIsCreateShopOpen(false)}>
         <div className="p-6">
-          <h2 className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary mb-4">{t('economy.modal.title')}</h2>
+          <h2 className="text-2xl font-heading font-bold text-fg-light dark:text-fg mb-4">{t('economy.modal.title')}</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">{t('economy.modal.labels.name')}</label>
+              <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">{t('economy.modal.labels.name')}</label>
               <Input placeholder="e.g., General Store" />
             </div>
             <div>
-              <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">{t('economy.modal.labels.description')}</label>
+              <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">{t('economy.modal.labels.description')}</label>
               <Input placeholder="e.g., Buy and sell general items" />
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">{t('economy.modal.labels.x')}</label>
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">{t('economy.modal.labels.x')}</label>
                 <Input type="number" placeholder="0" />
               </div>
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">{t('economy.modal.labels.y')}</label>
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">{t('economy.modal.labels.y')}</label>
                 <Input type="number" placeholder="64" />
               </div>
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">{t('economy.modal.labels.z')}</label>
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">{t('economy.modal.labels.z')}</label>
                 <Input type="number" placeholder="0" />
               </div>
             </div>
             <div>
-              <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">{t('economy.modal.labels.world')}</label>
+              <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">{t('economy.modal.labels.world')}</label>
               <Input placeholder="e.g., Orbis" />
             </div>
             <div className="flex gap-2 pt-4">

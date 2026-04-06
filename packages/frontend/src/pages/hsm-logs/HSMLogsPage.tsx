@@ -95,8 +95,8 @@ export const HSMLogsPage = () => {
     switch (level.toLowerCase()) {
       case 'error': return 'text-danger';
       case 'warn': return 'text-warning';
-      case 'debug': return 'text-accent-secondary';
-      default: return 'text-text-light-primary dark:text-text-primary';
+      case 'debug': return 'text-accent-alt';
+      default: return 'text-fg-light dark:text-fg';
     }
   };
 
@@ -113,10 +113,10 @@ export const HSMLogsPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+          <h1 className="text-3xl font-heading font-bold text-fg-light dark:text-fg">
             {t('hsm_logs.title')}
           </h1>
-          <p className="text-text-light-muted dark:text-text-muted mt-1">
+          <p className="text-fg-muted dark:text-fg-muted mt-1">
             {t('hsm_logs.subtitle')}
           </p>
         </div>
@@ -158,8 +158,8 @@ export const HSMLogsPage = () => {
             onClick={() => setLevelFilter(option.value)}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
               levelFilter === option.value
-                ? 'bg-accent-primary text-black'
-                : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+                ? 'bg-accent text-black'
+                : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
             }`}
           >
             {t(option.labelKey)}
@@ -174,7 +174,7 @@ export const HSMLogsPage = () => {
             <CardTitle>
               {t('hsm_logs.log_source')}
             </CardTitle>
-            <label className="flex items-center gap-2 text-sm text-text-light-muted dark:text-text-muted">
+            <label className="flex items-center gap-2 text-sm text-fg-muted dark:text-fg-muted">
               <input
                 type="checkbox"
                 checked={autoScroll}
@@ -187,25 +187,25 @@ export const HSMLogsPage = () => {
         </CardHeader>
         <CardContent>
           {/* Log Output */}
-          <div className="bg-white dark:bg-primary-bg rounded-lg p-4 font-mono text-sm h-[calc(100vh-350px)] min-h-96 overflow-y-auto custom-scrollbar">
+          <div className="bg-white dark:bg-canvas rounded-lg p-4 font-mono text-sm h-[calc(100vh-350px)] min-h-96 overflow-y-auto custom-scrollbar">
             {isLoading && logs.length === 0 ? (
-              <div className="text-text-light-muted dark:text-text-muted text-center py-8">
+              <div className="text-fg-muted dark:text-fg-muted text-center py-8">
                 {t('common.loading')}
               </div>
             ) : logs.length === 0 ? (
-              <div className="text-text-light-muted dark:text-text-muted text-center py-8">
+              <div className="text-fg-muted dark:text-fg-muted text-center py-8">
                 {t('hsm_logs.waiting_for_logs')}
               </div>
             ) : (
               logs.map((log, index) => (
                 <div key={index} className="mb-1 flex gap-2">
-                  <span className="text-text-light-muted dark:text-text-muted shrink-0">
+                  <span className="text-fg-muted dark:text-fg-muted shrink-0">
                     [{log.timestamp}]
                   </span>
                   <span className={`${getLogLevelColor(log.level)} shrink-0`}>
                     [{log.level.toUpperCase()}]
                   </span>
-                  <span className="text-text-light-primary dark:text-text-primary break-all">
+                  <span className="text-fg-light dark:text-fg break-all">
                     {log.message}
                   </span>
                 </div>

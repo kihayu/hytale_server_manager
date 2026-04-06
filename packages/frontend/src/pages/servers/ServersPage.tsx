@@ -443,8 +443,8 @@ export const ServersPage = () => {
       label: t('servers.columns.server'),
       render: (server) => (
         <div>
-          <p className="font-medium text-text-light-primary dark:text-text-primary">{server.name}</p>
-          <p className="text-xs text-text-light-muted dark:text-text-muted">{server.address}:{server.port}</p>
+          <p className="font-medium text-fg-light dark:text-fg">{server.name}</p>
+          <p className="text-xs text-fg-muted dark:text-fg-muted">{server.address}:{server.port}</p>
         </div>
       ),
     },
@@ -458,12 +458,12 @@ export const ServersPage = () => {
       label: t('servers.columns.players'),
       render: (server) => (
         <div>
-          <p className="font-medium text-text-light-primary dark:text-text-primary">
+          <p className="font-medium text-fg-light dark:text-fg">
             {server.currentPlayers || 0} / {server.maxPlayers}
           </p>
           <div className="w-24 h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden mt-1">
             <div
-              className="h-full bg-accent-primary"
+              className="h-full bg-accent"
               style={{ width: `${((server.currentPlayers || 0) / server.maxPlayers) * 100}%` }}
             />
           </div>
@@ -480,7 +480,7 @@ export const ServersPage = () => {
       label: t('servers.columns.tps'),
       render: (server) => {
         if (server.status !== 'running' || !server.tps) {
-          return <span className="text-sm text-text-light-muted dark:text-text-muted">-</span>;
+          return <span className="text-sm text-fg-muted dark:text-fg-muted">-</span>;
         }
         return (
           <Badge variant={server.tps >= 19.5 ? 'success' : server.tps >= 18 ? 'warning' : 'danger'} size="sm">
@@ -494,11 +494,11 @@ export const ServersPage = () => {
       label: t('servers.columns.cpu'),
       render: (server) => {
         if (server.status !== 'running' || server.cpuUsage === undefined) {
-          return <span className="text-sm text-text-light-muted dark:text-text-muted">-</span>;
+          return <span className="text-sm text-fg-muted dark:text-fg-muted">-</span>;
         }
         return (
           <div>
-            <p className="text-sm text-text-light-primary dark:text-text-primary">{server.cpuUsage.toFixed(1)}%</p>
+            <p className="text-sm text-fg-light dark:text-fg">{server.cpuUsage.toFixed(1)}%</p>
             <div className="w-16 h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden mt-1">
               <div
                 className={`h-full ${server.cpuUsage > 70 ? 'bg-danger' : server.cpuUsage > 50 ? 'bg-warning' : 'bg-success'
@@ -515,12 +515,12 @@ export const ServersPage = () => {
       label: t('servers.columns.memory'),
       render: (server) => {
         if (server.status !== 'running' || !server.memoryUsage) {
-          return <span className="text-sm text-text-light-muted dark:text-text-muted">-</span>;
+          return <span className="text-sm text-fg-muted dark:text-fg-muted">-</span>;
         }
         return (
           <div>
-            <p className="text-sm text-text-light-primary dark:text-text-primary">{server.memoryUsage} MB</p>
-            <p className="text-xs text-text-light-muted dark:text-text-muted">
+            <p className="text-sm text-fg-light dark:text-fg">{server.memoryUsage} MB</p>
+            <p className="text-xs text-fg-muted dark:text-fg-muted">
               {((server.memoryUsage / (server.memoryAllocated || 8192)) * 100).toFixed(0)}%
             </p>
           </div>
@@ -532,9 +532,9 @@ export const ServersPage = () => {
       label: t('servers.columns.uptime'),
       render: (server) => (
         server.status === 'running' && server.uptime ? (
-          <span className="text-sm text-text-light-primary dark:text-text-primary">{formatUptime(server.uptime)}</span>
+          <span className="text-sm text-fg-light dark:text-fg">{formatUptime(server.uptime)}</span>
         ) : (
-          <span className="text-sm text-text-light-muted dark:text-text-muted">-</span>
+          <span className="text-sm text-fg-muted dark:text-fg-muted">-</span>
         )
       ),
     },
@@ -620,8 +620,8 @@ export const ServersPage = () => {
       label: t('servers.columns.server'),
       render: (server) => (
         <div>
-          <p className="font-medium text-text-light-primary dark:text-text-primary cursor-pointer hover:text-accent-primary" onClick={() => void navigate(`/servers/${server.id}`)}>{server.name}</p>
-          <p className="text-xs text-text-light-muted dark:text-text-muted">{server.address}:{server.port}</p>
+          <p className="font-medium text-fg-light dark:text-fg cursor-pointer hover:text-accent" onClick={() => void navigate(`/servers/${server.id}`)}>{server.name}</p>
+          <p className="text-xs text-fg-muted dark:text-fg-muted">{server.address}:{server.port}</p>
         </div>
       ),
     },
@@ -722,8 +722,8 @@ export const ServersPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <h1 className="text-2xl sm:text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">{t('servers.title')}</h1>
-          <p className="text-sm sm:text-base text-text-light-muted dark:text-text-muted mt-1">{t('servers.subtitle')}</p>
+          <h1 className="text-2xl sm:text-3xl font-heading font-bold text-fg-light dark:text-fg">{t('servers.title')}</h1>
+          <p className="text-sm sm:text-base text-fg-muted dark:text-fg-muted mt-1">{t('servers.subtitle')}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           {/* View Mode Toggle */}
@@ -731,8 +731,8 @@ export const ServersPage = () => {
             <button
               onClick={() => setViewMode('grouped')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors ${viewMode === 'grouped'
-                ? 'bg-accent-primary text-black'
-                : 'text-text-muted hover:text-text-primary'
+                ? 'bg-accent text-black'
+                : 'text-fg-muted hover:text-fg'
                 }`}
             >
               <LayoutGrid size={14} />
@@ -741,8 +741,8 @@ export const ServersPage = () => {
             <button
               onClick={() => setViewMode('flat')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors ${viewMode === 'flat'
-                ? 'bg-accent-primary text-black'
-                : 'text-text-muted hover:text-text-primary'
+                ? 'bg-accent text-black'
+                : 'text-fg-muted hover:text-fg'
                 }`}
             >
               <List size={14} />
@@ -772,7 +772,7 @@ export const ServersPage = () => {
         <>
           {/* Loading State */}
           {networksLoading && (
-            <div className="text-center py-8 text-text-muted">
+            <div className="text-center py-8 text-fg-muted">
               {t('common.loading')}
             </div>
           )}
@@ -780,7 +780,7 @@ export const ServersPage = () => {
           {/* Networks */}
           {!networksLoading && networks.length > 0 && (
             <div>
-              <h2 className="text-lg font-heading font-semibold text-text-light-primary dark:text-text-primary mb-4">
+              <h2 className="text-lg font-heading font-semibold text-fg-light dark:text-fg mb-4">
                 {t('servers.networks')} ({networks.length})
               </h2>
               {networks.map((network) => (
@@ -826,11 +826,11 @@ export const ServersPage = () => {
           {!networksLoading && networks.length === 0 && localUngroupedServers.length === 0 && servers.length === 0 && (
             <Card variant="glass" className="text-center py-12">
               <CardContent>
-                <Network size={48} className="mx-auto text-text-muted mb-4" />
-                <h3 className="text-lg font-heading font-semibold text-text-light-primary dark:text-text-primary mb-2">
+                <Network size={48} className="mx-auto text-fg-muted mb-4" />
+                <h3 className="text-lg font-heading font-semibold text-fg-light dark:text-fg mb-2">
                   {t('servers.empty.title')}
                 </h3>
-                <p className="text-text-light-muted dark:text-text-muted mb-4">
+                <p className="text-fg-muted dark:text-fg-muted mb-4">
                   {t('servers.empty.description')}
                 </p>
                 <div className="flex justify-center gap-3">

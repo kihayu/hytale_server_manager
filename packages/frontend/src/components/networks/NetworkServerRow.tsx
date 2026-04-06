@@ -127,7 +127,7 @@ export const NetworkServerRow = ({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span
-              className="font-medium text-text-light-primary dark:text-text-primary truncate cursor-pointer hover:text-accent-primary transition-colors"
+              className="font-medium text-fg-light dark:text-fg truncate cursor-pointer hover:text-accent transition-colors"
               onClick={() => void navigate(`/servers/${member.serverId}`)}
             >
               {member.server.name}
@@ -142,8 +142,8 @@ export const NetworkServerRow = ({
       <div className="hidden md:flex items-center gap-6 mr-4">
         {/* Players */}
         <div className="flex items-center gap-1 min-w-[50px]">
-          <Users size={12} className="text-accent-primary" />
-          <span className="text-sm text-text-light-muted dark:text-text-muted">
+          <Users size={12} className="text-accent" />
+          <span className="text-sm text-fg-muted dark:text-fg-muted">
             {memberStatus?.playerCount ?? 0}
           </span>
         </div>
@@ -151,15 +151,15 @@ export const NetworkServerRow = ({
         {/* CPU */}
         <div className="flex items-center gap-1 min-w-[50px]">
           <Cpu size={12} className="text-warning" />
-          <span className="text-sm text-text-light-muted dark:text-text-muted">
+          <span className="text-sm text-fg-muted dark:text-fg-muted">
             {memberStatus?.cpuUsage?.toFixed(1) ?? '0'}%
           </span>
         </div>
 
         {/* Memory */}
         <div className="flex items-center gap-1 min-w-[70px]">
-          <HardDrive size={12} className="text-accent-secondary" />
-          <span className="text-sm text-text-light-muted dark:text-text-muted">
+          <HardDrive size={12} className="text-accent-alt" />
+          <span className="text-sm text-fg-muted dark:text-fg-muted">
             {formatMemory(memberStatus?.memoryUsage ?? 0)}
           </span>
         </div>

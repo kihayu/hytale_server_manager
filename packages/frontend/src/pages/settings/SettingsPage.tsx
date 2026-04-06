@@ -272,7 +272,7 @@ export const SettingsPage = () => {
   if (loading) {
     return (
       <div className="container mx-auto p-6 space-y-6">
-        <div className="text-center py-8 text-text-secondary">{t('settings.loading')}</div>
+        <div className="text-center py-8 text-fg-muted">{t('settings.loading')}</div>
       </div>
     );
   }
@@ -280,8 +280,8 @@ export const SettingsPage = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-text-primary">{t('settings.title')}</h1>
-        <p className="text-text-secondary mt-1">{t('settings.subtitle')}</p>
+        <h1 className="text-3xl font-bold text-fg">{t('settings.title')}</h1>
+        <p className="text-fg-muted mt-1">{t('settings.subtitle')}</p>
       </div>
 
       {/* Software Updates */}
@@ -306,7 +306,7 @@ export const SettingsPage = () => {
         <CardContent>
           <div className="space-y-6">
             {providers.length === 0 ? (
-              <p className="text-text-secondary text-sm">{t('settings.mods.loading')}</p>
+              <p className="text-fg-muted text-sm">{t('settings.mods.loading')}</p>
             ) : (
               providers.map((provider) => (
                 <div key={provider.id} className="border rounded-lg p-4 dark:border-gray-700">
@@ -316,12 +316,12 @@ export const SettingsPage = () => {
                         {provider.iconUrl ? (
                           <img src={provider.iconUrl} alt={provider.displayName} className="w-6 h-6" />
                         ) : (
-                          <Package size={20} className="text-text-secondary" />
+                          <Package size={20} className="text-fg-muted" />
                         )}
                       </div>
                       <div>
-                        <h4 className="font-medium text-text-primary">{provider.displayName}</h4>
-                        <p className="text-xs text-text-secondary">
+                        <h4 className="font-medium text-fg">{provider.displayName}</h4>
+                        <p className="text-xs text-fg-muted">
                           {provider.requiresApiKey
                             ? provider.isConfigured
                               ? t('settings.mods.configured')
@@ -380,14 +380,14 @@ export const SettingsPage = () => {
 
                       {provider.id === 'curseforge' && (
                         <div className="flex items-center gap-2 mt-2">
-                          <p className="text-xs text-text-secondary">
+                          <p className="text-xs text-fg-muted">
                             {t('settings.mods.get_key')}
                           </p>
                           <a
                             href="https://support.curseforge.com/en/support/solutions/articles/9000208346-about-the-curseforge-api-and-how-to-apply-for-a-key"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-accent-primary hover:underline flex items-center gap-1"
+                            className="text-xs text-accent hover:underline flex items-center gap-1"
                           >
                             {t('settings.mods.curseforge_console')}
                             <ExternalLink size={12} />
@@ -396,14 +396,14 @@ export const SettingsPage = () => {
                       )}
                       {provider.id === 'modtale' && (
                         <div className="flex items-center gap-2 mt-2">
-                          <p className="text-xs text-text-secondary">
+                          <p className="text-xs text-fg-muted">
                             {t('settings.mods.get_key')}
                           </p>
                           <a
                             href="https://modtale.net/dashboard/developer"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-accent-primary hover:underline flex items-center gap-1"
+                            className="text-xs text-accent hover:underline flex items-center gap-1"
                           >
                             {t('settings.mods.modtale_dashboard')}
                             <ExternalLink size={12} />
@@ -466,7 +466,7 @@ export const SettingsPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-muted hover:text-fg"
                 >
                   {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -485,7 +485,7 @@ export const SettingsPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-muted hover:text-fg"
                 >
                   {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -507,7 +507,7 @@ export const SettingsPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-muted hover:text-fg"
                 >
                   {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -584,7 +584,7 @@ export const SettingsPage = () => {
                 onChange={(e) => setSettings(prev => ({ ...prev, webhookUrl: e.target.value }))}
                 disabled={!settings.enabled}
               />
-              <p className="text-xs text-text-secondary mt-1">
+              <p className="text-xs text-fg-muted mt-1">
                 {settings.webhookUrl === '***'
                   ? t('settings.discord.webhook_configured_hint')
                   : t('settings.discord.webhook_hint')}
@@ -748,7 +748,7 @@ export const SettingsPage = () => {
                   <button
                     type="button"
                     onClick={() => setShowFtpPassword(!showFtpPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-muted hover:text-fg"
                   >
                     {showFtpPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>

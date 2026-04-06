@@ -11,11 +11,11 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     const baseStyles = 'rounded-lg p-3 sm:p-4 md:p-6';
 
     const variants = {
-      default: 'bg-white dark:bg-gray-100 dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-800',
+      default: 'bg-white dark:bg-gray-100 dark:bg-surface border border-gray-300 dark:border-gray-800',
       glass: 'glass-card',
     };
 
-    const hoverStyles = hover ? 'hover:border-accent-primary/50 transition-all duration-200 cursor-pointer' : '';
+    const hoverStyles = hover ? 'hover:border-accent/50 transition-all duration-200 cursor-pointer' : '';
 
     return (
       <div
@@ -38,13 +38,13 @@ export const CardHeader = ({ children, className = '', ...props }: HTMLAttribute
 );
 
 export const CardTitle = ({ children, className = '', ...props }: HTMLAttributes<HTMLHeadingElement>) => (
-  <h3 className={`text-lg sm:text-xl font-heading font-semibold text-text-light-primary dark:text-text-primary ${className}`} {...props}>
+  <h3 className={`text-lg sm:text-xl font-heading font-semibold text-fg-light dark:text-fg ${className}`} {...props}>
     {children}
   </h3>
 );
 
 export const CardDescription = ({ children, className = '', ...props }: HTMLAttributes<HTMLParagraphElement>) => (
-  <p className={`text-sm text-text-light-muted dark:text-text-muted mt-1 ${className}`} {...props}>
+  <p className={`text-sm text-fg-muted dark:text-fg-muted mt-1 ${className}`} {...props}>
     {children}
   </p>
 );

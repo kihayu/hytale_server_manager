@@ -190,7 +190,7 @@ export const FileManagerPage = () => {
 
   const getFileIcon = (item: FileItem) => {
     if (item.type === 'directory') {
-      return <Folder size={20} className="text-accent-primary" />;
+      return <Folder size={20} className="text-accent" />;
     }
 
     const ext = item.extension?.toLowerCase();
@@ -237,8 +237,8 @@ export const FileManagerPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">{t('files.title')}</h1>
-          <p className="text-text-light-muted dark:text-text-muted mt-1">{t('files.subtitle')}</p>
+          <h1 className="text-3xl font-heading font-bold text-fg-light dark:text-fg">{t('files.title')}</h1>
+          <p className="text-fg-muted dark:text-fg-muted mt-1">{t('files.subtitle')}</p>
         </div>
       </div>
 
@@ -251,7 +251,7 @@ export const FileManagerPage = () => {
               setSelectedServer(e.target.value);
               setCurrentPath('');
             }}
-            className="w-full max-w-md px-4 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
+            className="w-full max-w-md px-4 py-2 bg-white dark:bg-surface border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent"
           >
             <option value="">{getServerPlaceholder()}</option>
             {servers.map((server) => (
@@ -283,14 +283,14 @@ export const FileManagerPage = () => {
           <Card variant="glass">
             <CardContent>
               <div className="flex items-center justify-between mb-2">
-                <p className="text-sm text-text-light-muted dark:text-text-muted">{t('files.disk_usage')}</p>
-                <p className="text-sm font-medium text-text-light-primary dark:text-text-primary">
+                <p className="text-sm text-fg-muted dark:text-fg-muted">{t('files.disk_usage')}</p>
+                <p className="text-sm font-medium text-fg-light dark:text-fg">
                   {formatSize(diskUsage.used)}
                 </p>
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-2">
                 <div
-                  className="bg-accent-primary rounded-full h-2 transition-all"
+                  className="bg-accent rounded-full h-2 transition-all"
                   style={{ width: `${Math.min(usagePercent, 100)}%` }}
                 />
               </div>
@@ -310,10 +310,10 @@ export const FileManagerPage = () => {
                 const path = arr.slice(0, index + 1).join('/');
                 return (
                   <div key={index} className="flex items-center gap-2">
-                    <ChevronRight size={16} className="text-text-light-muted dark:text-text-muted" />
+                    <ChevronRight size={16} className="text-fg-muted dark:text-fg-muted" />
                     <button
                       onClick={() => navigate(path)}
-                      className="text-text-light-primary dark:text-text-primary hover:text-accent-primary transition-colors"
+                      className="text-fg-light dark:text-fg hover:text-accent transition-colors"
                     >
                       {crumb}
                     </button>
@@ -360,7 +360,7 @@ export const FileManagerPage = () => {
             </CardHeader>
             <CardContent>
               {files.length === 0 && !loading ? (
-                <div className="text-center py-12 text-text-light-muted dark:text-text-muted">
+                <div className="text-center py-12 text-fg-muted dark:text-fg-muted">
                   {searchQuery ? t('files.empty.search') : t('files.empty.directory')}
                 </div>
               ) : (
@@ -368,10 +368,10 @@ export const FileManagerPage = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-gray-300 dark:border-gray-800">
-                        <th className="text-left py-3 px-4 text-sm font-medium text-text-light-muted dark:text-text-muted">{t('files.table.name')}</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-text-light-muted dark:text-text-muted">{t('files.table.size')}</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-text-light-muted dark:text-text-muted">{t('files.table.modified')}</th>
-                        <th className="text-right py-3 px-4 text-sm font-medium text-text-light-muted dark:text-text-muted">{t('files.table.actions')}</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-fg-muted dark:text-fg-muted">{t('files.table.name')}</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-fg-muted dark:text-fg-muted">{t('files.table.size')}</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-fg-muted dark:text-fg-muted">{t('files.table.modified')}</th>
+                        <th className="text-right py-3 px-4 text-sm font-medium text-fg-muted dark:text-fg-muted">{t('files.table.actions')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -380,7 +380,7 @@ export const FileManagerPage = () => {
                           <td colSpan={4} className="py-3 px-4" onClick={navigateUp}>
                             <div className="flex items-center gap-2">
                               <Folder size={20} className="text-gray-500" />
-                              <span className="font-medium text-text-light-primary dark:text-text-primary">..</span>
+                              <span className="font-medium text-fg-light dark:text-fg">..</span>
                             </div>
                           </td>
                         </tr>
@@ -396,7 +396,7 @@ export const FileManagerPage = () => {
                           >
                             <div className="flex items-center gap-3">
                               {getFileIcon(item)}
-                              <span className="font-medium text-text-light-primary dark:text-text-primary">
+                              <span className="font-medium text-fg-light dark:text-fg">
                                 {item.name}
                               </span>
                               {item.isEditable && (
@@ -404,10 +404,10 @@ export const FileManagerPage = () => {
                               )}
                             </div>
                           </td>
-                          <td className="py-3 px-4 text-sm text-text-light-muted dark:text-text-muted">
+                          <td className="py-3 px-4 text-sm text-fg-muted dark:text-fg-muted">
                             {item.type === 'file' ? formatSize(item.size) : '-'}
                           </td>
-                          <td className="py-3 px-4 text-sm text-text-light-muted dark:text-text-muted">
+                          <td className="py-3 px-4 text-sm text-fg-muted dark:text-fg-muted">
                             {formatDate(item.modified)}
                           </td>
                           <td className="py-3 px-4">

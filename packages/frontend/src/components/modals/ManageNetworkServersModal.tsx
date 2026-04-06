@@ -90,14 +90,14 @@ export const ManageNetworkServersModal = ({
         {/* Current Members Section */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <Users size={18} className="text-accent-primary" />
-            <h3 className="font-medium text-text-light-primary dark:text-text-primary">
+            <Users size={18} className="text-accent" />
+            <h3 className="font-medium text-fg-light dark:text-fg">
               {t('networks.manage.current_members', { count: network.members.length })}
             </h3>
           </div>
 
           {network.members.length === 0 ? (
-            <div className="text-center py-6 text-text-muted bg-gray-800/50 rounded-lg">
+            <div className="text-center py-6 text-fg-muted bg-gray-800/50 rounded-lg">
               {t('networks.manage.empty')}
             </div>
           ) : (
@@ -108,9 +108,9 @@ export const ManageNetworkServersModal = ({
                   className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg"
                 >
                   <div className="flex items-center gap-3">
-                    <Server size={16} className="text-text-muted" />
+                    <Server size={16} className="text-fg-muted" />
                     <div>
-                      <span className="text-text-light-primary dark:text-text-primary">
+                      <span className="text-fg-light dark:text-fg">
                         {member.server.name}
                       </span>
                       <div className="flex items-center gap-2 mt-1">
@@ -142,13 +142,13 @@ export const ManageNetworkServersModal = ({
         <div>
           <div className="flex items-center gap-2 mb-3">
             <Plus size={18} className="text-success" />
-            <h3 className="font-medium text-text-light-primary dark:text-text-primary">
+            <h3 className="font-medium text-fg-light dark:text-fg">
               {t('networks.manage.available', { count: ungroupedServers.length })}
             </h3>
           </div>
 
           {ungroupedServers.length === 0 ? (
-            <div className="text-center py-6 text-text-muted bg-gray-800/50 rounded-lg">
+            <div className="text-center py-6 text-fg-muted bg-gray-800/50 rounded-lg">
               {t('networks.manage.empty_available')}
             </div>
           ) : (
@@ -159,9 +159,9 @@ export const ManageNetworkServersModal = ({
                   className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg"
                 >
                   <div className="flex items-center gap-3">
-                    <Server size={16} className="text-text-muted" />
+                    <Server size={16} className="text-fg-muted" />
                     <div>
-                      <span className="text-text-light-primary dark:text-text-primary">
+                      <span className="text-fg-light dark:text-fg">
                         {server.name}
                       </span>
                       <div className="mt-1">

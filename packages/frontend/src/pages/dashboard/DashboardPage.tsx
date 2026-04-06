@@ -185,7 +185,7 @@ export const DashboardPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-text-light-muted dark:text-text-muted">{t('dashboard.loading')}</div>
+        <div className="text-fg-muted dark:text-fg-muted">{t('dashboard.loading')}</div>
       </div>
     );
   }
@@ -195,10 +195,10 @@ export const DashboardPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+          <h1 className="text-2xl sm:text-3xl font-heading font-bold text-fg-light dark:text-fg">
             {t('dashboard.title')}
           </h1>
-          <p className="text-sm sm:text-base text-text-light-muted dark:text-text-muted mt-1">
+          <p className="text-sm sm:text-base text-fg-muted dark:text-fg-muted mt-1">
             {t('dashboard.subtitle')}
           </p>
         </div>
@@ -223,16 +223,16 @@ export const DashboardPage = () => {
           <Card variant="glass" hover onClick={() => void navigate('/servers')}>
             <CardContent className="flex items-center justify-between">
               <div>
-                <p className="text-text-light-muted dark:text-text-muted text-sm">{t('dashboard.stats.total_servers')}</p>
-                <p className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary mt-1">
+                <p className="text-fg-muted dark:text-fg-muted text-sm">{t('dashboard.stats.total_servers')}</p>
+                <p className="text-3xl font-heading font-bold text-fg-light dark:text-fg mt-1">
                   {stats?.totalServers || 0}
                 </p>
                 <p className="text-success text-sm mt-1">
                   {stats?.runningServers || 0} {t('dashboard.stats.running')}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-accent-primary/20 rounded-lg flex items-center justify-center">
-                <Server size={24} className="text-accent-primary" />
+              <div className="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center">
+                <Server size={24} className="text-accent" />
               </div>
             </CardContent>
           </Card>
@@ -242,8 +242,8 @@ export const DashboardPage = () => {
           <Card variant="glass">
             <CardContent className="flex items-center justify-between">
               <div>
-                <p className="text-text-light-muted dark:text-text-muted text-sm">{t('dashboard.stats.host_cpu')}</p>
-                <p className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary mt-1">
+                <p className="text-fg-muted dark:text-fg-muted text-sm">{t('dashboard.stats.host_cpu')}</p>
+                <p className="text-3xl font-heading font-bold text-fg-light dark:text-fg mt-1">
                   {(stats?.host?.cpu?.usage || 0).toFixed(1)}%
                 </p>
                 <p
@@ -268,8 +268,8 @@ export const DashboardPage = () => {
           <Card variant="glass">
             <CardContent className="flex items-center justify-between">
               <div>
-                <p className="text-text-light-muted dark:text-text-muted text-sm">{t('dashboard.stats.host_memory')}</p>
-                <p className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary mt-1">
+                <p className="text-fg-muted dark:text-fg-muted text-sm">{t('dashboard.stats.host_memory')}</p>
+                <p className="text-3xl font-heading font-bold text-fg-light dark:text-fg mt-1">
                   {stats?.host?.memory?.usedGB?.toFixed(1) || 0} GB
                 </p>
                 <p

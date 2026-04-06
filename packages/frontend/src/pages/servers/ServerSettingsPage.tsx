@@ -235,7 +235,7 @@ export const ServerSettingsPage = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <h2 className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+          <h2 className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
             {t('common.loading')}
           </h2>
         </div>
@@ -247,10 +247,10 @@ export const ServerSettingsPage = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <h2 className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+          <h2 className="text-2xl font-heading font-bold text-fg-light dark:text-fg">
             {error || t('servers.detail.errors.not_found')}
           </h2>
-          <Link to="/servers" className="text-accent-primary hover:underline mt-4 inline-block">
+          <Link to="/servers" className="text-accent hover:underline mt-4 inline-block">
             ← {t('servers.detail.back_to_servers')}
           </Link>
         </div>
@@ -380,10 +380,10 @@ export const ServerSettingsPage = () => {
             </Button>
           </Link>
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl sm:text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+            <h1 className="text-2xl sm:text-3xl font-heading font-bold text-fg-light dark:text-fg">
               {t('servers.settings.title')}
             </h1>
-            <p className="text-sm sm:text-base text-text-light-muted dark:text-text-muted mt-1 truncate">{server.name}</p>
+            <p className="text-sm sm:text-base text-fg-muted dark:text-fg-muted mt-1 truncate">{server.name}</p>
           </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
@@ -406,8 +406,8 @@ export const ServerSettingsPage = () => {
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-2.5 sm:py-2 rounded-lg whitespace-nowrap transition-colors text-sm sm:text-base ${
               activeTab === tab.id
-                ? 'bg-accent-primary text-white'
-                : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted hover:bg-gray-200 hover:text-text-light-primary dark:text-text-primary'
+                ? 'bg-accent text-white'
+                : 'bg-white dark:bg-surface text-fg-muted hover:bg-gray-200 hover:text-fg-light dark:text-fg'
             }`}
           >
             {tab.label}
@@ -425,7 +425,7 @@ export const ServerSettingsPage = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.general.name')}
                 </label>
                 <Input
@@ -439,7 +439,7 @@ export const ServerSettingsPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.general.version')}
                 </label>
                 <Input
@@ -450,13 +450,13 @@ export const ServerSettingsPage = () => {
                   }}
                   placeholder={t('servers.settings.general.version_placeholder')}
                 />
-                <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                   {t('servers.settings.general.version_helper')}
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.general.max_players')}
                 </label>
                 <Input
@@ -472,7 +472,7 @@ export const ServerSettingsPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.general.game_mode')}
                 </label>
                 <select
@@ -481,7 +481,7 @@ export const ServerSettingsPage = () => {
                     setGeneralSettings(prev => ({ ...prev, gameMode: e.target.value }));
                     setHasChanges(true);
                   }}
-                  className="w-full bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:border-accent-primary"
+                  className="w-full bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-fg-light dark:text-fg focus:outline-hidden focus:border-accent"
                 >
                   <option value="exploration">{t('servers.settings.general.modes.exploration')}</option>
                   <option value="creative">{t('servers.settings.general.modes.creative')}</option>
@@ -523,7 +523,7 @@ export const ServerSettingsPage = () => {
             <div className="space-y-6">
               {/* Server Directory */}
                 <div>
-                  <label className="block text-sm font-medium text-text-light-muted dark:text-text-muted mb-2">
+                  <label className="block text-sm font-medium text-fg-muted dark:text-fg-muted mb-2">
                     <FolderOpen size={16} className="inline mr-2" />
                     {t('servers.settings.storage.server_dir')}
                   </label>
@@ -535,14 +535,14 @@ export const ServerSettingsPage = () => {
                     }}
                     placeholder={t('servers.settings.storage.server_dir_placeholder')}
                   />
-                  <p className="text-xs text-text-secondary mt-1">
+                  <p className="text-xs text-fg-muted mt-1">
                     {t('servers.settings.storage.server_dir_helper')}
                   </p>
                 </div>
 
                 {/* Backup Storage Type */}
                 <div>
-                  <label className="block text-sm font-medium text-text-light-muted dark:text-text-muted mb-2">
+                  <label className="block text-sm font-medium text-fg-muted dark:text-fg-muted mb-2">
                     <Server size={16} className="inline mr-2" />
                     {t('servers.settings.storage.type')}
                   </label>
@@ -556,7 +556,7 @@ export const ServerSettingsPage = () => {
                       }));
                       setHasChanges(true);
                     }}
-                    className="w-full bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:border-accent-primary"
+                    className="w-full bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-fg-light dark:text-fg focus:outline-hidden focus:border-accent"
                   >
                     <option value="local">{t('servers.settings.storage.type_local')}</option>
                     <option value="ftp" disabled={!ftpStatus?.enabled}>
@@ -567,7 +567,7 @@ export const ServerSettingsPage = () => {
 
                 {/* Backup Path */}
                 <div>
-                  <label className="block text-sm font-medium text-text-light-muted dark:text-text-muted mb-2">
+                  <label className="block text-sm font-medium text-fg-muted dark:text-fg-muted mb-2">
                     {storageSettings.backupType === 'ftp'
                       ? t('servers.settings.storage.backup_path_ftp')
                       : t('servers.settings.storage.backup_path_local')}
@@ -584,7 +584,7 @@ export const ServerSettingsPage = () => {
                         : t('servers.settings.storage.backup_path_local_placeholder')
                     }
                   />
-                  <p className="text-xs text-text-secondary mt-1">
+                  <p className="text-xs text-fg-muted mt-1">
                     {storageSettings.backupType === 'ftp'
                       ? t('servers.settings.storage.backup_path_ftp_helper')
                       : t('servers.settings.storage.backup_path_local_helper')}
@@ -593,11 +593,11 @@ export const ServerSettingsPage = () => {
 
                 {/* Backup Exclusions */}
                 <div>
-                  <label className="block text-sm font-medium text-text-light-muted dark:text-text-muted mb-2">
+                  <label className="block text-sm font-medium text-fg-muted dark:text-fg-muted mb-2">
                     <FileX size={16} className="inline mr-2" />
                     {t('servers.settings.storage.exclusions')}
                   </label>
-                  <p className="text-xs text-text-secondary mb-3">
+                  <p className="text-xs text-fg-muted mb-3">
                     {t('servers.settings.storage.exclusions_helper')}
                   </p>
 
@@ -633,7 +633,7 @@ export const ServerSettingsPage = () => {
                           key={pattern}
                           className="flex items-center justify-between bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-2"
                         >
-                          <code className="text-sm text-text-light-primary dark:text-text-primary font-mono">
+                          <code className="text-sm text-fg-light dark:text-fg font-mono">
                             {pattern}
                           </code>
                           <button
@@ -647,7 +647,7 @@ export const ServerSettingsPage = () => {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-4 text-text-light-muted dark:text-text-muted text-sm border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
+                    <div className="text-center py-4 text-fg-muted dark:text-fg-muted text-sm border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
                       {t('servers.settings.storage.exclusions_empty')}
                     </div>
                   )}
@@ -686,7 +686,7 @@ export const ServerSettingsPage = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.network.address')}
                 </label>
                 <Input
@@ -697,13 +697,13 @@ export const ServerSettingsPage = () => {
                   }}
                   placeholder="0.0.0.0"
                 />
-                <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                   {t('servers.settings.network.address_helper')}
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.network.port')}
                 </label>
                 <Input
@@ -716,7 +716,7 @@ export const ServerSettingsPage = () => {
                     setHasChanges(true);
                   }}
                 />
-                <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                   {t('servers.settings.network.port_helper')}
                 </p>
               </div>
@@ -736,7 +736,7 @@ export const ServerSettingsPage = () => {
             <div className="space-y-6">
               {/* Java Executable Path */}
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.advanced.java_path')}
                 </label>
                 <Input
@@ -748,14 +748,14 @@ export const ServerSettingsPage = () => {
                   placeholder="java"
                   className="font-mono"
                 />
-                <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                   {t('servers.settings.advanced.java_path_helper')}
                 </p>
               </div>
 
               {/* JAR File Name */}
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.advanced.jar_path')}
                 </label>
                 <Input
@@ -767,14 +767,14 @@ export const ServerSettingsPage = () => {
                   placeholder="Server/HytaleServer.jar"
                   className="font-mono"
                 />
-                <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                   {t('servers.settings.advanced.jar_path_helper')}
                 </p>
               </div>
 
               {/* Assets Path */}
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.advanced.assets_path')}
                 </label>
                 <Input
@@ -786,14 +786,14 @@ export const ServerSettingsPage = () => {
                   placeholder="../Assets.zip"
                   className="font-mono"
                 />
-                <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                   {t('servers.settings.advanced.assets_path_helper')}
                 </p>
               </div>
 
               {/* JVM Arguments */}
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.advanced.jvm_args')}
                 </label>
                 <textarea
@@ -802,21 +802,21 @@ export const ServerSettingsPage = () => {
                     setAdvancedSettings(prev => ({ ...prev, jvmArgs: e.target.value }));
                     setHasChanges(true);
                   }}
-                  className="w-full bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-text-light-primary dark:text-text-primary focus:outline-hidden focus:border-accent-primary font-mono text-sm"
+                  className="w-full bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-fg-light dark:text-fg focus:outline-hidden focus:border-accent font-mono text-sm"
                   rows={4}
                   placeholder="-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot"
                 />
-                <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                   {t('servers.settings.advanced.jvm_args_helper')}
                 </p>
               </div>
 
               {/* Server Arguments */}
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                <label className="block text-sm text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.advanced.server_args')}
                 </label>
-                <p className="text-xs text-text-light-muted dark:text-text-muted mb-2">
+                <p className="text-xs text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.advanced.server_args_helper')}
                 </p>
                 <Input
@@ -832,10 +832,10 @@ export const ServerSettingsPage = () => {
 
               {/* Command Preview */}
               <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                <label className="block text-sm font-medium text-text-light-muted dark:text-text-muted mb-2">
+                <label className="block text-sm font-medium text-fg-muted dark:text-fg-muted mb-2">
                   {t('servers.settings.advanced.preview')}
                 </label>
-                <p className="text-xs text-text-light-muted dark:text-text-muted mb-3">
+                <p className="text-xs text-fg-muted dark:text-fg-muted mb-3">
                   {t('servers.settings.advanced.preview_helper')}
                 </p>
                 <div className="font-mono text-xs bg-gray-200 dark:bg-gray-900 rounded p-3 overflow-x-auto">
@@ -843,7 +843,7 @@ export const ServerSettingsPage = () => {
                   {' '}
                   <span className="text-green-600 dark:text-green-400" title="JVM Arguments">{advancedSettings.jvmArgs || '-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot'}</span>
                   {' '}
-                  <span className="text-text-light-primary dark:text-text-primary">-jar {advancedSettings.jarFile || 'Server/HytaleServer.jar'}</span>
+                  <span className="text-fg-light dark:text-fg">-jar {advancedSettings.jarFile || 'Server/HytaleServer.jar'}</span>
                   {' '}
                   <span className="text-purple-600 dark:text-purple-400">--assets {advancedSettings.assetsPath || '../Assets.zip'} --bind {networkSettings.address}:{networkSettings.port}</span>
                   {advancedSettings.serverArgs && (
@@ -856,15 +856,15 @@ export const ServerSettingsPage = () => {
                 <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-xs">
                   <span className="flex items-center gap-1">
                     <span className="w-3 h-3 rounded bg-green-600 dark:bg-green-400"></span>
-                    <span className="text-text-light-muted dark:text-text-muted">{t('servers.settings.advanced.legend.jvm')}</span>
+                    <span className="text-fg-muted dark:text-fg-muted">{t('servers.settings.advanced.legend.jvm')}</span>
                   </span>
                   <span className="flex items-center gap-1">
                     <span className="w-3 h-3 rounded bg-purple-600 dark:bg-purple-400"></span>
-                    <span className="text-text-light-muted dark:text-text-muted">{t('servers.settings.advanced.legend.default_args')}</span>
+                    <span className="text-fg-muted dark:text-fg-muted">{t('servers.settings.advanced.legend.default_args')}</span>
                   </span>
                   <span className="flex items-center gap-1">
                     <span className="w-3 h-3 rounded bg-orange-600 dark:bg-orange-400"></span>
-                    <span className="text-text-light-muted dark:text-text-muted">{t('servers.settings.advanced.legend.custom_args')}</span>
+                    <span className="text-fg-muted dark:text-fg-muted">{t('servers.settings.advanced.legend.custom_args')}</span>
                   </span>
                 </div>
               </div>

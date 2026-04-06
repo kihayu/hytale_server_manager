@@ -148,18 +148,18 @@ export const CreateNetworkModal = ({
         <div
           className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${
             step === 'basics'
-              ? 'bg-accent-primary text-black'
-              : 'bg-gray-700 text-text-muted'
+              ? 'bg-accent text-black'
+              : 'bg-gray-700 text-fg-muted'
           }`}
         >
           <span className="text-sm font-medium">{t('networks.create.steps.basics')}</span>
         </div>
-        <ChevronRight size={16} className="text-text-muted" />
+        <ChevronRight size={16} className="text-fg-muted" />
         <div
           className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${
             step === 'servers'
-              ? 'bg-accent-primary text-black'
-              : 'bg-gray-700 text-text-muted'
+              ? 'bg-accent text-black'
+              : 'bg-gray-700 text-fg-muted'
           }`}
         >
           <span className="text-sm font-medium">{t('networks.create.steps.servers')}</span>
@@ -170,15 +170,15 @@ export const CreateNetworkModal = ({
       {step === 'basics' && (
         <div className="space-y-4">
           {/* Header */}
-          <div className="flex items-center gap-3 p-4 bg-primary-bg-secondary rounded-lg">
-            <div className="p-3 bg-accent-primary/20 rounded-lg">
-              <Network className="text-accent-primary" size={24} />
+          <div className="flex items-center gap-3 p-4 bg-surface rounded-lg">
+            <div className="p-3 bg-accent/20 rounded-lg">
+              <Network className="text-accent" size={24} />
             </div>
             <div>
-              <h3 className="font-heading font-semibold text-text-light-primary dark:text-text-primary">
+              <h3 className="font-heading font-semibold text-fg-light dark:text-fg">
                 {t('networks.create.header')}
               </h3>
-              <p className="text-sm text-text-light-muted dark:text-text-muted">
+              <p className="text-sm text-fg-muted dark:text-fg-muted">
                 {t('networks.create.subtitle')}
               </p>
             </div>
@@ -186,7 +186,7 @@ export const CreateNetworkModal = ({
 
           {/* Network Name */}
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('networks.create.name_label')} *
             </label>
             <Input
@@ -205,7 +205,7 @@ export const CreateNetworkModal = ({
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('networks.create.description_label')}
             </label>
             <textarea
@@ -216,7 +216,7 @@ export const CreateNetworkModal = ({
                 if (errors.description) setErrors(prev => ({ ...prev, description: '' }));
               }}
               rows={2}
-              className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 resize-none"
+              className="w-full px-4 py-2 bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg focus:outline-hidden focus:ring-2 focus:ring-accent/50 resize-none"
             />
             {errors.description && (
               <p className="text-danger text-sm mt-1">{errors.description}</p>
@@ -225,7 +225,7 @@ export const CreateNetworkModal = ({
 
           {/* Network Color */}
           <div>
-            <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+            <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
               {t('networks.create.color_label')}
             </label>
             <div className="flex gap-2 flex-wrap">
@@ -248,15 +248,15 @@ export const CreateNetworkModal = ({
       {step === 'servers' && (
         <div className="space-y-4">
           {/* Header */}
-          <div className="flex items-center gap-3 p-4 bg-primary-bg-secondary rounded-lg">
-            <div className="p-3 bg-accent-primary/20 rounded-lg">
-              <Server className="text-accent-primary" size={24} />
+          <div className="flex items-center gap-3 p-4 bg-surface rounded-lg">
+            <div className="p-3 bg-accent/20 rounded-lg">
+              <Server className="text-accent" size={24} />
             </div>
             <div>
-              <h3 className="font-heading font-semibold text-text-light-primary dark:text-text-primary">
+              <h3 className="font-heading font-semibold text-fg-light dark:text-fg">
                 {t('networks.create.servers_header')}
               </h3>
-              <p className="text-sm text-text-light-muted dark:text-text-muted">
+              <p className="text-sm text-fg-muted dark:text-fg-muted">
                 {t('networks.create.servers_subtitle')}
               </p>
             </div>
@@ -265,7 +265,7 @@ export const CreateNetworkModal = ({
           {/* Server Selection */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-sm font-medium text-text-light-primary dark:text-text-primary">
+              <label className="text-sm font-medium text-fg-light dark:text-fg">
                 {t('networks.create.member_servers')}
               </label>
               <div className="flex gap-2">
@@ -279,11 +279,11 @@ export const CreateNetworkModal = ({
             </div>
 
             {isLoadingServers ? (
-              <div className="text-center py-8 text-text-muted">
+              <div className="text-center py-8 text-fg-muted">
                 {t('networks.create.loading_servers')}
               </div>
             ) : availableServers.length === 0 ? (
-              <div className="text-center py-8 text-text-muted">
+              <div className="text-center py-8 text-fg-muted">
                 {t('networks.create.no_servers')}
               </div>
             ) : (
@@ -306,13 +306,13 @@ export const CreateNetworkModal = ({
                       }
                     }}
                     className={`flex items-center gap-3 p-3 cursor-pointer hover:bg-white/5 transition-colors border-b border-gray-800 last:border-b-0 ${
-                      selectedServerIds.has(server.id) ? 'bg-accent-primary/10' : ''
+                      selectedServerIds.has(server.id) ? 'bg-accent/10' : ''
                     }`}
                   >
                     <div
                       className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
                         selectedServerIds.has(server.id)
-                          ? 'bg-accent-primary border-accent-primary'
+                          ? 'bg-accent border-accent'
                           : 'border-gray-600'
                       }`}
                     >
@@ -321,7 +321,7 @@ export const CreateNetworkModal = ({
                       )}
                     </div>
                     <div className="flex-1">
-                      <span className="text-text-light-primary dark:text-text-primary">
+                      <span className="text-fg-light dark:text-fg">
                         {server.name}
                       </span>
                     </div>
@@ -340,7 +340,7 @@ export const CreateNetworkModal = ({
               <p className="text-danger text-sm mt-1">{errors.servers}</p>
             )}
 
-            <p className="text-xs text-text-light-muted dark:text-text-muted mt-2">
+            <p className="text-xs text-fg-muted dark:text-fg-muted mt-2">
               {t('networks.create.selected_count', { count: selectedServerIds.size })}
             </p>
           </div>

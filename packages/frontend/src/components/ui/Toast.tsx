@@ -38,14 +38,14 @@ const Toast = ({ toast }: { toast: ToastType }) => {
     success: 'bg-success/10 border-success text-success',
     error: 'bg-danger/10 border-danger text-danger',
     warning: 'bg-warning/10 border-warning text-warning',
-    info: 'bg-accent-primary/10 border-accent-primary text-accent-primary',
+    info: 'bg-accent/10 border-accent text-accent',
   };
 
   const progressStyles = {
     success: 'bg-success',
     error: 'bg-danger',
     warning: 'bg-warning',
-    info: 'bg-accent-primary',
+    info: 'bg-accent',
   };
 
   return (
@@ -60,18 +60,18 @@ const Toast = ({ toast }: { toast: ToastType }) => {
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-heading font-semibold text-text-primary">
+        <p className="text-sm font-heading font-semibold text-fg">
           {toast.title}
         </p>
         {toast.message && (
-          <p className="text-xs text-text-muted mt-1">{toast.message}</p>
+          <p className="text-xs text-fg-muted mt-1">{toast.message}</p>
         )}
       </div>
 
       {/* Close Button */}
       <button
         onClick={() => removeToast(toast.id)}
-        className="shrink-0 text-text-muted hover:text-text-primary transition-colors"
+        className="shrink-0 text-fg-muted hover:text-fg transition-colors"
         aria-label={t('ui.toast.close_aria')}
       >
         <X size={16} />

@@ -140,9 +140,9 @@ export const CommandPalette = () => {
   }
 
   const categoryColors = {
-    page: 'text-accent-primary',
+    page: 'text-accent',
     server: 'text-success',
-    player: 'text-accent-secondary',
+    player: 'text-accent-alt',
   };
 
   if (!isOpen) return null;
@@ -164,22 +164,22 @@ export const CommandPalette = () => {
           initial={{ opacity: 0, scale: 0.95, y: -20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -20 }}
-          className="relative w-full max-w-2xl mx-4 bg-white dark:bg-primary-bg-secondary border-2 border-gray-300 dark:border-gray-800 rounded-xl shadow-2xl overflow-hidden"
+          className="relative w-full max-w-2xl mx-4 bg-white dark:bg-surface border-2 border-gray-300 dark:border-gray-800 rounded-xl shadow-2xl overflow-hidden"
         >
           {/* Search Input */}
           <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-300 dark:border-gray-800">
-            <Search size={20} className="text-text-light-muted dark:text-text-muted shrink-0" />
+            <Search size={20} className="text-fg-muted dark:text-fg-muted shrink-0" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('ui.command.placeholder')}
-              className="flex-1 bg-transparent text-text-light-primary dark:text-text-primary placeholder-text-muted dark:placeholder-text-muted outline-hidden text-lg"
+              className="flex-1 bg-transparent text-fg-light dark:text-fg placeholder-fg-muted dark:placeholder-fg-muted outline-hidden text-lg"
               autoFocus
             />
             <button
               onClick={closeSearch}
-              className="text-text-light-muted dark:text-text-muted hover:text-text-primary dark:hover:text-text-primary transition-colors"
+              className="text-fg-muted dark:text-fg-muted hover:text-fg dark:hover:text-fg transition-colors"
             >
               <X size={20} />
             </button>
@@ -189,7 +189,7 @@ export const CommandPalette = () => {
           <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
             {results.length === 0 ? (
               <div className="px-4 py-12 text-center">
-                <p className="text-text-light-muted dark:text-text-muted">{t('ui.command.no_results')}</p>
+                <p className="text-fg-muted dark:text-fg-muted">{t('ui.command.no_results')}</p>
               </div>
             ) : (
               <div className="py-2">
@@ -200,22 +200,22 @@ export const CommandPalette = () => {
                     onMouseEnter={() => setSelectedIndex(index)}
                     className={`w-full px-4 py-3 flex items-center gap-3 transition-colors ${
                       index === selectedIndex
-                        ? 'bg-accent-primary/10 border-l-2 border-accent-primary'
-                        : 'border-l-2 border-transparent hover:bg-primary-bg/50 dark:hover:bg-primary-bg/50'
+                        ? 'bg-accent/10 border-l-2 border-accent'
+                        : 'border-l-2 border-transparent hover:bg-canvas/50 dark:hover:bg-canvas/50'
                     }`}
                   >
                     <div className={categoryColors[result.category]}>
                       {result.icon}
                     </div>
                     <div className="flex-1 text-left min-w-0">
-                      <p className="text-sm font-medium text-text-light-primary dark:text-text-primary truncate">
+                      <p className="text-sm font-medium text-fg-light dark:text-fg truncate">
                         {result.title}
                       </p>
-                      <p className="text-xs text-text-light-muted dark:text-text-muted truncate">
+                      <p className="text-xs text-fg-muted dark:text-fg-muted truncate">
                         {result.description}
                       </p>
                     </div>
-                    <span className="text-xs text-text-light-muted dark:text-text-muted capitalize px-2 py-1 rounded bg-gray-800/50 dark:bg-gray-800/50">
+                    <span className="text-xs text-fg-muted dark:text-fg-muted capitalize px-2 py-1 rounded bg-gray-800/50 dark:bg-gray-800/50">
                       {t(`ui.command.categories.${result.category}`)}
                     </span>
                   </button>
@@ -225,7 +225,7 @@ export const CommandPalette = () => {
           </div>
 
           {/* Footer */}
-          <div className="px-4 py-3 border-t border-gray-300 dark:border-gray-800 flex items-center justify-between text-xs text-text-light-muted dark:text-text-muted">
+          <div className="px-4 py-3 border-t border-gray-300 dark:border-gray-800 flex items-center justify-between text-xs text-fg-muted dark:text-fg-muted">
             <div className="flex items-center gap-4">
               <span>{t('ui.command.hints.navigate')}</span>
               <span>{t('ui.command.hints.select')}</span>

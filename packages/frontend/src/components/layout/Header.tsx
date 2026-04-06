@@ -112,16 +112,16 @@ export const Header = () => {
   };
 
   return (
-    <header className="hidden lg:flex h-16 bg-white dark:bg-primary-bg-secondary border-b border-gray-300 dark:border-gray-800 px-4 lg:px-6 items-center justify-between sticky top-0 z-40">
+    <header className="hidden lg:flex h-16 bg-white dark:bg-surface border-b border-gray-300 dark:border-gray-800 px-4 lg:px-6 items-center justify-between sticky top-0 z-40">
       {/* Search */}
       <div className="flex-1 max-w-md">
         <div className="relative">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-light-muted dark:text-text-muted" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-muted dark:text-fg-muted" />
           <input
             disabled
             type="search"
             placeholder={t('common.search_placeholder')}
-            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary placeholder-text-muted text-base focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary min-h-11"
+            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg text-fg-light dark:text-fg placeholder-fg-muted text-base focus:outline-hidden focus:ring-2 focus:ring-accent/50 focus:border-accent min-h-11"
           />
         </div>
       </div>
@@ -135,7 +135,7 @@ export const Header = () => {
         <div className="relative" ref={notificationsRef}>
           <button
             onClick={() => setShowNotifications(!showNotifications)}
-            className="relative p-2.5 text-text-light-muted hover:text-text-light-primary dark:text-text-primary hover:bg-gray-200 dark:bg-gray-800 rounded-lg transition-colors min-h-11 min-w-11 flex items-center justify-center"
+            className="relative p-2.5 text-fg-muted hover:text-fg-light dark:text-fg hover:bg-gray-200 dark:bg-gray-800 rounded-lg transition-colors min-h-11 min-w-11 flex items-center justify-center"
             aria-label={t('header.notifications')}
           >
             <Bell size={20} />
@@ -160,7 +160,7 @@ export const Header = () => {
                     <button
                       onClick={() => void handleMarkAllAsRead()}
                       disabled={isMarkingRead}
-                      className="text-xs text-accent-primary hover:underline disabled:opacity-50 flex items-center gap-1"
+                      className="text-xs text-accent hover:underline disabled:opacity-50 flex items-center gap-1"
                     >
                       {isMarkingRead && <Loader2 size={10} className="animate-spin" />}
                       {t('header.mark_all_read')}
@@ -169,12 +169,12 @@ export const Header = () => {
                 </div>
                 <div className="divide-y divide-gray-300 dark:divide-gray-800">
                   {isLoading && alerts.length === 0 ? (
-                    <div className="p-8 text-center text-text-light-muted dark:text-text-muted">
+                    <div className="p-8 text-center text-fg-muted dark:text-fg-muted">
                       <Loader2 size={20} className="animate-spin mx-auto mb-2" />
                       <p>{t('header.loading_alerts')}</p>
                     </div>
                   ) : alerts.length === 0 ? (
-                    <div className="p-8 text-center text-text-light-muted dark:text-text-muted">
+                    <div className="p-8 text-center text-fg-muted dark:text-fg-muted">
                       <Bell size={24} className="mx-auto mb-2 opacity-50" />
                       <p>{t('header.no_alerts')}</p>
                     </div>
@@ -184,7 +184,7 @@ export const Header = () => {
                         key={alert.id}
                         to="/alerts"
                         onClick={() => setShowNotifications(false)}
-                        className={`block p-4 hover:bg-gray-200 dark:hover:bg-gray-800/50 cursor-pointer transition-colors ${!alert.isRead ? 'bg-accent-primary/5' : ''
+                        className={`block p-4 hover:bg-gray-200 dark:hover:bg-gray-800/50 cursor-pointer transition-colors ${!alert.isRead ? 'bg-accent/5' : ''
                           }`}
                       >
                         <div className="flex items-start gap-3">
@@ -206,16 +206,16 @@ export const Header = () => {
                                 {alert.severity}
                               </Badge>
                               {!alert.isRead && (
-                                <span className="w-2 h-2 bg-accent-primary rounded-full" />
+                                <span className="w-2 h-2 bg-accent rounded-full" />
                               )}
                             </div>
-                            <p className="text-sm font-medium text-text-light-primary dark:text-text-primary mt-1 truncate">
+                            <p className="text-sm font-medium text-fg-light dark:text-fg mt-1 truncate">
                               {alert.title}
                             </p>
-                            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1 line-clamp-2">
+                            <p className="text-xs text-fg-muted dark:text-fg-muted mt-1 line-clamp-2">
                               {alert.message}
                             </p>
-                            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                            <p className="text-xs text-fg-muted dark:text-fg-muted mt-1">
                               {getRelativeTime(alert.createdAt)}
                             </p>
                           </div>
@@ -228,7 +228,7 @@ export const Header = () => {
                   <Link
                     to="/alerts"
                     onClick={() => setShowNotifications(false)}
-                    className="block p-3 text-center text-sm text-accent-primary hover:bg-gray-200 dark:hover:bg-gray-800/50 border-t border-gray-300 dark:border-gray-800"
+                    className="block p-3 text-center text-sm text-accent hover:bg-gray-200 dark:hover:bg-gray-800/50 border-t border-gray-300 dark:border-gray-800"
                   >
                     {t('header.view_all')}
                   </Link>
@@ -241,7 +241,7 @@ export const Header = () => {
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2.5 text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors min-h-11 min-w-11 flex items-center justify-center"
+          className="p-2.5 text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors min-h-11 min-w-11 flex items-center justify-center"
           aria-label={theme === 'dark' ? t('header.theme_toggle.light') : t('header.theme_toggle.dark')}
         >
           <AnimatePresence mode="wait" initial={false}>
@@ -261,16 +261,16 @@ export const Header = () => {
         <div className="relative" ref={userMenuRef}>
           <button
             onClick={() => setShowUserMenu(!showUserMenu)}
-            className="flex items-center gap-2 px-3 py-2 text-text-light-primary dark:text-text-primary hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-fg-light dark:text-fg hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
           >
-            <div className="w-8 h-8 bg-accent-primary rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
               <User size={18} className="text-black" />
             </div>
             <div className="text-left hidden md:block">
               <p className="text-sm font-medium">{user?.username}</p>
-              <p className="text-xs text-text-light-muted dark:text-text-muted capitalize">{user?.role}</p>
+              <p className="text-xs text-fg-muted dark:text-fg-muted capitalize">{user?.role}</p>
             </div>
-            <ChevronDown size={16} className="text-text-light-muted dark:text-text-muted" />
+            <ChevronDown size={16} className="text-fg-muted dark:text-fg-muted" />
           </button>
 
           <AnimatePresence>
@@ -283,7 +283,7 @@ export const Header = () => {
               >
                 <div className="p-2 space-y-1">
                   <div className="px-3 py-2">
-                    <div className="flex items-center gap-2 mb-2 text-text-light-primary dark:text-text-primary">
+                    <div className="flex items-center gap-2 mb-2 text-fg-light dark:text-fg">
                       <Languages size={18} />
                       <span className="text-sm font-medium">{t('header.user_menu.language')}</span>
                     </div>
@@ -291,7 +291,7 @@ export const Header = () => {
                       <select
                         value={SUPPORTED_LANGUAGES.find(l => l.code === i18n.language)?.code || i18n.language.split('-')[0]}
                         onChange={(e) => changeLanguage(e.target.value)}
-                        className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-text-light-primary dark:text-text-primary text-sm rounded-md px-2 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
+                        className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-fg-light dark:text-fg text-sm rounded-md px-2 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-accent"
                       >
                         {SUPPORTED_LANGUAGES.map((lang) => (
                           <option key={lang.code} value={lang.code}>
@@ -305,7 +305,7 @@ export const Header = () => {
                   <Link
                     to="/settings#security"
                     onClick={() => setShowUserMenu(false)}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-text-light-primary dark:text-text-primary hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-fg-light dark:text-fg hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <KeyRound size={18} />
                     <span>{t('header.user_menu.change_password')}</span>

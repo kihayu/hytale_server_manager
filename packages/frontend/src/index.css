@@ -7,23 +7,35 @@
 
 @theme {
   /* Colors - HytalePanel Adaptive Theme (Dark & Light) */
-  --color-primary-bg: #0f1419;
-  --color-primary-bg-secondary: #1a1f2e;
-  --color-primary-bg-secondary-hover: #2a3042;
-  --color-primary-light-bg: #f8fafc;
-  --color-primary-light-bg-secondary: #ffffff;
 
-  --color-accent-primary: #f59e0b;
-  --color-accent-secondary: #06b6d4;
+  /* Canvas — page-level backgrounds */
+  --color-canvas: #0f1419;
+  --color-canvas-light: #f8fafc;
 
+  /* Surface — card / panel / modal backgrounds */
+  --color-surface: #1a1f2e;
+  --color-surface-hover: #2a3042;
+  --color-surface-light: #ffffff;
+
+  /* Foreground — text and icons */
+  --color-fg: #e2e8f0;
+  --color-fg-muted: #64748b;
+  --color-fg-light: #1e293b;
+  --color-fg-disabled: #475569;
+
+  /* Accent / Brand */
+  --color-accent: #f59e0b;
+  --color-accent-alt: #06b6d4;
+
+  /* Status */
   --color-success: #10b981;
+  --color-success-subtle: #064e3b;
   --color-warning: #f59e0b;
+  --color-warning-subtle: #78350f;
   --color-danger: #f43f5e;
-
-  --color-text-primary: #e2e8f0;
-  --color-text-muted: #64748b;
-  --color-text-light-primary: #1e293b;
-  --color-text-light-muted: #64748b;
+  --color-danger-subtle: #4c0519;
+  --color-info: #06b6d4;
+  --color-info-subtle: #164e63;
 
   /* Font families */
   --font-heading: 'Rajdhani', 'Exo 2', sans-serif;
@@ -52,8 +64,8 @@
   }
 
   body {
-    @apply bg-primary-light-bg dark:bg-primary-bg;
-    @apply text-text-light-primary dark:text-text-primary;
+    @apply bg-canvas-light dark:bg-canvas;
+    @apply text-fg-light dark:text-fg;
     @apply font-body antialiased;
     margin: 0;
     min-height: 100vh;
@@ -91,7 +103,7 @@
 @layer components {
   /* Glass morphism card */
   .glass-card {
-    @apply bg-white/60 dark:bg-primary-bg-secondary/40;
+    @apply bg-white/60 dark:bg-surface/40;
     @apply backdrop-blur-md;
     @apply border border-gray-200 dark:border-gray-800/50;
     @apply rounded-lg;
@@ -100,7 +112,7 @@
 
   /* Glow effect */
   .glow-accent {
-    @apply shadow-lg shadow-accent-primary/20;
+    @apply shadow-lg shadow-accent/20;
   }
 
   /* Status indicators */
@@ -130,7 +142,7 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-gray-100 dark:bg-primary-bg;
+    @apply bg-gray-100 dark:bg-canvas;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
@@ -144,7 +156,7 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-linear-to-r from-accent-primary to-accent-secondary bg-clip-text text-transparent;
+    @apply bg-linear-to-r from-accent to-accent-alt bg-clip-text text-transparent;
   }
 
   .border-gradient {

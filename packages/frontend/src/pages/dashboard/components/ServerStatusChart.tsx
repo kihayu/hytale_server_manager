@@ -45,7 +45,7 @@ export const ServerStatusChart = ({ statusDistribution, loading }: ServerStatusC
           <CardTitle>{t('dashboard.status_chart.title')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-48 flex items-center justify-center text-text-light-muted dark:text-text-muted">
+          <div className="h-48 flex items-center justify-center text-fg-muted dark:text-fg-muted">
             {t('common.loading')}
           </div>
         </CardContent>
@@ -60,7 +60,7 @@ export const ServerStatusChart = ({ statusDistribution, loading }: ServerStatusC
           <CardTitle>{t('dashboard.status_chart.title')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-48 flex items-center justify-center text-text-light-muted dark:text-text-muted">
+          <div className="h-48 flex items-center justify-center text-fg-muted dark:text-fg-muted">
             {t('dashboard.status_chart.empty')}
           </div>
         </CardContent>
@@ -114,7 +114,7 @@ export const ServerStatusChart = ({ statusDistribution, loading }: ServerStatusC
                 layout="vertical"
                 iconType="circle"
                 formatter={(value) => (
-                  <span className="text-text-light-primary dark:text-text-primary text-sm">
+                  <span className="text-fg-light dark:text-fg text-sm">
                     {value}
                   </span>
                 )}
@@ -122,7 +122,7 @@ export const ServerStatusChart = ({ statusDistribution, loading }: ServerStatusC
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="text-center text-sm text-text-light-muted dark:text-text-muted mt-2">
+        <div className="text-center text-sm text-fg-muted dark:text-fg-muted mt-2">
           {t('dashboard.status_chart.total', { count: total })}
         </div>
       </CardContent>

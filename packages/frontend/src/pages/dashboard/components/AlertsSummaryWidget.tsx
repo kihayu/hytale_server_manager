@@ -58,7 +58,7 @@ export const AlertsSummaryWidget = ({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-4 text-text-light-muted dark:text-text-muted">
+          <div className="text-center py-4 text-fg-muted dark:text-fg-muted">
             {t('dashboard.alerts.loading')}
           </div>
         </CardContent>
@@ -90,21 +90,21 @@ export const AlertsSummaryWidget = ({
         <div className="grid grid-cols-3 gap-2 mb-4">
           <div className="text-center p-2 bg-red-500/10 rounded-lg">
             <p className="text-2xl font-bold text-red-500">{counts.critical}</p>
-            <p className="text-xs text-text-light-muted dark:text-text-muted">{t('alerts.stats.critical')}</p>
+            <p className="text-xs text-fg-muted dark:text-fg-muted">{t('alerts.stats.critical')}</p>
           </div>
           <div className="text-center p-2 bg-yellow-500/10 rounded-lg">
             <p className="text-2xl font-bold text-yellow-500">{counts.warning}</p>
-            <p className="text-xs text-text-light-muted dark:text-text-muted">{t('alerts.stats.warning')}</p>
+            <p className="text-xs text-fg-muted dark:text-fg-muted">{t('alerts.stats.warning')}</p>
           </div>
           <div className="text-center p-2 bg-blue-500/10 rounded-lg">
             <p className="text-2xl font-bold text-blue-500">{counts.info}</p>
-            <p className="text-xs text-text-light-muted dark:text-text-muted">{t('alerts.stats.info')}</p>
+            <p className="text-xs text-fg-muted dark:text-fg-muted">{t('alerts.stats.info')}</p>
           </div>
         </div>
 
         {/* Recent Alerts */}
         {recentAlerts.length === 0 ? (
-          <div className="text-center py-4 text-text-light-muted dark:text-text-muted text-sm">
+          <div className="text-center py-4 text-fg-muted dark:text-fg-muted text-sm">
             {t('dashboard.alerts.no_unresolved')}
           </div>
         ) : (
@@ -112,15 +112,15 @@ export const AlertsSummaryWidget = ({
             {recentAlerts.slice(0, 3).map((alert) => (
               <div
                 key={alert.id}
-                className="flex items-start gap-2 p-2 bg-white dark:bg-primary-bg-secondary rounded border border-gray-200 dark:border-gray-800 cursor-pointer hover:border-accent-primary/50 transition-colors"
+                className="flex items-start gap-2 p-2 bg-white dark:bg-surface rounded border border-gray-200 dark:border-gray-800 cursor-pointer hover:border-accent/50 transition-colors"
                 onClick={() => void navigate('/alerts')}
               >
                 {getSeverityIcon(alert.severity)}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-text-light-primary dark:text-text-primary truncate">
+                  <p className="text-sm font-medium text-fg-light dark:text-fg truncate">
                     {alert.title}
                   </p>
-                  <p className="text-xs text-text-light-muted dark:text-text-muted">
+                  <p className="text-xs text-fg-muted dark:text-fg-muted">
                     {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}
                   </p>
                 </div>

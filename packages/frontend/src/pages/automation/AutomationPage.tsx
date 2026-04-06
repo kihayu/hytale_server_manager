@@ -378,13 +378,13 @@ export const AutomationPage = () => {
             {task.type === 'stop' && <Pause size={16} />}
           </div>
           <div>
-            <p className="font-medium text-text-light-primary dark:text-text-primary">{task.name}</p>
+            <p className="font-medium text-fg-light dark:text-fg">{task.name}</p>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 void navigate(`/servers/${task.server.id}`);
               }}
-              className="text-xs text-accent-primary hover:text-accent-primary/80 hover:underline transition-colors text-left"
+              className="text-xs text-accent hover:text-accent/80 hover:underline transition-colors text-left"
             >
               {task.server.name}
             </button>
@@ -422,7 +422,7 @@ export const AutomationPage = () => {
         <div>
           <p className="text-sm">{task.lastRun ? new Date(task.lastRun).toLocaleDateString() : t('automation.status.never')}</p>
           {task.lastRun && (
-            <p className="text-xs text-text-light-muted dark:text-text-muted">
+            <p className="text-xs text-fg-muted dark:text-fg-muted">
               {new Date(task.lastRun).toLocaleTimeString()}
             </p>
           )}
@@ -499,13 +499,13 @@ export const AutomationPage = () => {
       label: t('automation.table.group'),
       render: (group) => (
         <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-lg ${group.enabled ? 'bg-accent-primary/20' : 'bg-gray-200 dark:bg-gray-800'}`}>
+          <div className={`p-2 rounded-lg ${group.enabled ? 'bg-accent/20' : 'bg-gray-200 dark:bg-gray-800'}`}>
             <Layers size={16} />
           </div>
           <div>
-            <p className="font-medium text-text-light-primary dark:text-text-primary">{group.name}</p>
+            <p className="font-medium text-fg-light dark:text-fg">{group.name}</p>
             {group.description && (
-              <p className="text-xs text-text-light-muted dark:text-text-muted truncate max-w-[200px]">
+              <p className="text-xs text-fg-muted dark:text-fg-muted truncate max-w-[200px]">
                 {group.description}
               </p>
             )}
@@ -533,7 +533,7 @@ export const AutomationPage = () => {
       key: 'delayBetweenTasks',
       label: t('automation.table.delay'),
       render: (group) => (
-        <span className="text-sm text-text-light-muted dark:text-text-muted">
+        <span className="text-sm text-fg-muted dark:text-fg-muted">
           {group.delayBetweenTasks > 0 ? `${group.delayBetweenTasks}s` : t('automation.status.none')}
         </span>
       ),
@@ -563,7 +563,7 @@ export const AutomationPage = () => {
         <div>
           <p className="text-sm">{group.lastRun ? new Date(group.lastRun).toLocaleDateString() : t('automation.status.never')}</p>
           {group.lastRun && (
-            <p className="text-xs text-text-light-muted dark:text-text-muted">
+            <p className="text-xs text-fg-muted dark:text-fg-muted">
               {new Date(group.lastRun).toLocaleTimeString()}
             </p>
           )}
@@ -647,8 +647,8 @@ export const AutomationPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">{t('automation.title')}</h1>
-          <p className="text-text-light-muted dark:text-text-muted mt-1">{t('automation.subtitle')}</p>
+          <h1 className="text-3xl font-heading font-bold text-fg-light dark:text-fg">{t('automation.title')}</h1>
+          <p className="text-fg-muted dark:text-fg-muted mt-1">{t('automation.subtitle')}</p>
         </div>
         <div className="flex gap-2">
           {activeTab === 'tasks' && (
@@ -665,12 +665,12 @@ export const AutomationPage = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-white dark:bg-primary-bg-secondary p-1 rounded-lg w-fit">
+      <div className="flex gap-1 bg-white dark:bg-surface p-1 rounded-lg w-fit">
         <button
           onClick={() => setActiveTab('tasks')}
           className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-colors ${activeTab === 'tasks'
-              ? 'bg-accent-primary text-black'
-              : 'text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+              ? 'bg-accent text-black'
+              : 'text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
             }`}
         >
           <Clock size={16} />
@@ -679,8 +679,8 @@ export const AutomationPage = () => {
         <button
           onClick={() => setActiveTab('groups')}
           className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-colors ${activeTab === 'groups'
-              ? 'bg-accent-primary text-black'
-              : 'text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+              ? 'bg-accent text-black'
+              : 'text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
             }`}
         >
           <Layers size={16} />
@@ -693,12 +693,12 @@ export const AutomationPage = () => {
         <>
           {/* Server Selector */}
           <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-sm text-text-light-muted dark:text-text-muted">{t('automation.server_selector.label')}</span>
+            <span className="text-sm text-fg-muted dark:text-fg-muted">{t('automation.server_selector.label')}</span>
             <button
               onClick={() => setSelectedServer('all')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedServer === 'all'
-                  ? 'bg-accent-primary text-black'
-                  : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+                  ? 'bg-accent text-black'
+                  : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
                 }`}
             >
               {t('automation.server_selector.all_servers')}
@@ -708,8 +708,8 @@ export const AutomationPage = () => {
                 key={server.id}
                 onClick={() => setSelectedServer(server.id)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedServer === server.id
-                    ? 'bg-accent-primary text-black'
-                    : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary'
+                    ? 'bg-accent text-black'
+                    : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
                   }`}
               >
                 {server.name}
@@ -723,10 +723,10 @@ export const AutomationPage = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-text-light-muted dark:text-text-muted text-sm">{t('automation.stats.total_tasks')}</p>
-                    <p className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary mt-1">{tasks.length}</p>
+                    <p className="text-fg-muted dark:text-fg-muted text-sm">{t('automation.stats.total_tasks')}</p>
+                    <p className="text-3xl font-heading font-bold text-fg-light dark:text-fg mt-1">{tasks.length}</p>
                   </div>
-                  <Clock size={32} className="text-accent-primary" />
+                  <Clock size={32} className="text-accent" />
                 </div>
               </CardContent>
             </Card>
@@ -734,7 +734,7 @@ export const AutomationPage = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-text-light-muted dark:text-text-muted text-sm">{t('automation.stats.active')}</p>
+                    <p className="text-fg-muted dark:text-fg-muted text-sm">{t('automation.stats.active')}</p>
                     <p className="text-3xl font-heading font-bold text-success mt-1">{activeTasks}</p>
                   </div>
                   <Play size={32} className="text-success" />
@@ -745,7 +745,7 @@ export const AutomationPage = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-text-light-muted dark:text-text-muted text-sm">{t('automation.stats.successful')}</p>
+                    <p className="text-fg-muted dark:text-fg-muted text-sm">{t('automation.stats.successful')}</p>
                     <p className="text-3xl font-heading font-bold text-success mt-1">{successfulTasks}</p>
                   </div>
                   <PlayCircle size={32} className="text-success" />
@@ -756,7 +756,7 @@ export const AutomationPage = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-text-light-muted dark:text-text-muted text-sm">{t('automation.stats.failed')}</p>
+                    <p className="text-fg-muted dark:text-fg-muted text-sm">{t('automation.stats.failed')}</p>
                     <p className="text-3xl font-heading font-bold text-danger mt-1">{failedTasks}</p>
                   </div>
                   <Pause size={32} className="text-danger" />
@@ -778,7 +778,7 @@ export const AutomationPage = () => {
             </CardHeader>
             <CardContent>
               {tasks.length === 0 && !loadingTasks ? (
-                <div className="text-center py-12 text-text-light-muted dark:text-text-muted">
+                <div className="text-center py-12 text-fg-muted dark:text-fg-muted">
                   <Clock size={48} className="mx-auto mb-4 opacity-50" />
                   <p>{t('automation.empty.title')}</p>
                   <Button variant="primary" className="mt-4" icon={<Plus size={16} />} onClick={() => setShowCreateModal(true)}>
@@ -823,10 +823,10 @@ export const AutomationPage = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-text-light-muted dark:text-text-muted text-sm">{t('automation.groups.stats.total')}</p>
-                    <p className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary mt-1">{taskGroups.length}</p>
+                    <p className="text-fg-muted dark:text-fg-muted text-sm">{t('automation.groups.stats.total')}</p>
+                    <p className="text-3xl font-heading font-bold text-fg-light dark:text-fg mt-1">{taskGroups.length}</p>
                   </div>
-                  <Layers size={32} className="text-accent-primary" />
+                  <Layers size={32} className="text-accent" />
                 </div>
               </CardContent>
             </Card>
@@ -834,7 +834,7 @@ export const AutomationPage = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-text-light-muted dark:text-text-muted text-sm">{t('automation.groups.stats.active')}</p>
+                    <p className="text-fg-muted dark:text-fg-muted text-sm">{t('automation.groups.stats.active')}</p>
                     <p className="text-3xl font-heading font-bold text-success mt-1">{activeGroups}</p>
                   </div>
                   <Play size={32} className="text-success" />
@@ -845,12 +845,12 @@ export const AutomationPage = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-text-light-muted dark:text-text-muted text-sm">{t('automation.groups.stats.tasks_in_groups')}</p>
-                    <p className="text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary mt-1">
+                    <p className="text-fg-muted dark:text-fg-muted text-sm">{t('automation.groups.stats.tasks_in_groups')}</p>
+                    <p className="text-3xl font-heading font-bold text-fg-light dark:text-fg mt-1">
                       {taskGroups.reduce((sum, g) => sum + g.taskMemberships.length, 0)}
                     </p>
                   </div>
-                  <ListOrdered size={32} className="text-accent-primary" />
+                  <ListOrdered size={32} className="text-accent" />
                 </div>
               </CardContent>
             </Card>
@@ -867,7 +867,7 @@ export const AutomationPage = () => {
             </CardHeader>
             <CardContent>
               {taskGroups.length === 0 && !loadingGroups ? (
-                <div className="text-center py-12 text-text-light-muted dark:text-text-muted">
+                <div className="text-center py-12 text-fg-muted dark:text-fg-muted">
                   <Layers size={48} className="mx-auto mb-4 opacity-50" />
                   <p>{t('automation.groups.empty.title')}</p>
                   <p className="text-sm mt-2">{t('automation.groups.empty.subtitle')}</p>

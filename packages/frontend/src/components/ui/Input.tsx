@@ -12,23 +12,23 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {label}
           </label>
         )}
         <div className="relative">
           {icon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-light-muted dark:text-text-muted">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-muted dark:text-fg-muted">
               {icon}
             </div>
           )}
           <input
             ref={ref}
             className={`
-              w-full px-4 py-2.5 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg
-              text-text-light-primary dark:text-text-primary placeholder-text-muted text-base
+              w-full px-4 py-2.5 bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg
+              text-fg-light dark:text-fg placeholder-fg-muted text-base
               min-h-[44px]
-              focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary
+              focus:outline-hidden focus:ring-2 focus:ring-accent/50 focus:border-accent
               disabled:opacity-50 disabled:cursor-not-allowed
               ${icon ? 'pl-10' : ''}
               ${error ? 'border-danger focus:ring-danger/50 focus:border-danger' : ''}
@@ -58,7 +58,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-text-light-primary dark:text-text-primary mb-2">
+          <label className="block text-sm font-medium text-fg-light dark:text-fg mb-2">
             {label}
           </label>
         )}
@@ -66,9 +66,9 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           ref={ref}
           rows={rows}
           className={`
-            w-full px-4 py-2.5 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg
-            text-text-light-primary dark:text-text-primary placeholder-text-muted text-base
-            focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary
+            w-full px-4 py-2.5 bg-white dark:bg-canvas border border-gray-300 dark:border-gray-700 rounded-lg
+            text-fg-light dark:text-fg placeholder-fg-muted text-base
+            focus:outline-hidden focus:ring-2 focus:ring-accent/50 focus:border-accent
             disabled:opacity-50 disabled:cursor-not-allowed resize-vertical
             ${error ? 'border-danger focus:ring-danger/50 focus:border-danger' : ''}
             ${className}

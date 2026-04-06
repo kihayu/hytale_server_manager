@@ -52,11 +52,11 @@ export const PlayerCountChart = ({ data, range, loading }: PlayerCountChartProps
       </CardHeader>
       <CardContent>
         {loading ? (
-          <div className="h-48 flex items-center justify-center text-text-light-muted dark:text-text-muted">
+          <div className="h-48 flex items-center justify-center text-fg-muted dark:text-fg-muted">
             {t('dashboard.charts.loading')}
           </div>
         ) : chartData.length === 0 ? (
-          <div className="h-48 flex items-center justify-center text-text-light-muted dark:text-text-muted">
+          <div className="h-48 flex items-center justify-center text-fg-muted dark:text-fg-muted">
             {t('dashboard.charts.player_activity_empty')}
           </div>
         ) : (

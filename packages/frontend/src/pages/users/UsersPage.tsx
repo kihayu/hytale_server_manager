@@ -161,9 +161,9 @@ export const UsersPage = () => {
       <div className="container mx-auto p-6">
         <Card>
           <CardContent className="py-12 text-center">
-            <Shield size={48} className="mx-auto text-text-secondary mb-4" />
-            <h2 className="text-xl font-semibold text-text-primary mb-2">{t('users.access_denied.title')}</h2>
-            <p className="text-text-secondary">{t('users.access_denied.description')}</p>
+            <Shield size={48} className="mx-auto text-fg-muted mb-4" />
+            <h2 className="text-xl font-semibold text-fg mb-2">{t('users.access_denied.title')}</h2>
+            <p className="text-fg-muted">{t('users.access_denied.description')}</p>
           </CardContent>
         </Card>
       </div>
@@ -174,8 +174,8 @@ export const UsersPage = () => {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-text-primary">{t('users.title')}</h1>
-          <p className="text-text-secondary mt-1">{t('users.subtitle')}</p>
+          <h1 className="text-3xl font-bold text-fg">{t('users.title')}</h1>
+          <p className="text-fg-muted mt-1">{t('users.subtitle')}</p>
         </div>
         <Button variant="primary" onClick={openCreateModal}>
           <Plus size={16} className="mr-2" />
@@ -214,30 +214,30 @@ export const UsersPage = () => {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="text-center py-8 text-text-secondary">{t('users.list.loading')}</div>
+            <div className="text-center py-8 text-fg-muted">{t('users.list.loading')}</div>
           ) : users.length === 0 ? (
-            <div className="text-center py-8 text-text-secondary">{t('users.list.empty')}</div>
+            <div className="text-center py-8 text-fg-muted">{t('users.list.empty')}</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-700">
-                    <th className="text-left py-3 px-4 text-text-secondary font-medium">{t('users.table.user')}</th>
-                    <th className="text-left py-3 px-4 text-text-secondary font-medium">{t('users.table.role')}</th>
-                    <th className="text-left py-3 px-4 text-text-secondary font-medium">{t('users.table.created')}</th>
-                    <th className="text-left py-3 px-4 text-text-secondary font-medium">{t('users.table.last_login')}</th>
-                    <th className="text-right py-3 px-4 text-text-secondary font-medium">{t('users.table.actions')}</th>
+                    <th className="text-left py-3 px-4 text-fg-muted font-medium">{t('users.table.user')}</th>
+                    <th className="text-left py-3 px-4 text-fg-muted font-medium">{t('users.table.role')}</th>
+                    <th className="text-left py-3 px-4 text-fg-muted font-medium">{t('users.table.created')}</th>
+                    <th className="text-left py-3 px-4 text-fg-muted font-medium">{t('users.table.last_login')}</th>
+                    <th className="text-right py-3 px-4 text-fg-muted font-medium">{t('users.table.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((user) => {
                     const RoleIcon = ROLE_ICONS[user.role];
                     return (
-                      <tr key={user.id} className="border-b border-gray-800 hover:bg-primary-bg-secondary/50">
+                      <tr key={user.id} className="border-b border-gray-800 hover:bg-surface/50">
                         <td className="py-3 px-4">
                           <div>
-                            <div className="font-medium text-text-primary">{user.username}</div>
-                            <div className="text-sm text-text-secondary">{user.email}</div>
+                            <div className="font-medium text-fg">{user.username}</div>
+                            <div className="text-sm text-fg-muted">{user.email}</div>
                           </div>
                         </td>
                         <td className="py-3 px-4">
@@ -246,10 +246,10 @@ export const UsersPage = () => {
                             {t(`users.roles.${user.role}`)}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-text-secondary text-sm">
+                        <td className="py-3 px-4 text-fg-muted text-sm">
                           {formatDate(user.createdAt)}
                         </td>
-                        <td className="py-3 px-4 text-text-secondary text-sm">
+                        <td className="py-3 px-4 text-fg-muted text-sm">
                           {formatDate(user.lastLoginAt)}
                         </td>
                         <td className="py-3 px-4">
@@ -306,8 +306,8 @@ export const UsersPage = () => {
       {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-primary-bg-secondary rounded-lg p-6 w-full max-w-md mx-4">
-            <h2 className="text-xl font-bold text-text-primary mb-4">
+          <div className="bg-surface rounded-lg p-6 w-full max-w-md mx-4">
+            <h2 className="text-xl font-bold text-fg mb-4">
               {editingUser ? t('users.modal.edit_title') : t('users.modal.create_title')}
             </h2>
 
@@ -345,7 +345,7 @@ export const UsersPage = () => {
               <div>
                 <label className="block text-sm font-medium mb-2">
                   {t('users.form.password')}
-                  {editingUser && <span className="text-text-secondary"> ({t('users.form.password_optional')})</span>}
+                  {editingUser && <span className="text-fg-muted"> ({t('users.form.password_optional')})</span>}
                 </label>
                 <Input
                   type="password"
@@ -362,7 +362,7 @@ export const UsersPage = () => {
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value as 'admin' | 'moderator' | 'viewer' })}
-                  className="w-full px-3 py-2 bg-primary-bg border border-gray-700 rounded text-text-primary focus:outline-hidden focus:ring-2 focus:ring-accent-primary"
+                  className="w-full px-3 py-2 bg-canvas border border-gray-700 rounded text-fg focus:outline-hidden focus:ring-2 focus:ring-accent"
                 >
                   <option value="viewer">{t('users.roles.viewer_option')}</option>
                   <option value="moderator">{t('users.roles.moderator_option')}</option>
