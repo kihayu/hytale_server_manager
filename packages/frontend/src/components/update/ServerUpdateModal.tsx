@@ -22,7 +22,7 @@ import {
   useForceResetServerUpdate
 } from '../../hooks/api/useServerUpdates';
 import { websocket } from '../../services/websocket';
-import type { UpdateStatus, ServerUpdateProgressEvent } from '../../types';
+import type { UpdateStatus } from '../../types';
 
 interface ServerUpdateModalProps {
   isOpen: boolean;
@@ -60,6 +60,20 @@ export const ServerUpdateModal = ({
   const [message, setMessage] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [showResetOption, setShowResetOption] = useState(false);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+
+  // Reset state when modal closes (state-during-render pattern avoids cascading renders)
+  if (prevIsOpen !== isOpen) {
+    setPrevIsOpen(isOpen);
+    if (!isOpen) {
+      setSessionId(null);
+      setProgress(0);
+      setStatus(null);
+      setMessage('');
+      setError(null);
+      setShowResetOption(false);
+    }
+  }
 
   const { data: versionCheck, isLoading: isChecking } = useCheckServerUpdate(serverId);
   const startUpdate = useStartServerUpdate();
@@ -79,8 +93,8 @@ export const ServerUpdateModal = ({
         setStatus('pending');
         setProgress(0);
       },
-      onProgress: (data: ServerUpdateProgressEvent) => {
-        setStatus(data.status);
+      onProgress: (data) => {
+        setStatus(data.status as UpdateStatus);
         setProgress(data.progress);
         if (data.message) setMessage(data.message);
       },
@@ -91,7 +105,7 @@ export const ServerUpdateModal = ({
       },
       onFailed: (data) => {
         setStatus('failed');
-        setError(data.error || t('updates.modal.errors.unknown'));
+        setError(data.error ?? t('updates.modal.errors.unknown'));
       },
       onCancelled: () => {
         setStatus('failed');
@@ -102,19 +116,7 @@ export const ServerUpdateModal = ({
     return () => {
       unsubscribe();
     };
-  }, [isOpen, serverId]);
-
-  // Reset state when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setSessionId(null);
-      setProgress(0);
-      setStatus(null);
-      setMessage('');
-      setError(null);
-      setShowResetOption(false);
-    }
-  }, [isOpen]);
+  }, [isOpen, serverId, t]);
 
   const handleStartUpdate = async () => {
     try {
@@ -127,10 +129,10 @@ export const ServerUpdateModal = ({
       setSessionId(session.sessionId);
       setStatus(session.status);
       setProgress(session.progress);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
       // Show reset option if the error indicates stuck state
-      if (err.message.includes('already being updated')) {
+      if ((err as Error).message.includes('already being updated')) {
         setShowResetOption(true);
       }
     }
@@ -141,8 +143,8 @@ export const ServerUpdateModal = ({
       await forceReset.mutateAsync(serverId);
       setShowResetOption(false);
       setError(null);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     }
   };
 
@@ -150,8 +152,8 @@ export const ServerUpdateModal = ({
     if (!sessionId) return;
     try {
       await cancelUpdate.mutateAsync(sessionId);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     }
   };
 
@@ -277,7 +279,7 @@ export const ServerUpdateModal = ({
                 variant="danger"
                 size="sm"
                 className="mt-3"
-                onClick={handleForceReset}
+                onClick={() => void handleForceReset()}
                 disabled={forceReset.isPending}
               >
                 {forceReset.isPending ? 'Resetting...' : 'Reset Update State'}
@@ -296,7 +298,7 @@ export const ServerUpdateModal = ({
             </Button>
             <Button
               variant="primary"
-              onClick={handleStartUpdate}
+              onClick={() => void handleStartUpdate()}
               disabled={startUpdate.isPending}
               className="flex items-center gap-2"
             >
@@ -314,7 +316,7 @@ export const ServerUpdateModal = ({
         {isUpdating && (
           <Button
             variant="danger"
-            onClick={handleCancelUpdate}
+            onClick={() => void handleCancelUpdate()}
             disabled={cancelUpdate.isPending}
           >
             {t('updates.modal.cancel')}

@@ -54,7 +54,7 @@ export const PermissionsPage = () => {
       setPermissionsData(permsData);
       setRoles(rolesData.roles);
       setRolePermissions(rolesData.rolePermissions);
-      setOriginalRolePermissions(JSON.parse(JSON.stringify(rolesData.rolePermissions)));
+      setOriginalRolePermissions(JSON.parse(JSON.stringify(rolesData.rolePermissions)) as Record<string, string[]>);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load permissions');
     } finally {
@@ -63,7 +63,7 @@ export const PermissionsPage = () => {
   }, []);
 
   useEffect(() => {
-    fetchData();
+    void fetchData();
   }, [fetchData]);
 
   const hasChanges = (role: string): boolean => {
@@ -173,7 +173,7 @@ const handleSave = async (role: string) => {
           <p className="text-text-light-muted dark:text-text-muted">
             {error || t('permissions.errors.load')}
           </p>
-          <Button variant="secondary" onClick={fetchData} className="mt-4">
+          <Button variant="secondary" onClick={() => void fetchData()} className="mt-4">
             {t('permissions.actions.retry')}
           </Button>
         </div>
@@ -194,7 +194,7 @@ const handleSave = async (role: string) => {
           </p>
         </div>
         {canManagePermissions && hasAnyChanges && (
-          <Button variant="primary" icon={<Save size={18} />} onClick={handleSaveAll}>
+          <Button variant="primary" icon={<Save size={18} />} onClick={() => void handleSaveAll()}>
             {t('permissions.actions.save_all')}
           </Button>
         )}
@@ -255,7 +255,7 @@ const handleSave = async (role: string) => {
                       size="sm"
                       icon={<Save size={14} />}
                       loading={saving === role}
-                      onClick={() => handleSave(role)}
+                      onClick={() => void handleSave(role)}
                       disabled={saving !== null || resetting !== null || !modified}
                       className="flex-1"
                     >
@@ -266,7 +266,7 @@ const handleSave = async (role: string) => {
                       size="sm"
                       icon={<RotateCcw size={14} />}
                       loading={resetting === role}
-                      onClick={() => handleReset(role)}
+                      onClick={() => void handleReset(role)}
                       disabled={saving !== null || resetting !== null}
                     >
                       {t('permissions.actions.reset')}

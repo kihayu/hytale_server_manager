@@ -15,7 +15,7 @@ interface ServerSelectionModalProps {
 
 export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: ServerSelectionModalProps) => {
   const { t } = useTranslation();
-  const [servers, setServers] = useState<any[]>([]);
+  const [servers, setServers] = useState<{ id: string; name: string; status: string; address?: string; port?: number; version?: string; maxPlayers?: number }[]>([]);
   const [selectedServer, setSelectedServer] = useState<string | null>(null);
   const [selectedVersion, setSelectedVersion] = useState<string | null>(null);
   const [dependencies, setDependencies] = useState<UnifiedDependency[]>([]);
@@ -25,7 +25,7 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
   // Fetch servers when modal opens
   useEffect(() => {
     if (isOpen) {
-      fetchServers();
+      void fetchServers();
     }
   }, [isOpen]);
 
@@ -41,7 +41,7 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
 
   const fetchServers = async () => {
     try {
-      const data = await api.getServers();
+      const data = await api.getServers<{ id: string; name: string; status: string; address?: string; port?: number; version?: string; maxPlayers?: number }>();
       setServers(data);
     } catch (error) {
       console.error('Error fetching servers:', error);
@@ -51,9 +51,9 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
   // Fetch dependencies when version is selected
   useEffect(() => {
     if (project && selectedVersion) {
-      fetchDependencies();
+      void fetchDependencies();
     }
-  }, [project, selectedVersion]);
+  }, [project, selectedVersion]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchDependencies = async () => {
     if (!project || !selectedVersion) return;
@@ -224,7 +224,7 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
                      <h4 className="font-medium text-text-light-primary dark:text-text-primary truncate">
                        {server.name}
                      </h4>
-                     <StatusIndicator status={server.status} />
+                     <StatusIndicator status={server.status as Parameters<typeof StatusIndicator>[0]['status']} />
                    </div>
                    <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
                       {t('mods.server_select.server_meta', { address: server.address, port: server.port, version: server.version })}

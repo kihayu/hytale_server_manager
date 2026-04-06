@@ -46,9 +46,9 @@ export const CreateItemModal = ({ isOpen, onClose, onCreated, serverId, currentP
 
       onCreated();
       handleClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(`Error creating ${type}:`, err);
-      setError(err.message || t('files.create.error_generic', { type: type === 'file' ? t('files.types.file') : t('files.types.directory') }));
+      setError((err as Error).message || t('files.create.error_generic', { type: type === 'file' ? t('files.types.file') : t('files.types.directory') }));
     } finally {
       setLoading(false);
     }
@@ -149,7 +149,7 @@ export const CreateItemModal = ({ isOpen, onClose, onCreated, serverId, currentP
         </Button>
         <Button
           variant="primary"
-          onClick={handleCreate}
+          onClick={() => void handleCreate()}
           loading={loading}
           disabled={loading || !name.trim()}
         >

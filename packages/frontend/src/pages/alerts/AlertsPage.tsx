@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Badge, DataTable, type Column } from '../../components/ui';
 import { Bell, AlertCircle, AlertTriangle, Info, Check, CheckCheck, RefreshCw, Trash2 } from 'lucide-react';
 import { useToast } from '../../stores/toastStore';
@@ -50,22 +50,21 @@ export const AlertsPage = () => {
     info: 0,
   });
 
-  useEffect(() => {
-    fetchServers();
-  }, []);
+  useEffect(() => { void fetchServers(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (selectedServer === 'all' && servers.length === 0) {
       return;
     }
-    fetchAlerts();
+    void fetchAlerts();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedServer, servers.length, filter]);
 
   const fetchServers = async () => {
     try {
-      const data = await api.getServers();
-      setServers(data.map((s: any) => ({ id: s.id, name: s.name, status: s.status })));
-    } catch (error) {
+      const data = await api.getServers<Server>();
+      setServers(data.map((s) => ({ id: s.id, name: s.name, status: s.status })));
+    } catch (error: unknown) {
       console.error('Error fetching servers:', error);
       toast.error(t('common.loading'), t('alerts.messages.load_error'));
     }
@@ -114,9 +113,9 @@ export const AlertsPage = () => {
         warning,
         info,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching alerts:', error);
-      toast.error(t('alerts.messages.load_error'), error.message);
+      toast.error(t('alerts.messages.load_error'), (error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -127,8 +126,8 @@ export const AlertsPage = () => {
       await api.markAlertAsRead(alert.serverId, alert.id);
       toast.success(t('alerts.messages.marked_read'));
       await fetchAlerts();
-    } catch (error: any) {
-      toast.error(t('alerts.messages.mark_read_error'), error.message);
+    } catch (error: unknown) {
+      toast.error(t('alerts.messages.mark_read_error'), (error as Error).message);
     }
   };
 
@@ -137,8 +136,8 @@ export const AlertsPage = () => {
       await api.resolveAlert(alert.serverId, alert.id);
       toast.success(t('alerts.messages.resolved'));
       await fetchAlerts();
-    } catch (error: any) {
-      toast.error(t('alerts.messages.resolve_error'), error.message);
+    } catch (error: unknown) {
+      toast.error(t('alerts.messages.resolve_error'), (error as Error).message);
     }
   };
 
@@ -151,8 +150,8 @@ export const AlertsPage = () => {
       await api.deleteAlert(alert.serverId, alert.id);
       toast.success(t('alerts.messages.deleted'));
       await fetchAlerts();
-    } catch (error: any) {
-      toast.error(t('alerts.messages.delete_error'), error.message);
+    } catch (error: unknown) {
+      toast.error(t('alerts.messages.delete_error'), (error as Error).message);
     }
   };
 
@@ -166,8 +165,8 @@ export const AlertsPage = () => {
       toast.success(t('alerts.messages.bulk_read_success', { count: selectedAlerts.length }));
       await fetchAlerts();
       setSelectedAlerts([]);
-    } catch (error: any) {
-      toast.error(t('alerts.messages.bulk_read_error'), error.message);
+    } catch (error: unknown) {
+      toast.error(t('alerts.messages.bulk_read_error'), (error as Error).message);
     }
   };
 
@@ -181,8 +180,8 @@ export const AlertsPage = () => {
       toast.success(t('alerts.messages.bulk_resolve_success', { count: selectedAlerts.length }));
       await fetchAlerts();
       setSelectedAlerts([]);
-    } catch (error: any) {
-      toast.error(t('alerts.messages.bulk_resolve_error'), error.message);
+    } catch (error: unknown) {
+      toast.error(t('alerts.messages.bulk_resolve_error'), (error as Error).message);
     }
   };
 
@@ -201,8 +200,8 @@ export const AlertsPage = () => {
       toast.success(t('alerts.messages.bulk_delete_success', { count: result.deleted }));
       await fetchAlerts();
       setSelectedAlerts([]);
-    } catch (error: any) {
-      toast.error(t('alerts.messages.bulk_delete_error'), error.message);
+    } catch (error: unknown) {
+      toast.error(t('alerts.messages.bulk_delete_error'), (error as Error).message);
     }
   };
 
@@ -217,7 +216,7 @@ export const AlertsPage = () => {
     }
   };
 
-  const columns: Column<Alert>[] = useMemo(() => [
+  const columns: Column<Alert>[] = [
     {
       key: 'severity',
       label: t('alerts.columns.severity'),
@@ -302,7 +301,7 @@ export const AlertsPage = () => {
               variant="ghost"
               size="sm"
               icon={<Check size={14} />}
-              onClick={() => handleMarkRead(alert)}
+              onClick={() => void handleMarkRead(alert)}
               title={t('alerts.actions.mark_as_read_tooltip')}
             />
           )}
@@ -311,7 +310,7 @@ export const AlertsPage = () => {
               variant="ghost"
               size="sm"
               icon={<CheckCheck size={14} />}
-              onClick={() => handleResolve(alert)}
+              onClick={() => void handleResolve(alert)}
               title={t('alerts.actions.resolve_tooltip')}
             />
           )}
@@ -319,13 +318,13 @@ export const AlertsPage = () => {
             variant="ghost"
             size="sm"
             icon={<Trash2 size={14} />}
-            onClick={() => handleDelete(alert)}
+            onClick={() => void handleDelete(alert)}
             title={t('alerts.actions.delete_tooltip')}
           />
         </div>
       ),
     },
-  ], [t, i18n.language]);
+  ];
 
   return (
     <div className="space-y-6">
@@ -342,7 +341,7 @@ export const AlertsPage = () => {
         <Button
           variant="secondary"
           icon={<RefreshCw size={18} className={loading ? 'animate-spin' : ''} />}
-          onClick={fetchAlerts}
+          onClick={() => void fetchAlerts()}
           disabled={loading}
         >
           {t('common.refresh')}
@@ -478,7 +477,7 @@ export const AlertsPage = () => {
                     variant="secondary"
                     size="sm"
                     icon={<Check size={14} />}
-                    onClick={handleBulkMarkRead}
+                    onClick={() => void handleBulkMarkRead()}
                     disabled={selectedAlerts.filter(a => !a.isRead).length === 0}
                   >
                     {t('alerts.actions.mark_read')}
@@ -487,7 +486,7 @@ export const AlertsPage = () => {
                     variant="secondary"
                     size="sm"
                     icon={<CheckCheck size={14} />}
-                    onClick={handleBulkResolve}
+                    onClick={() => void handleBulkResolve()}
                     disabled={selectedAlerts.filter(a => !a.isResolved).length === 0}
                   >
                     {t('alerts.actions.resolve')}
@@ -496,7 +495,7 @@ export const AlertsPage = () => {
                     variant="danger"
                     size="sm"
                     icon={<Trash2 size={14} />}
-                    onClick={handleBulkDelete}
+                    onClick={() => void handleBulkDelete()}
                     disabled={selectedAlerts.length === 0}
                   >
                     {t('alerts.actions.delete_selected')}

@@ -126,7 +126,7 @@ function App() {
     logger.info(`${env.app.name} v${env.app.version} starting...`);
     logger.debug('Environment:', env.NODE_ENV);
 
-    initialize();
+    void initialize();
   }, [initialize]);
 
   return (

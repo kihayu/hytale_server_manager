@@ -46,7 +46,7 @@ describe('AuthService', () => {
       // Note: tokens are now stored in httpOnly cookies, not returned in response body
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           user: {
             id: 'user-123',
             email: 'admin@example.com',
@@ -73,7 +73,7 @@ describe('AuthService', () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 401,
-        json: async () => ({ message: 'Invalid email or password' }),
+        json: () => ({ message: 'Invalid email or password' }),
       });
 
       try {
@@ -93,7 +93,7 @@ describe('AuthService', () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 500,
-        json: async () => ({ message: 'Internal server error' }),
+        json: () => ({ message: 'Internal server error' }),
       });
 
       await expect(
@@ -123,7 +123,7 @@ describe('AuthService', () => {
     it('should call login API with correct credentials', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           user: { id: 'user-123', email: 'admin@example.com', username: 'admin', role: 'admin' },
           expiresIn: 3600,
         }),
@@ -139,7 +139,7 @@ describe('AuthService', () => {
         expect.stringContaining('/api/auth/login'),
         expect.objectContaining({
           method: 'POST',
-          credentials: expect.any(String),
+          credentials: expect.any(String) as string,
         })
       );
     });
@@ -182,7 +182,7 @@ describe('AuthService', () => {
   });
 
   describe('validateToken', () => {
-    it('should validate a valid token', async () => {
+    it('should validate a valid token', () => {
       const mockToken = createMockJWT({
         sub: 'user-123',
         email: 'admin@example.com',
@@ -191,14 +191,14 @@ describe('AuthService', () => {
         type: 'access',
       });
 
-      const validation = await authService.validateToken(mockToken);
+      const validation = authService.validateToken(mockToken);
 
       expect(validation.valid).toBe(true);
       expect(validation.expired).toBe(false);
       expect(validation.payload).toBeDefined();
     });
 
-    it('should detect expired token', async () => {
+    it('should detect expired token', () => {
       const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
       const body = btoa(JSON.stringify({
         sub: 'user-123',
@@ -212,14 +212,14 @@ describe('AuthService', () => {
       const signature = btoa('mock-signature');
       const expiredToken = `${header}.${body}.${signature}`;
 
-      const validation = await authService.validateToken(expiredToken);
+      const validation = authService.validateToken(expiredToken);
 
       expect(validation.valid).toBe(false);
       expect(validation.expired).toBe(true);
     });
 
-    it('should reject an invalid token', async () => {
-      const validation = await authService.validateToken('invalid-token');
+    it('should reject an invalid token', () => {
+      const validation = authService.validateToken('invalid-token');
 
       expect(validation.valid).toBe(false);
       expect(validation.error).toBeDefined();
@@ -232,7 +232,7 @@ describe('AuthService', () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 401,
-        json: async () => ({ message: 'Invalid token' }),
+        json: () => ({ message: 'Invalid token' }),
       });
       const isValid = await authService.isSessionValid();
       expect(isValid).toBe(false);
@@ -241,7 +241,7 @@ describe('AuthService', () => {
     it('should return true for valid session', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           user: { id: 'user-123', email: 'admin@example.com', username: 'admin', role: 'admin' },
           expiresIn: 3600,
         }),
@@ -258,7 +258,7 @@ describe('AuthService', () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 401,
-        json: async () => ({ message: 'Invalid token' }),
+        json: () => ({ message: 'Invalid token' }),
       });
       const user = await authService.getCurrentUser();
       expect(user).toBeNull();
@@ -267,7 +267,7 @@ describe('AuthService', () => {
     it('should return user data when logged in', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           user: { id: 'user-123', email: 'admin@example.com', username: 'admin', role: 'admin' },
           expiresIn: 3600,
         }),
@@ -284,7 +284,7 @@ describe('AuthService', () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 401,
-        json: async () => ({ message: 'Invalid token' }),
+        json: () => ({ message: 'Invalid token' }),
       });
       const hasRole = await authService.hasRole('admin');
       expect(hasRole).toBe(false);
@@ -294,7 +294,7 @@ describe('AuthService', () => {
       // Mock 3 API calls for 3 hasRole checks
       mockFetch.mockResolvedValue({
         ok: true,
-        json: async () => ({
+        json: () => ({
           user: { id: 'user-123', email: 'admin@example.com', username: 'admin', role: 'admin' },
           expiresIn: 3600,
         }),
@@ -309,7 +309,7 @@ describe('AuthService', () => {
     it('should check role hierarchy correctly for viewer', async () => {
       mockFetch.mockResolvedValue({
         ok: true,
-        json: async () => ({
+        json: () => ({
           user: { id: 'user-123', email: 'viewer@example.com', username: 'viewer', role: 'viewer' },
           expiresIn: 3600,
         }),
@@ -327,7 +327,7 @@ describe('AuthService', () => {
     it('should refresh token successfully', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           user: { id: 'user-123', email: 'admin@example.com', username: 'admin', role: 'admin' },
           expiresIn: 3600,
         }),
@@ -344,7 +344,7 @@ describe('AuthService', () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 401,
-        json: async () => ({ message: 'Session expired' }),
+        json: () => ({ message: 'Session expired' }),
       });
 
       await expect(authService.refreshAccessToken()).rejects.toThrow(AuthError);

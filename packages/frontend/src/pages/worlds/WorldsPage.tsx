@@ -31,14 +31,14 @@ export const WorldsPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadServers();
-  }, []);
+    void loadServers();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (selectedServerId) {
-      loadWorlds();
+      void loadWorlds();
     }
-  }, [selectedServerId]);
+  }, [selectedServerId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadServers = async () => {
     try {
@@ -47,8 +47,8 @@ export const WorldsPage = () => {
       if (data.length > 0 && !selectedServerId) {
         setSelectedServerId(data[0].id);
       }
-    } catch (err: any) {
-      setError(err.message || t('worlds.errors.servers'));
+    } catch (err: unknown) {
+      setError((err as Error).message || t('worlds.errors.servers'));
     }
   };
 
@@ -60,8 +60,8 @@ export const WorldsPage = () => {
     try {
       const data = await api.listWorlds<World>(selectedServerId);
       setWorlds(data);
-    } catch (err: any) {
-      setError(err.message || t('worlds.errors.worlds'));
+    } catch (err: unknown) {
+      setError((err as Error).message || t('worlds.errors.worlds'));
     } finally {
       setLoading(false);
     }
@@ -72,9 +72,9 @@ export const WorldsPage = () => {
 
     try {
       await api.activateWorld(selectedServerId, worldId);
-      loadWorlds();
-    } catch (err: any) {
-      setError(err.message || t('worlds.errors.activate'));
+      void loadWorlds();
+    } catch (err: unknown) {
+      setError((err as Error).message || t('worlds.errors.activate'));
     }
   };
 
@@ -87,9 +87,9 @@ export const WorldsPage = () => {
 
     try {
       await api.deleteWorld(selectedServerId, worldId);
-      loadWorlds();
-    } catch (err: any) {
-      setError(err.message || t('worlds.errors.delete'));
+      void loadWorlds();
+    } catch (err: unknown) {
+      setError((err as Error).message || t('worlds.errors.delete'));
     }
   };
 
@@ -136,7 +136,7 @@ export const WorldsPage = () => {
                 <CardTitle>{t('worlds.list.title')}</CardTitle>
                 <CardDescription>{t('worlds.list.subtitle')}</CardDescription>
               </div>
-              <Button onClick={loadWorlds} disabled={loading}>
+              <Button onClick={() => void loadWorlds()} disabled={loading}>
                 <RefreshCw className={loading ? 'animate-spin' : ''} size={16} />
               </Button>
             </div>
@@ -175,11 +175,11 @@ export const WorldsPage = () => {
 
                     <div className="flex gap-2">
                       {!world.isActive && (
-                        <Button variant="secondary" onClick={() => handleActivateWorld(world.id)}>
+                        <Button variant="secondary" onClick={() => void handleActivateWorld(world.id)}>
                           {t('worlds.actions.activate')}
                         </Button>
                       )}
-                      <Button variant="secondary" onClick={() => handleDeleteWorld(world.id, world.name)}>
+                      <Button variant="secondary" onClick={() => void handleDeleteWorld(world.id, world.name)}>
                         <Trash2 size={16} />
                       </Button>
                     </div>

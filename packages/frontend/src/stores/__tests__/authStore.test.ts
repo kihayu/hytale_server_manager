@@ -46,6 +46,8 @@ vi.mock('../../config', () => ({
 }));
 
 describe('authStore', () => {
+  const mockedAuthService = vi.mocked(authService);
+
   beforeEach(() => {
     vi.clearAllMocks();
     // Reset the store state
@@ -94,7 +96,7 @@ describe('authStore', () => {
     };
 
     it('should login successfully', async () => {
-      vi.mocked(authService.login).mockResolvedValueOnce(mockAuthResponse);
+      mockedAuthService.login.mockResolvedValueOnce(mockAuthResponse);
 
       const { login } = useAuthStore.getState();
       const result = await login({ identifier: 'test@example.com', password: 'password' });
@@ -115,7 +117,7 @@ describe('authStore', () => {
         resolveLogin = resolve;
       });
 
-      vi.mocked(authService.login).mockReturnValueOnce(loginPromise);
+      mockedAuthService.login.mockReturnValueOnce(loginPromise);
 
       const { login } = useAuthStore.getState();
       const loginResultPromise = login({ identifier: 'test@example.com', password: 'password' });
@@ -132,7 +134,7 @@ describe('authStore', () => {
 
     it('should handle login failure', async () => {
       const error = new Error('Invalid credentials');
-      vi.mocked(authService.login).mockRejectedValueOnce(error);
+      mockedAuthService.login.mockRejectedValueOnce(error);
 
       const { login } = useAuthStore.getState();
       const result = await login({ identifier: 'test@example.com', password: 'wrong' });
@@ -155,7 +157,7 @@ describe('authStore', () => {
         isAuthenticated: true,
       });
 
-      vi.mocked(authService.logout).mockResolvedValueOnce(undefined);
+      mockedAuthService.logout.mockResolvedValueOnce(undefined);
 
       const { logout } = useAuthStore.getState();
       await logout();
@@ -172,7 +174,7 @@ describe('authStore', () => {
         isAuthenticated: true,
       });
 
-      vi.mocked(authService.logout).mockRejectedValueOnce(new Error('Network error'));
+      mockedAuthService.logout.mockRejectedValueOnce(new Error('Network error'));
 
       const { logout } = useAuthStore.getState();
       await logout();
@@ -192,8 +194,8 @@ describe('authStore', () => {
         role: 'admin' as const,
       };
 
-      vi.mocked(authService.isSessionValid).mockResolvedValueOnce(true);
-      vi.mocked(authService.getCurrentUser).mockResolvedValueOnce(mockUser);
+      mockedAuthService.isSessionValid.mockResolvedValueOnce(true);
+      mockedAuthService.getCurrentUser.mockResolvedValueOnce(mockUser);
 
       const { checkAuth } = useAuthStore.getState();
       const result = await checkAuth();
@@ -206,7 +208,7 @@ describe('authStore', () => {
     });
 
     it('should return false for invalid session', async () => {
-      vi.mocked(authService.isSessionValid).mockResolvedValueOnce(false);
+      mockedAuthService.isSessionValid.mockResolvedValueOnce(false);
 
       const { checkAuth } = useAuthStore.getState();
       const result = await checkAuth();
@@ -228,9 +230,9 @@ describe('authStore', () => {
         role: 'admin' as const,
       };
 
-      vi.mocked(authService.getSetupStatus).mockResolvedValueOnce({ setupRequired: false });
-      vi.mocked(authService.isSessionValid).mockResolvedValueOnce(true);
-      vi.mocked(authService.getCurrentUser).mockResolvedValueOnce(mockUser);
+      mockedAuthService.getSetupStatus.mockResolvedValueOnce({ setupRequired: false });
+      mockedAuthService.isSessionValid.mockResolvedValueOnce(true);
+      mockedAuthService.getCurrentUser.mockResolvedValueOnce(mockUser);
 
       const { initialize } = useAuthStore.getState();
       await initialize();
@@ -244,8 +246,8 @@ describe('authStore', () => {
     });
 
     it('should initialize with no session', async () => {
-      vi.mocked(authService.getSetupStatus).mockResolvedValueOnce({ setupRequired: false });
-      vi.mocked(authService.isSessionValid).mockResolvedValueOnce(false);
+      mockedAuthService.getSetupStatus.mockResolvedValueOnce({ setupRequired: false });
+      mockedAuthService.isSessionValid.mockResolvedValueOnce(false);
 
       const { initialize } = useAuthStore.getState();
       await initialize();
@@ -259,8 +261,8 @@ describe('authStore', () => {
     });
 
     it('should handle initialization error', async () => {
-      vi.mocked(authService.getSetupStatus).mockRejectedValueOnce(new Error('Network error'));
-      vi.mocked(authService.isSessionValid).mockRejectedValueOnce(new Error('Network error'));
+      mockedAuthService.getSetupStatus.mockRejectedValueOnce(new Error('Network error'));
+      mockedAuthService.isSessionValid.mockRejectedValueOnce(new Error('Network error'));
 
       const { initialize } = useAuthStore.getState();
       await initialize();
@@ -274,7 +276,7 @@ describe('authStore', () => {
     });
 
     it('should initialize with setup required', async () => {
-      vi.mocked(authService.getSetupStatus).mockResolvedValueOnce({ setupRequired: true });
+      mockedAuthService.getSetupStatus.mockResolvedValueOnce({ setupRequired: true });
 
       const { initialize } = useAuthStore.getState();
       await initialize();

@@ -100,7 +100,7 @@ export interface ModtaleNotification {
   message: string;
   read: boolean;
   createdAt: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 }
 
 export interface ModtaleApiError {

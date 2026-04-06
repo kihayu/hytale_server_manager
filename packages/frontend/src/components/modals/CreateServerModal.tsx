@@ -428,7 +428,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
             <Button
               variant="primary"
               size="sm"
-              onClick={handleConfirmSkipCreate}
+              onClick={() => void handleConfirmSkipCreate()}
               disabled={loading}
               className="bg-yellow-600 hover:bg-yellow-700"
             >
@@ -442,7 +442,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
         <Button variant="ghost" onClick={handleClose} disabled={loading}>
           {t('common.cancel')}
         </Button>
-        <Button variant="primary" onClick={handleSubmit} disabled={loading || showSkipConfirmation}>
+        <Button variant="primary" onClick={() => void handleSubmit()} disabled={loading || showSkipConfirmation}>
           {loading ? t('common.creating') : t('servers.create.submit')}
         </Button>
       </ModalFooter>

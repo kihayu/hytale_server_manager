@@ -52,7 +52,7 @@ export const UploadFileModal = ({
   useEffect(() => {
     if (isOpen) {
       fetch('/health')
-        .then(res => res.json())
+        .then(res => res.json() as Promise<{ maxFileUploadSize?: number }>)
         .then(data => {
           if (data.maxFileUploadSize) {
             setMaxFileSize(data.maxFileUploadSize);
@@ -191,7 +191,7 @@ export const UploadFileModal = ({
 
     // Start uploading immediately
     newUploads.forEach((upload) => {
-      uploadFile(upload.id, upload.file);
+      void uploadFile(upload.id, upload.file);
     });
   };
 

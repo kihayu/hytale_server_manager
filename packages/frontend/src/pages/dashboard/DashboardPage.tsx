@@ -78,7 +78,7 @@ export const DashboardPage = () => {
     try {
       const statsData = await api.getDashboardStats();
       setStats(statsData);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching stats:', error);
     }
   }, []);
@@ -88,7 +88,7 @@ export const DashboardPage = () => {
     try {
       const historyData = await api.getDashboardMetricsHistory(metricsRangeRef.current);
       setMetricsHistory(historyData);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching chart data:', error);
     }
   }, []);
@@ -122,10 +122,10 @@ export const DashboardPage = () => {
       setStats(statsData);
       setMetricsHistory(historyData);
       await fetchAlerts();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching dashboard data:', error);
       if (!showRefreshing) {
-        toast.error(t('common.loading'), error.message);
+        toast.error(t('common.loading'), (error as Error).message);
       }
     } finally {
       setLoading(false);
@@ -135,14 +135,14 @@ export const DashboardPage = () => {
 
   // Initial fetch
   useEffect(() => {
-    fetchDashboardData();
+    void fetchDashboardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Auto-refresh stats every 5 seconds
   useEffect(() => {
     const statsInterval = setInterval(() => {
-      fetchStats();
+      void fetchStats();
     }, 5000);
 
     return () => clearInterval(statsInterval);
@@ -151,7 +151,7 @@ export const DashboardPage = () => {
   // Auto-refresh chart every 1 minute
   useEffect(() => {
     const chartInterval = setInterval(() => {
-      fetchChartData();
+      void fetchChartData();
     }, 60000);
 
     return () => clearInterval(chartInterval);
@@ -160,13 +160,13 @@ export const DashboardPage = () => {
   // Refetch chart when metrics range changes
   useEffect(() => {
     if (!loading) {
-      fetchChartData();
+      void fetchChartData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metricsRange]);
 
   const handleRefresh = () => {
-    fetchDashboardData(true);
+    void fetchDashboardData(true);
   };
 
   const container = {
@@ -220,7 +220,7 @@ export const DashboardPage = () => {
         className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6"
       >
         <motion.div variants={item}>
-          <Card variant="glass" hover onClick={() => navigate('/servers')}>
+          <Card variant="glass" hover onClick={() => void navigate('/servers')}>
             <CardContent className="flex items-center justify-between">
               <div>
                 <p className="text-text-light-muted dark:text-text-muted text-sm">{t('dashboard.stats.total_servers')}</p>

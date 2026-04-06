@@ -96,8 +96,8 @@ export interface EnvConfig {
  */
 function getEnvVar(key: string, defaultValue: string): string {
   // In Vite, environment variables are exposed via import.meta.env
-  const value = import.meta.env[key];
-  return value !== undefined && value !== '' ? String(value) : defaultValue;
+  const value = (import.meta.env as Record<string, string | undefined>)[key];
+  return value !== undefined && value !== '' ? value : defaultValue;
 }
 
 /**

@@ -93,7 +93,7 @@ export const mockPlayerInventories: Record<string, PlayerInventory> = {
       boots: createItemStack('boots_002', 'Leather Boots', 'armor', 'common'),
     },
     offhand: null,
-    enderChest: Array(27).fill(null),
+    enderChest: Array<null>(27).fill(null),
   },
 };
 

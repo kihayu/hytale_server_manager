@@ -25,7 +25,7 @@ export const UpdateSettingsCard = () => {
 
   useEffect(() => {
     // Load update info on mount
-    checkForUpdates();
+    void checkForUpdates();
   }, [checkForUpdates]);
 
   const handleApplyUpdate = async () => {
@@ -47,8 +47,8 @@ export const UpdateSettingsCard = () => {
         setUpdateError(response.message || t('settings.updates.apply_failed'));
         setIsUpdating(false);
       }
-    } catch (err: any) {
-      setUpdateError(err.message || t('settings.updates.apply_failed'));
+    } catch (err: unknown) {
+      setUpdateError((err as Error).message || t('settings.updates.apply_failed'));
       setIsUpdating(false);
     }
   };
@@ -198,7 +198,7 @@ export const UpdateSettingsCard = () => {
                     </div>
                     <div className="flex gap-3 ml-8">
                       <Button
-                        onClick={handleApplyUpdate}
+                        onClick={() => void handleApplyUpdate()}
                         className="bg-accent-primary hover:bg-accent-primary/90 text-black"
                       >
                         <Play size={16} />
@@ -297,7 +297,7 @@ export const UpdateSettingsCard = () => {
             )}
             <Button
               variant="secondary"
-              onClick={() => checkForUpdates(true)}
+              onClick={() => void checkForUpdates(true)}
               disabled={isLoading}
               loading={isLoading}
             >

@@ -251,7 +251,7 @@ export const ActivityLogPage = () => {
               </CardDescription>
             </div>
             <Button
-              onClick={() => refetch()}
+              onClick={() => void refetch()}
               disabled={isFetching}
               variant="secondary"
             >

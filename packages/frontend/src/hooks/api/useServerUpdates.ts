@@ -148,8 +148,8 @@ export function useStartServerUpdate() {
     onSuccess: (data, { serverId }) => {
       toast.success(`Update started for server. Version: ${data.fromVersion} → ${data.toVersion}`);
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: serverKeys.detail(serverId) });
-      queryClient.invalidateQueries({ queryKey: serverUpdateKeys.check(serverId) });
+      void queryClient.invalidateQueries({ queryKey: serverKeys.detail(serverId) });
+      void queryClient.invalidateQueries({ queryKey: serverUpdateKeys.check(serverId) });
     },
     onError: (error: Error) => {
       toast.error(`Failed to start update: ${error.message}`);
@@ -173,7 +173,7 @@ export function useCancelServerUpdate() {
     },
     onSuccess: (_, sessionId) => {
       toast.info('Update cancelled');
-      queryClient.invalidateQueries({ queryKey: serverUpdateKeys.session(sessionId) });
+      void queryClient.invalidateQueries({ queryKey: serverUpdateKeys.session(sessionId) });
     },
     onError: (error: Error) => {
       toast.error(`Failed to cancel update: ${error.message}`);
@@ -197,8 +197,8 @@ export function useRollbackServerUpdate() {
     },
     onSuccess: (_, serverId) => {
       toast.success('Server rolled back to previous version');
-      queryClient.invalidateQueries({ queryKey: serverKeys.detail(serverId) });
-      queryClient.invalidateQueries({ queryKey: serverUpdateKeys.history(serverId) });
+      void queryClient.invalidateQueries({ queryKey: serverKeys.detail(serverId) });
+      void queryClient.invalidateQueries({ queryKey: serverUpdateKeys.history(serverId) });
     },
     onError: (error: Error) => {
       toast.error(`Failed to rollback: ${error.message}`);
@@ -250,8 +250,8 @@ export function useForceResetServerUpdate() {
     },
     onSuccess: (_, serverId) => {
       toast.success('Update state reset successfully');
-      queryClient.invalidateQueries({ queryKey: serverKeys.detail(serverId) });
-      queryClient.invalidateQueries({ queryKey: serverUpdateKeys.check(serverId) });
+      void queryClient.invalidateQueries({ queryKey: serverKeys.detail(serverId) });
+      void queryClient.invalidateQueries({ queryKey: serverUpdateKeys.check(serverId) });
     },
     onError: (error: Error) => {
       toast.error(`Failed to reset update: ${error.message}`);

@@ -76,7 +76,7 @@ export const HytaleOAuthModal = ({ isOpen, onClose, onSuccess }: HytaleOAuthModa
 
   const handleCopyCode = useCallback(() => {
     if (oauthSession?.deviceCode) {
-      navigator.clipboard.writeText(oauthSession.deviceCode);
+      void navigator.clipboard.writeText(oauthSession.deviceCode);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }

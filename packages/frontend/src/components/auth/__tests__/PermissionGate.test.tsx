@@ -6,7 +6,8 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { PermissionGate, withPermission } from '../PermissionGate';
+import { PermissionGate } from '../PermissionGate';
+import { withPermission } from '../withPermission';
 import { usePermissions } from '../../../hooks/usePermissions';
 import { PERMISSIONS } from '../../../types';
 

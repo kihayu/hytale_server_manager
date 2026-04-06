@@ -61,8 +61,8 @@ export const BackupsPage = () => {
   });
 
   useEffect(() => {
-    fetchServers();
-  }, []);
+    void fetchServers();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fetch backups when selectedServer changes OR when servers are loaded
   useEffect(() => {
@@ -70,14 +70,14 @@ export const BackupsPage = () => {
     if (selectedServer === 'all' && servers.length === 0) {
       return; // Wait for servers to load
     }
-    fetchBackups();
-  }, [selectedServer, servers.length]);
+    void fetchBackups();
+  }, [selectedServer, servers.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchServers = async () => {
     try {
-      const data = await api.getServers();
-      setServers(data.map((s: any) => ({ id: s.id, name: s.name, status: s.status })));
-    } catch (error) {
+      const data = await api.getServers<{ id: string; name: string; status: string }>();
+      setServers(data.map((s) => ({ id: s.id, name: s.name, status: s.status })));
+    } catch (error: unknown) {
       console.error('Error fetching servers:', error);
       toast.error(t('backups.toast.load_servers.title'), t('backups.toast.load_servers.description'));
     }
@@ -117,9 +117,9 @@ export const BackupsPage = () => {
         setBackups(serverBackups);
         setStats(serverStats);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching backups:', error);
-      toast.error(t('backups.toast.load_backups.title'), error.message || t('backups.toast.generic_error'));
+      toast.error(t('backups.toast.load_backups.title'), (error as Error).message || t('backups.toast.generic_error'));
     } finally {
       setLoading(false);
     }
@@ -133,8 +133,8 @@ export const BackupsPage = () => {
         t('backups.toast.backup_started.description', { server: backup.server.name })
       );
       await fetchBackups();
-    } catch (error: any) {
-      toast.error(t('backups.toast.create_failed.title'), error.message || t('backups.toast.generic_error'));
+    } catch (error: unknown) {
+      toast.error(t('backups.toast.create_failed.title'), (error as Error).message || t('backups.toast.generic_error'));
       throw error;
     }
   };
@@ -151,8 +151,8 @@ export const BackupsPage = () => {
         t('backups.toast.restored.description', { server: backup.server.name })
       );
       await fetchBackups();
-    } catch (error: any) {
-      toast.error('Failed to restore backup', error.message);
+    } catch (error: unknown) {
+      toast.error('Failed to restore backup', (error as Error).message);
     }
   };
 
@@ -165,8 +165,8 @@ export const BackupsPage = () => {
       await api.deleteBackup(backup.id);
       toast.success(t('backups.toast.deleted.title'), t('backups.toast.deleted.description'));
       await fetchBackups();
-    } catch (error: any) {
-      toast.error(t('backups.toast.delete_failed.title'), error.message || t('backups.toast.generic_error'));
+    } catch (error: unknown) {
+      toast.error(t('backups.toast.delete_failed.title'), (error as Error).message || t('backups.toast.generic_error'));
     }
   };
 
@@ -198,8 +198,8 @@ export const BackupsPage = () => {
 
       await fetchBackups();
       setSelectedBackups([]);
-    } catch (error: any) {
-      toast.error('Failed to delete backups', error.message);
+    } catch (error: unknown) {
+      toast.error('Failed to delete backups', (error as Error).message);
     } finally {
       setDeletingMultiple(false);
     }
@@ -225,7 +225,7 @@ export const BackupsPage = () => {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/servers/${backup.server.id}`);
+              void navigate(`/servers/${backup.server.id}`);
             }}
             className="font-medium text-accent-primary hover:text-accent-primary/80 hover:underline transition-colors text-left"
           >
@@ -254,7 +254,7 @@ export const BackupsPage = () => {
         if (backup.totalFiles === null) {
           return <span className="text-text-light-muted dark:text-text-muted">-</span>;
         }
-        const skippedCount = backup.skippedFiles ? JSON.parse(backup.skippedFiles).length : 0;
+        const skippedCount = backup.skippedFiles ? (JSON.parse(backup.skippedFiles) as string[]).length : 0;
         return (
           <div className="flex items-center gap-2">
             <span className="text-sm">
@@ -332,7 +332,7 @@ export const BackupsPage = () => {
                 variant="ghost"
                 size="sm"
                 icon={<RotateCcw size={14} />}
-                onClick={() => handleRestore(backup)}
+                onClick={() => void handleRestore(backup)}
               >
                 {t('backups.actions.restore')}
               </Button>
@@ -342,7 +342,7 @@ export const BackupsPage = () => {
             variant="ghost"
             size="sm"
             icon={<Trash2 size={14} />}
-            onClick={() => handleDelete(backup)}
+            onClick={() => void handleDelete(backup)}
           >
             {t('backups.actions.delete')}
           </Button>
@@ -473,7 +473,7 @@ export const BackupsPage = () => {
                   variant="danger"
                   size="sm"
                   icon={<Trash2 size={14} />}
-                  onClick={handleBulkDelete}
+                  onClick={() => void handleBulkDelete()}
                   loading={deletingMultiple}
                   disabled={deletingMultiple}
                 >
@@ -515,7 +515,7 @@ export const BackupsPage = () => {
             <div className="p-4 overflow-y-auto flex-1">
               {(() => {
                 const skippedFiles: string[] = viewingSkippedFiles.skippedFiles
-                  ? JSON.parse(viewingSkippedFiles.skippedFiles)
+                  ? JSON.parse(viewingSkippedFiles.skippedFiles) as string[]
                   : [];
 
                 if (skippedFiles.length === 0) {

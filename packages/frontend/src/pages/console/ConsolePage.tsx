@@ -33,7 +33,8 @@ export const ConsolePage = () => {
   const urlRegex = /https?:\/\/[^\s]+/g;
 
   const stripAnsiCodes = (message: string) => {
-    // Remove ANSI color/control sequences (e.g. "\x1b[31m", "\x1b[m").
+    // Remove ANSI color/control sequences (e.g. ESC[31m, ESC[m).
+    // eslint-disable-next-line no-control-regex
     return message.replace(/\x1b\[[0-9;]*[A-Za-z]/g, '');
   };
 
@@ -47,57 +48,6 @@ export const ConsolePage = () => {
       }
     });
   };
-
-  // Fetch servers on mount
-  useEffect(() => {
-    fetchServers();
-  }, []);
-
-  // Connect to WebSocket for live logs when server changes
-  useEffect(() => {
-    if (!selectedServer) return;
-
-    const unsubscribe = websocket.subscribeToConsole(selectedServer, {
-      onHistoricalLogs: (data) => {
-        // Set initial historical logs
-        const transformedLogs = data.logs.map((log: any) => ({
-          id: log.id,
-          timestamp: new Date(log.timestamp),
-          level: log.level,
-          message: log.message,
-          source: log.source,
-        }));
-        setLogs(transformedLogs);
-      },
-      onLog: (data) => {
-        // Append new log
-        const newLog = {
-          timestamp: new Date(data.log.timestamp),
-          level: data.log.level,
-          message: data.log.message,
-          source: data.log.source,
-        };
-        setLogs((prev) => [...prev, newLog]);
-      },
-      onCommandResponse: (data) => {
-        // Show command response
-        if (data.response.success) {
-          toast.success(t('console.toast.command_executed'), data.response.output);
-        } else {
-          toast.error(t('console.toast.command_failed'), data.response.error || t('console.toast.unknown_error'));
-        }
-      },
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [selectedServer]);
-
-  // Auto-scroll to bottom when logs update
-  useEffect(() => {
-    consoleEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [logs]);
 
   const fetchServers = async () => {
     try {
@@ -117,6 +67,56 @@ export const ConsolePage = () => {
       toast.error(t('console.toast.load_servers_failed.title'), t('console.toast.load_servers_failed.description'));
     }
   };
+
+  // Fetch servers on mount
+  useEffect(() => { void fetchServers(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Connect to WebSocket for live logs when server changes
+  useEffect(() => {
+    if (!selectedServer) return;
+
+    const unsubscribe = websocket.subscribeToConsole(selectedServer, {
+      onHistoricalLogs: (data) => {
+        // Set initial historical logs
+        const transformedLogs = data.logs.map((log) => ({
+          id: log.id,
+          timestamp: new Date(log.timestamp),
+          level: log.level as LogEntry['level'],
+          message: log.message,
+          source: log.source,
+        }));
+        setLogs(transformedLogs);
+      },
+      onLog: (data) => {
+        // Append new log
+        const newLog: LogEntry = {
+          timestamp: new Date(data.log.timestamp),
+          level: data.log.level as LogEntry['level'],
+          message: data.log.message,
+          source: data.log.source,
+        };
+        setLogs((prev) => [...prev, newLog]);
+      },
+      onCommandResponse: (data) => {
+        // Show command response
+        if (data.response.success) {
+          toast.success(t('console.toast.command_executed'), data.response.output);
+        } else {
+          toast.error(t('console.toast.command_failed'), data.response.error || t('console.toast.unknown_error'));
+        }
+      },
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedServer]);
+
+  // Auto-scroll to bottom when logs update
+  useEffect(() => {
+    consoleEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [logs]);
 
   const handleSendCommand = () => {
     if (!command.trim()) return;
@@ -189,7 +189,7 @@ export const ConsolePage = () => {
             onClick={() => setSelectedServer(server.id)}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedServer === server.id
                 ? 'bg-accent-primary text-black'
-                : 'bg-white dark:bg-gray-100 dark:bg-primary-bg-secondary text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:text-text-primary'
+                : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted hover:text-text-light-primary dark:text-text-primary'
               }`}
           >
             {server.name}

@@ -123,9 +123,9 @@ class ApiService {
       }
 
       if (!response.ok) {
-        const error = await response.json().catch(() => ({ error: 'Request failed' }));
+        const error = await response.json().catch(() => ({ error: 'Request failed' })) as { error?: string; message?: string };
         throw new ApiError(
-          error.error || error.message || 'Request failed',
+          error.error ?? error.message ?? 'Request failed',
           response.status,
           error
         );
@@ -136,7 +136,7 @@ class ApiService {
         return null as T;
       }
 
-      const data = await response.json();
+      const data = await response.json() as T;
       logger.debug(`API Response: ${endpoint}`, { status: response.status });
 
       return data;
@@ -164,13 +164,10 @@ class ApiService {
     if (this.isRefreshing) {
       // Wait for ongoing refresh to complete
       return new Promise((resolve, reject) => {
-        this.subscribeToRefresh(async () => {
-          try {
-            const result = await this.retryRequest<T>(endpoint, options);
-            resolve(result);
-          } catch (error) {
-            reject(error);
-          }
+        this.subscribeToRefresh(() => {
+          this.retryRequest<T>(endpoint, options).then(resolve).catch((error: unknown) => {
+            reject(error instanceof Error ? error : new Error(String(error)));
+          });
         });
       });
     }
@@ -213,9 +210,9 @@ class ApiService {
     });
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Request failed' }));
+      const error = await response.json().catch(() => ({ error: 'Request failed' })) as { error?: string; message?: string };
       throw new ApiError(
-        error.error || error.message || 'Request failed',
+        error.error ?? error.message ?? 'Request failed',
         response.status,
         error
       );
@@ -225,7 +222,7 @@ class ApiService {
       return null as T;
     }
 
-    return response.json();
+    return response.json() as Promise<T>;
   }
 
   // ============================================
@@ -828,64 +825,62 @@ class ApiService {
         });
       }
 
-      xhr.addEventListener('load', async () => {
-        if (xhr.status === 401) {
-          try {
-            if (this.isRefreshing) {
-              await new Promise<void>((resolveRefresh, rejectRefresh) => {
-                this.subscribeToRefresh(async () => {
-                  try {
+      xhr.addEventListener('load', () => {
+        void (async () => {
+          if (xhr.status === 401) {
+            try {
+              if (this.isRefreshing) {
+                await new Promise<void>((resolveRefresh) => {
+                  this.subscribeToRefresh(() => {
                     resolveRefresh();
-                  } catch (e) {
-                    rejectRefresh(e);
-                  }
+                  });
                 });
-              });
-            } else {
-              this.isRefreshing = true;
-              try {
-                await authService.refreshAccessToken();
-                this.onRefreshed('');
-              } catch {
-                await authService.logout({ callApi: false });
-                reject(new AuthError('Session expired. Please login again.', 'TOKEN_EXPIRED', 401));
+              } else {
+                this.isRefreshing = true;
+                try {
+                  await authService.refreshAccessToken();
+                  this.onRefreshed('');
+                } catch {
+                  await authService.logout({ callApi: false });
+                  reject(new AuthError('Session expired. Please login again.', 'TOKEN_EXPIRED', 401));
+                  return;
+                } finally {
+                  this.isRefreshing = false;
+                }
+              }
+
+              if (!retried) {
+                retried = true;
+
+                try {
+                  const result = await this.uploadFile(serverId, filePath, file, autoExtractZip, onProgress, signal);
+                  resolve(result);
+                } catch (err) {
+                  reject(err instanceof Error ? err : new Error(String(err)));
+                }
                 return;
-              } finally {
-                this.isRefreshing = false;
               }
+
+              reject(new AuthError('Session expired. Please login again.', 'TOKEN_EXPIRED', 401));
+            } catch {
+              reject(new AuthError('Session expired. Please login again.', 'TOKEN_EXPIRED', 401));
             }
-
-            if (!retried) {
-              retried = true;
-
-              try {
-                const result = await this.uploadFile(serverId, filePath, file, autoExtractZip, onProgress, signal);
-                resolve(result);
-              } catch (err) {
-                reject(err);
-              }
-              return;
+          } else if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const response = JSON.parse(xhr.responseText) as { fileName: string; size: number; extractedFiles: string[] };
+              resolve(response);
+            } catch {
+              reject(new Error('Failed to parse upload response'));
             }
-
-            reject(new AuthError('Session expired. Please login again.', 'TOKEN_EXPIRED', 401));
-          } catch {
-            reject(new AuthError('Session expired. Please login again.', 'TOKEN_EXPIRED', 401));
+          } else {
+            try {
+              const error = JSON.parse(xhr.responseText) as { error?: string };
+              reject(new Error(error.error ?? 'Upload failed'));
+            } catch {
+              reject(new Error(`Upload failed with status ${xhr.status}`));
+            }
           }
-        } else if (xhr.status >= 200 && xhr.status < 300) {
-          try {
-            const response = JSON.parse(xhr.responseText);
-            resolve(response);
-          } catch {
-            reject(new Error('Failed to parse upload response'));
-          }
-        } else {
-          try {
-            const error = JSON.parse(xhr.responseText);
-            reject(new Error(error.error || 'Upload failed'));
-          } catch {
-            reject(new Error(`Upload failed with status ${xhr.status}`));
-          }
-        }
+        })();
       });
 
       xhr.addEventListener('error', () => {

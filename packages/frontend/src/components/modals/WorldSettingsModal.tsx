@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Input, Button, Badge } from '../ui';
-import type { World } from '../../types';
+import type { World, Difficulty, WorldType } from '../../types';
 
 interface WorldSettingsModalProps {
   world: World;
@@ -99,7 +99,7 @@ export const WorldSettingsModal = ({ world, isOpen, onClose, onSave }: WorldSett
               <label className="block text-sm text-text-muted mb-2">{t('servers.world_settings.basic.difficulty')}</label>
               <select
                 value={editedWorld.difficulty}
-                onChange={(e) => setEditedWorld({ ...editedWorld, difficulty: e.target.value as any })}
+                onChange={(e) => setEditedWorld({ ...editedWorld, difficulty: e.target.value as Difficulty })}
                 className="w-full bg-primary-bg border border-gray-700 rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:border-accent-primary"
               >
                 <option value="peaceful">{t('servers.world_settings.basic.difficulty_peaceful')}</option>
@@ -113,7 +113,7 @@ export const WorldSettingsModal = ({ world, isOpen, onClose, onSave }: WorldSett
               <label className="block text-sm text-text-muted mb-2">{t('servers.world_settings.basic.environment')}</label>
               <select
                 value={editedWorld.type}
-                onChange={(e) => setEditedWorld({ ...editedWorld, type: e.target.value as any })}
+                onChange={(e) => setEditedWorld({ ...editedWorld, type: e.target.value as WorldType })}
                 className="w-full bg-primary-bg border border-gray-700 rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:border-accent-primary"
               >
                 <option value="normal">{t('servers.world_settings.basic.env_normal')}</option>

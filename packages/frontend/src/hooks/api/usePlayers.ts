@@ -79,7 +79,7 @@ export function useKickPlayer(
       return api.kickPlayer(serverId, uuid, reason);
     },
     onSuccess: (_, { serverId }) => {
-      queryClient.invalidateQueries({ queryKey: playerKeys.list(serverId) });
+      void queryClient.invalidateQueries({ queryKey: playerKeys.list(serverId) });
       toast.warning('Player kicked');
     },
     onError: (error) => {
@@ -112,8 +112,8 @@ export function useBanPlayer(
       return result as Player;
     },
     onSuccess: (_, { serverId, uuid }) => {
-      queryClient.invalidateQueries({ queryKey: playerKeys.list(serverId) });
-      queryClient.invalidateQueries({ queryKey: playerKeys.detail(uuid) });
+      void queryClient.invalidateQueries({ queryKey: playerKeys.list(serverId) });
+      void queryClient.invalidateQueries({ queryKey: playerKeys.detail(uuid) });
       toast.error('Player banned');
     },
     onError: (error) => {
@@ -142,8 +142,8 @@ export function useUnbanPlayer(
       return result as Player;
     },
     onSuccess: (_, { serverId, uuid }) => {
-      queryClient.invalidateQueries({ queryKey: playerKeys.list(serverId) });
-      queryClient.invalidateQueries({ queryKey: playerKeys.detail(uuid) });
+      void queryClient.invalidateQueries({ queryKey: playerKeys.list(serverId) });
+      void queryClient.invalidateQueries({ queryKey: playerKeys.detail(uuid) });
       toast.success('Player unbanned');
     },
     onError: (error) => {

@@ -158,7 +158,7 @@ export interface ServerConfig {
   };
 
   // Legacy properties (for backward compatibility)
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   motd?: string;
   javaArgs?: string;
   environmentVars?: Record<string, string>;
@@ -353,7 +353,7 @@ export interface ServerEvent {
   id: string;
   type: 'player_join' | 'player_leave' | 'chat' | 'achievement' | 'alert';
   timestamp: Date;
-  data: any;
+  data: Record<string, unknown>;
 }
 
 // ============================================================================

@@ -61,9 +61,9 @@ export const useAlertsStore = create<AlertsState>((set, get) => ({
         isLoading: false,
         lastFetched: now,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({
-        error: error.message || 'Failed to fetch alerts',
+        error: (error as Error).message || 'Failed to fetch alerts',
         isLoading: false,
       });
     }
@@ -73,7 +73,7 @@ export const useAlertsStore = create<AlertsState>((set, get) => ({
     try {
       const { count } = await api.getUnreadCount();
       set({ unreadCount: count });
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Silently fail for unread count - not critical
       console.error('Failed to fetch unread count:', error);
     }
@@ -86,8 +86,8 @@ export const useAlertsStore = create<AlertsState>((set, get) => ({
         alerts: state.alerts.map((a) => ({ ...a, isRead: true })),
         unreadCount: 0,
       }));
-    } catch (error: any) {
-      set({ error: error.message || 'Failed to mark alerts as read' });
+    } catch (error: unknown) {
+      set({ error: (error as Error).message || 'Failed to mark alerts as read' });
       throw error;
     }
   },
@@ -101,8 +101,8 @@ export const useAlertsStore = create<AlertsState>((set, get) => ({
         ),
         unreadCount: Math.max(0, state.unreadCount - 1),
       }));
-    } catch (error: any) {
-      set({ error: error.message || 'Failed to mark alert as read' });
+    } catch (error: unknown) {
+      set({ error: (error as Error).message || 'Failed to mark alert as read' });
       throw error;
     }
   },

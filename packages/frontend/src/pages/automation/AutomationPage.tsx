@@ -98,23 +98,23 @@ export const AutomationPage = () => {
 
   // Fetch servers on mount
   useEffect(() => {
-    fetchServers();
-    fetchTaskGroups();
-  }, []);
+    void fetchServers();
+    void fetchTaskGroups();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fetch tasks when selectedServer changes OR when servers are loaded
   useEffect(() => {
     if (selectedServer === 'all' && servers.length === 0) {
       return; // Wait for servers to load
     }
-    fetchTasks();
-  }, [selectedServer, servers.length]);
+    void fetchTasks();
+  }, [selectedServer, servers.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchServers = async () => {
     try {
-      const data = await api.getServers();
-      setServers(data.map((s: any) => ({ id: s.id, name: s.name, status: s.status })));
-    } catch (error) {
+      const data = await api.getServers<{ id: string; name: string; status: string }>();
+      setServers(data.map((s) => ({ id: s.id, name: s.name, status: s.status })));
+    } catch (error: unknown) {
       console.error('Error fetching servers:', error);
       toast.error(t('automation.toast.load_servers.title'), t('automation.toast.load_servers.description'));
     }
@@ -136,7 +136,7 @@ export const AutomationPage = () => {
         data = await api.getServerTasks<ScheduledTask>(selectedServer);
       }
       setTasks(data);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching tasks:', error);
       toast.error(t('automation.toast.load_tasks.title'), t('automation.toast.load_tasks.description'));
     } finally {
@@ -149,7 +149,7 @@ export const AutomationPage = () => {
       setLoadingGroups(true);
       const data = await api.getTaskGroups<TaskGroup>();
       setTaskGroups(data);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching task groups:', error);
       toast.error(t('automation.toast.load_groups.title'), t('automation.toast.load_groups.description'));
     } finally {
@@ -163,9 +163,9 @@ export const AutomationPage = () => {
       await api.toggleTask(taskId, !currentEnabled);
       toast.success(currentEnabled ? t('automation.toast.task_disabled') : t('automation.toast.task_enabled'));
       await fetchTasks();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error toggling task:', error);
-      toast.error(t('automation.toast.toggle_task_failed.title'), error.message || t('automation.toast.generic_error'));
+      toast.error(t('automation.toast.toggle_task_failed.title'), (error as Error).message || t('automation.toast.generic_error'));
     }
   };
 
@@ -174,9 +174,9 @@ export const AutomationPage = () => {
       await api.runTaskNow(taskId);
       toast.success(t('automation.toast.task_executed.title'), t('automation.toast.task_executed.description'));
       await fetchTasks();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error running task:', error);
-      toast.error(t('automation.toast.run_task_failed.title'), error.message || t('automation.toast.generic_error'));
+      toast.error(t('automation.toast.run_task_failed.title'), (error as Error).message || t('automation.toast.generic_error'));
     }
   };
 
@@ -187,9 +187,9 @@ export const AutomationPage = () => {
       await api.deleteTask(taskId);
       toast.success(t('automation.toast.task_deleted.title'), t('automation.toast.task_deleted.description'));
       await fetchTasks();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting task:', error);
-      toast.error(t('automation.toast.delete_task_failed.title'), error.message || t('automation.toast.generic_error'));
+      toast.error(t('automation.toast.delete_task_failed.title'), (error as Error).message || t('automation.toast.generic_error'));
     }
   };
 
@@ -208,7 +208,7 @@ export const AutomationPage = () => {
       try {
         await api.deleteTask(task.id);
         deleted++;
-      } catch (error) {
+      } catch {
         failed++;
       }
     }
@@ -228,14 +228,14 @@ export const AutomationPage = () => {
     setDeletingMultiple(false);
   };
 
-  const handleCreateTask = async (serverId: string, data: any) => {
+  const handleCreateTask = async (serverId: string, data: { name: string; type: string; cronExpression: string; taskData?: unknown; enabled?: boolean; backupLimit?: number }) => {
     await api.createTask(serverId, data);
     toast.success(t('automation.toast.task_created.title'), t('automation.toast.task_created.description'));
     await fetchTasks();
     setShowCreateModal(false);
   };
 
-  const handleUpdateTask = async (taskId: string, data: any) => {
+  const handleUpdateTask = async (taskId: string, data: { name?: string; cronExpression?: string; taskData?: unknown; enabled?: boolean; backupLimit?: number }) => {
     await api.updateTask(taskId, data);
     toast.success(t('automation.toast.task_updated.title'), t('automation.toast.task_updated.description'));
     await fetchTasks();
@@ -259,9 +259,9 @@ export const AutomationPage = () => {
       await api.toggleTaskGroup(groupId, !currentEnabled);
       toast.success(currentEnabled ? t('automation.toast.group_disabled') : t('automation.toast.group_enabled'));
       await fetchTaskGroups();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error toggling task group:', error);
-      toast.error(t('automation.toast.toggle_group_failed.title'), error.message || t('automation.toast.generic_error'));
+      toast.error(t('automation.toast.toggle_group_failed.title'), (error as Error).message || t('automation.toast.generic_error'));
     }
   };
 
@@ -271,9 +271,9 @@ export const AutomationPage = () => {
       await api.runTaskGroupNow(groupId);
       toast.success(t('automation.toast.group_executed.title'), t('automation.toast.group_executed.description'));
       await fetchTaskGroups();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error running task group:', error);
-      toast.error(t('automation.toast.run_group_failed.title'), error.message || t('automation.toast.generic_error'));
+      toast.error(t('automation.toast.run_group_failed.title'), (error as Error).message || t('automation.toast.generic_error'));
     }
   };
 
@@ -284,9 +284,9 @@ export const AutomationPage = () => {
       await api.deleteTaskGroup(groupId);
       toast.success(t('automation.toast.group_deleted.title'), t('automation.toast.group_deleted.description'));
       await fetchTaskGroups();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting task group:', error);
-      toast.error(t('automation.toast.delete_group_failed.title'), error.message || t('automation.toast.generic_error'));
+      toast.error(t('automation.toast.delete_group_failed.title'), (error as Error).message || t('automation.toast.generic_error'));
     }
   };
 
@@ -305,7 +305,7 @@ export const AutomationPage = () => {
       try {
         await api.deleteTaskGroup(group.id);
         deleted++;
-      } catch (error) {
+      } catch {
         failed++;
       }
     }
@@ -325,14 +325,14 @@ export const AutomationPage = () => {
     setDeletingMultipleGroups(false);
   };
 
-  const handleCreateGroup = async (data: any) => {
+  const handleCreateGroup = async (data: { name: string; description?: string; cronExpression: string; failureMode?: 'stop' | 'continue'; delayBetweenTasks?: number; enabled?: boolean; taskIds?: string[] }) => {
     await api.createTaskGroup(data);
     toast.success(t('automation.toast.group_created.title'), t('automation.toast.group_created.description'));
     await fetchTaskGroups();
     setShowGroupModal(false);
   };
 
-  const handleUpdateGroup = async (groupId: string, data: any) => {
+  const handleUpdateGroup = async (groupId: string, data: { name?: string; description?: string; cronExpression?: string; failureMode?: 'stop' | 'continue'; delayBetweenTasks?: number }) => {
     await api.updateTaskGroup(groupId, data);
     toast.success(t('automation.toast.group_updated.title'), t('automation.toast.group_updated.description'));
     await fetchTaskGroups();
@@ -382,7 +382,7 @@ export const AutomationPage = () => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                navigate(`/servers/${task.server.id}`);
+                void navigate(`/servers/${task.server.id}`);
               }}
               className="text-xs text-accent-primary hover:text-accent-primary/80 hover:underline transition-colors text-left"
             >
@@ -457,7 +457,7 @@ export const AutomationPage = () => {
             icon={task.enabled ? <Pause size={14} /> : <Play size={14} />}
             onClick={(e) => {
               e.stopPropagation();
-              handleToggleTask(task.id, task.enabled);
+              void handleToggleTask(task.id, task.enabled);
             }}
           />
           <Button
@@ -466,7 +466,7 @@ export const AutomationPage = () => {
             icon={<PlayCircle size={14} />}
             onClick={(e) => {
               e.stopPropagation();
-              handleRunNow(task.id);
+              void handleRunNow(task.id);
             }}
           />
           <Button
@@ -484,7 +484,7 @@ export const AutomationPage = () => {
             icon={<Trash2 size={14} />}
             onClick={(e) => {
               e.stopPropagation();
-              handleDeleteTask(task.id);
+              void handleDeleteTask(task.id);
             }}
           />
         </div>
@@ -601,7 +601,7 @@ export const AutomationPage = () => {
             icon={group.enabled ? <Pause size={14} /> : <Play size={14} />}
             onClick={(e) => {
               e.stopPropagation();
-              handleToggleGroup(group.id, group.enabled);
+              void handleToggleGroup(group.id, group.enabled);
             }}
           />
           <Button
@@ -610,7 +610,7 @@ export const AutomationPage = () => {
             icon={<PlayCircle size={14} />}
             onClick={(e) => {
               e.stopPropagation();
-              handleRunGroupNow(group.id);
+              void handleRunGroupNow(group.id);
             }}
           />
           <Button
@@ -628,7 +628,7 @@ export const AutomationPage = () => {
             icon={<Trash2 size={14} />}
             onClick={(e) => {
               e.stopPropagation();
-              handleDeleteGroup(group.id);
+              void handleDeleteGroup(group.id);
             }}
           />
         </div>
@@ -800,7 +800,7 @@ export const AutomationPage = () => {
                       variant="danger"
                       size="sm"
                       icon={<Trash2 size={14} />}
-                      onClick={handleBulkDelete}
+                      onClick={() => void handleBulkDelete()}
                       loading={deletingMultiple}
                       disabled={deletingMultiple}
                     >
@@ -890,7 +890,7 @@ export const AutomationPage = () => {
                       variant="danger"
                       size="sm"
                       icon={<Trash2 size={14} />}
-                      onClick={handleBulkDeleteGroups}
+                      onClick={() => void handleBulkDeleteGroups()}
                       loading={deletingMultipleGroups}
                       disabled={deletingMultipleGroups}
                     >

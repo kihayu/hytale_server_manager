@@ -66,7 +66,7 @@ describe('ErrorBoundary', () => {
     expect(onError).toHaveBeenCalledWith(
       expect.any(Error),
       expect.objectContaining({
-        componentStack: expect.any(String),
+        componentStack: expect.any(String) as string,
       })
     );
   });
@@ -126,9 +126,9 @@ describe('ErrorBoundary', () => {
     expect(fallbackFn).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'Test error message',
-        timestamp: expect.any(Date),
-        url: expect.any(String),
-        userAgent: expect.any(String),
+        timestamp: expect.any(Date) as Date,
+        url: expect.any(String) as string,
+        userAgent: expect.any(String) as string,
       }),
       expect.any(Function) // reset function
     );

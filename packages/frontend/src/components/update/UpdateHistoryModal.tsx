@@ -58,7 +58,7 @@ export const UpdateHistoryModal = ({
     try {
       await rollbackUpdate.mutateAsync(serverId);
       onClose();
-    } catch (err) {
+    } catch {
       // Error is handled by the hook
     }
   };
@@ -86,7 +86,7 @@ export const UpdateHistoryModal = ({
             </div>
             <Button
               variant="secondary"
-              onClick={handleRollback}
+              onClick={() => void handleRollback()}
               disabled={rollbackUpdate.isPending}
               className="flex items-center gap-2"
             >

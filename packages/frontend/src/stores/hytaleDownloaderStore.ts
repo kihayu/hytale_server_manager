@@ -67,6 +67,37 @@ export interface DownloadSession {
   error?: string;
 }
 
+interface OAuthDeviceCodeEvent {
+  sessionId: string;
+  deviceCode: string;
+  verificationUrl: string;
+  expiresAt: string;
+}
+
+interface OAuthStatusEvent {
+  sessionId: string;
+  status: OAuthSession['status'];
+  error?: string;
+}
+
+interface DownloadProgressEvent {
+  sessionId: string;
+  status: DownloadSession['status'];
+  progress: number;
+  bytesDownloaded: number;
+  totalBytes: number;
+  speed: number;
+}
+
+interface DownloadCompleteEvent {
+  sessionId: string;
+}
+
+interface DownloadErrorEvent {
+  sessionId: string;
+  error: string;
+}
+
 interface HytaleDownloaderState {
   // Status
   status: HytaleDownloaderStatus | null;
@@ -146,15 +177,15 @@ async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Request failed' }));
-    throw new Error(error.message || error.error || 'Request failed');
+    const error = await response.json().catch(() => ({ message: 'Request failed' })) as { message?: string; error?: string };
+    throw new Error(error.message ?? error.error ?? 'Request failed');
   }
 
   if (response.status === 204) {
     return null as T;
   }
 
-  return response.json();
+  return response.json() as Promise<T>;
 }
 
 // ==========================================
@@ -189,9 +220,9 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
     try {
       const status = await apiRequest<HytaleDownloaderStatus>('/api/hytale-downloader/status');
       set({ status, isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to fetch hytale-downloader status:', error);
-      set({ error: error.message, isLoading: false });
+      set({ error: (error as Error).message, isLoading: false });
     }
   },
 
@@ -209,9 +240,9 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
         { method: 'POST' }
       );
       set({ status: result.status, isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to install hytale-downloader:', error);
-      set({ error: error.message, isLoading: false });
+      set({ error: (error as Error).message, isLoading: false });
       throw error;
     }
   },
@@ -224,9 +255,9 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
         { method: 'POST' }
       );
       set({ status: result.status, isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to update hytale-downloader:', error);
-      set({ error: error.message, isLoading: false });
+      set({ error: (error as Error).message, isLoading: false });
       throw error;
     }
   },
@@ -246,9 +277,9 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
         { method: 'POST' }
       );
       set({ oauthSession: session, isStartingOAuth: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to start OAuth:', error);
-      set({ error: error.message, isStartingOAuth: false });
+      set({ error: (error as Error).message, isStartingOAuth: false });
       throw error;
     }
   },
@@ -269,9 +300,9 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
       // Refresh status
       await get().fetchStatus();
       set({ isLoading: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to clear credentials:', error);
-      set({ error: error.message, isLoading: false });
+      set({ error: (error as Error).message, isLoading: false });
       throw error;
     }
   },
@@ -283,9 +314,9 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
       // Refresh status to get updated token info
       await get().fetchStatus();
       set({ isRefreshingToken: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to refresh token:', error);
-      set({ error: error.message, isRefreshingToken: false });
+      set({ error: (error as Error).message, isRefreshingToken: false });
       throw error;
     }
   },
@@ -307,9 +338,9 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
       // Refresh status to get updated settings
       await get().fetchStatus();
       set({ isUpdatingAutoRefresh: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to update auto-refresh settings:', error);
-      set({ error: error.message, isUpdatingAutoRefresh: false });
+      set({ error: (error as Error).message, isUpdatingAutoRefresh: false });
       throw error;
     }
   },
@@ -332,9 +363,9 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
         }
       );
       set({ downloadSession: session, isStartingDownload: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to start download:', error);
-      set({ error: error.message, isStartingDownload: false });
+      set({ error: (error as Error).message, isStartingDownload: false });
       throw error;
     }
   },
@@ -358,9 +389,9 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
       const params = patchline ? `?patchline=${patchline}` : '';
       const version = await apiRequest<GameVersionInfo>(`/api/hytale-downloader/versions${params}`);
       set({ gameVersion: version, isCheckingVersion: false });
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to check version:', error);
-      set({ error: error.message, isCheckingVersion: false });
+      set({ error: (error as Error).message, isCheckingVersion: false });
     }
   },
 
@@ -405,7 +436,7 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
     });
 
     // OAuth events
-    newSocket.on('oauth:device-code', (data: any) => {
+    newSocket.on('oauth:device-code', (data: OAuthDeviceCodeEvent) => {
       logger.debug('Received oauth:device-code', data);
       set((state) => ({
         oauthSession: state.oauthSession
@@ -426,7 +457,7 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
       }));
     });
 
-    newSocket.on('oauth:status', (data: any) => {
+    newSocket.on('oauth:status', (data: OAuthStatusEvent) => {
       logger.debug('Received oauth:status', data);
       set((state) => {
         if (!state.oauthSession || state.oauthSession.sessionId !== data.sessionId) {
@@ -443,12 +474,12 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
 
       // Refresh status on completion
       if (data.status === 'completed') {
-        get().fetchStatus();
+        void get().fetchStatus();
       }
     });
 
     // Download events
-    newSocket.on('download:progress', (data: any) => {
+    newSocket.on('download:progress', (data: DownloadProgressEvent) => {
       set((state) => {
         if (!state.downloadSession || state.downloadSession.sessionId !== data.sessionId) {
           return state;
@@ -466,7 +497,7 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
       });
     });
 
-    newSocket.on('download:complete', (data: any) => {
+    newSocket.on('download:complete', (data: DownloadCompleteEvent) => {
       logger.info('Download complete', data);
       set((state) => {
         if (!state.downloadSession || state.downloadSession.sessionId !== data.sessionId) {
@@ -482,7 +513,7 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
       });
     });
 
-    newSocket.on('download:error', (data: any) => {
+    newSocket.on('download:error', (data: DownloadErrorEvent) => {
       logger.error('Download error', data);
       set((state) => {
         if (!state.downloadSession || state.downloadSession.sessionId !== data.sessionId) {

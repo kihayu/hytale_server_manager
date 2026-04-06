@@ -78,9 +78,9 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
         lastChecked: now,
         dismissed,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({
-        error: error.message || 'Failed to check for updates',
+        error: (error as Error).message || 'Failed to check for updates',
         isLoading: false,
       });
     }

@@ -287,7 +287,7 @@ ${error.componentStack || t('error.not_available')}
                 <span>{t('error.details_title')}</span>
               </div>
               <button
-                onClick={copyErrorDetails}
+                onClick={() => void copyErrorDetails()}
                 className="inline-flex items-center gap-1 text-sm text-accent-primary hover:text-accent-primary/80 transition-colors"
               >
                 {copied ? <Check size={14} /> : <Copy size={14} />}

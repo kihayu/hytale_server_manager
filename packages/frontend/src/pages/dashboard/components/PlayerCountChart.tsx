@@ -91,7 +91,7 @@ export const PlayerCountChart = ({ data, range, loading }: PlayerCountChartProps
                     borderRadius: '8px',
                     color: '#F9FAFB',
                   }}
-                  labelFormatter={(value) => format(new Date(value), 'PPp')}
+                  labelFormatter={(value: string | number) => format(new Date(value), 'PPp')}
                   formatter={(value) => [
                     t('dashboard.charts.player_activity_tooltip_value', { count: Number(value) }),
                     t('dashboard.charts.player_activity_series'),

@@ -28,7 +28,7 @@ const MODTALE_API_BASE = '/api/modtale';
 const DEFAULT_LIMIT = 20;
 
 // API Key is now managed on the backend
-let API_KEY = import.meta.env.VITE_MODTALE_API_KEY || '';
+let API_KEY = (import.meta.env.VITE_MODTALE_API_KEY as string | undefined) ?? '';
 
 export const setModtaleApiKey = async (key: string) => {
   API_KEY = key;
@@ -102,21 +102,19 @@ async function fetchModtale<T>(
     const errorText = await response.text();
     console.error('[Modtale API] Error response:', errorText);
 
-    let error: any;
+    let error: { statusCode?: number; message?: string } = {
+      message: `HTTP ${response.status}: ${response.statusText}`,
+      statusCode: response.status,
+    };
     try {
-      error = JSON.parse(errorText);
+      error = JSON.parse(errorText) as { statusCode?: number; message?: string };
     } catch {
-      error = {
-        error: 'Unknown Error',
-        message: `HTTP ${response.status}: ${response.statusText}`,
-        statusCode: response.status,
-      };
+      // Keep the default error shape
     }
     throw new ModtaleApiError(error.statusCode || response.status, error.message || errorText);
   }
 
-  const data = await response.json();
-  return data;
+  return response.json() as Promise<T>;
 }
 
 /**
@@ -150,7 +148,7 @@ export async function searchProjects(
   const query = buildSearchQuery({ ...params, limit: params.limit || DEFAULT_LIMIT });
   const endpoint = `/projects${query ? `?${query}` : ''}`;
 
-  const response = await fetchModtale<any>(endpoint);
+  const response = await fetchModtale<ModtaleSearchResponse | ModtaleProject[]>(endpoint);
 
   // Handle different response formats
   // If the API returns an array directly, wrap it
@@ -168,7 +166,7 @@ export async function searchProjects(
 
   // If the API returns an object with projects array
   if (response && typeof response === 'object' && 'projects' in response) {
-    return response as ModtaleSearchResponse;
+    return response;
   }
 
   // If the API returns an object but not in expected format

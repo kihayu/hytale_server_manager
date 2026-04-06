@@ -35,9 +35,9 @@ export const CreateBackupModal = ({ isOpen, onClose, onSubmit, servers }: Create
     try {
       await onSubmit(serverId, description);
       handleClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error creating backup:', err);
-      setError(err.message || t('backups.create.errors.create_failed'));
+      setError((err as Error).message || t('backups.create.errors.create_failed'));
     } finally {
       setLoading(false);
     }
@@ -130,7 +130,7 @@ export const CreateBackupModal = ({ isOpen, onClose, onSubmit, servers }: Create
         <Button variant="ghost" onClick={handleClose} disabled={loading}>
           {t('common.cancel')}
         </Button>
-        <Button variant="primary" onClick={handleSubmit} loading={loading} disabled={loading || !serverId}>
+        <Button variant="primary" onClick={() => void handleSubmit()} loading={loading} disabled={loading || !serverId}>
           {loading ? t('common.creating') : t('backups.create.submit')}
         </Button>
       </ModalFooter>

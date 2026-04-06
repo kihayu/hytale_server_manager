@@ -72,7 +72,7 @@ export function useInstallMod(
       return result as Mod;
     },
     onSuccess: (mod, { serverId }) => {
-      queryClient.invalidateQueries({ queryKey: modKeys.list(serverId) });
+      void queryClient.invalidateQueries({ queryKey: modKeys.list(serverId) });
       toast.success('Mod installed', `${mod.name} has been installed`);
     },
     onError: (error) => {
@@ -101,7 +101,7 @@ export function useUninstallMod(
       await api.uninstallMod(serverId, modId);
     },
     onSuccess: (_, { serverId, modName }) => {
-      queryClient.invalidateQueries({ queryKey: modKeys.list(serverId) });
+      void queryClient.invalidateQueries({ queryKey: modKeys.list(serverId) });
       toast.success('Mod uninstalled', modName ? `${modName} has been removed` : undefined);
     },
     onError: (error) => {

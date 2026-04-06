@@ -96,8 +96,8 @@ export function useCreateBackup(
       return result as Backup;
     },
     onSuccess: (_, { serverId }) => {
-      queryClient.invalidateQueries({ queryKey: backupKeys.list(serverId) });
-      queryClient.invalidateQueries({ queryKey: backupKeys.stats(serverId) });
+      void queryClient.invalidateQueries({ queryKey: backupKeys.list(serverId) });
+      void queryClient.invalidateQueries({ queryKey: backupKeys.stats(serverId) });
       toast.success('Backup started', 'Your backup is being created');
     },
     onError: (error) => {
@@ -126,7 +126,7 @@ export function useRestoreBackup(
       return api.restoreBackup(backupId);
     },
     onSuccess: (_, { serverId }) => {
-      queryClient.invalidateQueries({ queryKey: backupKeys.list(serverId) });
+      void queryClient.invalidateQueries({ queryKey: backupKeys.list(serverId) });
       toast.success('Backup restore started');
     },
     onError: (error) => {
@@ -155,8 +155,8 @@ export function useDeleteBackup(
     },
     onSuccess: (_, { backupId, serverId }) => {
       queryClient.removeQueries({ queryKey: backupKeys.detail(backupId) });
-      queryClient.invalidateQueries({ queryKey: backupKeys.list(serverId) });
-      queryClient.invalidateQueries({ queryKey: backupKeys.stats(serverId) });
+      void queryClient.invalidateQueries({ queryKey: backupKeys.list(serverId) });
+      void queryClient.invalidateQueries({ queryKey: backupKeys.stats(serverId) });
       toast.success('Backup deleted');
     },
     onError: (error) => {

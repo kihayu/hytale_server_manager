@@ -49,7 +49,7 @@ export const LoginPage = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard', { replace: true });
+      void navigate('/dashboard', { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
@@ -69,7 +69,7 @@ export const LoginPage = () => {
     const result = await login({ identifier, password, rememberMe });
 
     if (result.success) {
-      navigate('/dashboard', { replace: true });
+      void navigate('/dashboard', { replace: true });
     }
   };
 
@@ -99,7 +99,7 @@ export const LoginPage = () => {
 
       if (result.success) {
         setForceSetup(false);
-        navigate('/dashboard', { replace: true });
+        void navigate('/dashboard', { replace: true });
       }
     } catch (err) {
       const message = err instanceof AuthError
@@ -146,7 +146,7 @@ export const LoginPage = () => {
           </div>
 
           {isSetupMode ? (
-            <form onSubmit={handleSetupSubmit} className="space-y-4">
+            <form onSubmit={(e) => void handleSetupSubmit(e)} className="space-y-4">
               <Input
                 type="email"
                 label={t('auth.setup.email')}
@@ -251,7 +251,7 @@ export const LoginPage = () => {
               </Button>
             </form>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
               <Input
                 type="text"
                 label={t('auth.form.identifier')}

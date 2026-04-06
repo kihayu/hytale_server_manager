@@ -36,7 +36,7 @@ export const ModpacksPage = () => {
 
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<UnifiedProject | null>(null);
-  const [servers, setServers] = useState<any[]>([]);
+  const [servers, setServers] = useState<{ id: string; name: string; status: string; address?: string; port?: number; version?: string; maxPlayers?: number }[]>([]);
 
   // Search and filters
   const [localSearchQuery, setLocalSearchQuery] = useState('');
@@ -50,23 +50,23 @@ export const ModpacksPage = () => {
   useEffect(() => {
     const fetchServers = async () => {
       try {
-        const data = await api.getServers();
+        const data = await api.getServers<{ id: string; name: string; status: string; address?: string; port?: number; version?: string; maxPlayers?: number }>();
         setServers(data);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error('Failed to fetch servers:', err);
       }
     };
-    fetchServers();
-    loadProviders();
-  }, []);
+    void fetchServers();
+    void loadProviders();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Set classification to MODPACK and trigger search when provider changes
   useEffect(() => {
     if (isProviderConfigured) {
       setSearchClassification('MODPACK');
-      search();
+      void search();
     }
-  }, [selectedProvider, isProviderConfigured]);
+  }, [selectedProvider, isProviderConfigured]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Get projects from search results
   const allProjects = useMemo(() => {
@@ -162,7 +162,7 @@ export const ModpacksPage = () => {
 
   const handleSearch = () => {
     setStoreSearchQuery(localSearchQuery);
-    search();
+    void search();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -238,10 +238,10 @@ export const ModpacksPage = () => {
 
       // Remove from queue after a short delay so user can see completion
       setTimeout(() => removeFromQueue(queueId), 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error installing modpack:', error);
-      updateStatus(queueId, 'failed', error.message);
-      toast.error(t('modpacks.toast.failed.title'), error.message || t('modpacks.toast.failed.description'));
+      updateStatus(queueId, 'failed', (error as Error).message);
+      toast.error(t('modpacks.toast.failed.title'), (error as Error).message || t('modpacks.toast.failed.description'));
 
       // Remove failed items after showing error
       setTimeout(() => removeFromQueue(queueId), 5000);
@@ -479,7 +479,7 @@ export const ModpacksPage = () => {
               <Button
                 variant="primary"
                 icon={<Settings size={18} />}
-                onClick={() => navigate('/settings')}
+                onClick={() => void navigate('/settings')}
               >
                 {t('modpacks.actions.configure_providers')}
               </Button>
@@ -508,7 +508,7 @@ export const ModpacksPage = () => {
                 </h3>
                 <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">{searchError}</p>
               </div>
-              <Button variant="secondary" onClick={() => search()}>
+              <Button variant="secondary" onClick={() => void search()}>
                 {t('modpacks.actions.retry')}
               </Button>
             </div>
@@ -656,7 +656,7 @@ export const ModpacksPage = () => {
         isOpen={showInstallModal}
         onClose={() => setShowInstallModal(false)}
         project={selectedProject}
-        onInstall={handleInstall}
+        onInstall={(...args) => void handleInstall(...args)}
       />
     </div>
   );

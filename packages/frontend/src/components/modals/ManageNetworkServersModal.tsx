@@ -123,7 +123,7 @@ export const ManageNetworkServersModal = ({
                     variant="ghost"
                     size="sm"
                     icon={<Minus size={14} />}
-                    onClick={() => handleRemoveServer(member.serverId)}
+                    onClick={() => void handleRemoveServer(member.serverId)}
                     disabled={isLoading || removingServerId === member.serverId}
                     className="text-danger hover:bg-danger/10"
                   >
@@ -173,7 +173,7 @@ export const ManageNetworkServersModal = ({
                     variant="ghost"
                     size="sm"
                     icon={<Plus size={14} />}
-                    onClick={() => handleAddServer(server.id)}
+                    onClick={() => void handleAddServer(server.id)}
                     disabled={isLoading || addingServerId === server.id}
                     className="text-success hover:bg-success/10"
                   >

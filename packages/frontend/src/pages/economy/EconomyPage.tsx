@@ -6,19 +6,19 @@ import { Coins, TrendingUp, DollarSign, ShoppingBag, Plus, Edit, Trash2 } from '
 import { mockEconomyStats, mockShops } from '../../data/mockAdvanced';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
+// Mock data is static and lives outside the component to avoid re-creation on every render
+const transactionHistory = Array.from({ length: 7 }, (_, i) => ({
+  day: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i],
+  volume: Math.floor(Math.random() * 50000 + 100000),
+  transactions: Math.floor(Math.random() * 200 + 400),
+}));
+
 export const EconomyPage = () => {
   const chartTheme = useChartTheme();
   const stats = mockEconomyStats;
   const [shops, setShops] = useState(mockShops);
   const [isCreateShopOpen, setIsCreateShopOpen] = useState(false);
   const { t } = useTranslation();
-
-  // Mock transaction history data
-  const transactionHistory = Array.from({ length: 7 }, (_, i) => ({
-    day: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i],
-    volume: Math.floor(Math.random() * 50000 + 100000),
-    transactions: Math.floor(Math.random() * 200 + 400),
-  }));
 
   const handleCreateShop = () => {
     setIsCreateShopOpen(false);
@@ -189,7 +189,7 @@ export const EconomyPage = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {shops.map((shop) => (
-              <div key={shop.id} className="p-4 rounded-lg border border-gray-300 dark:border-gray-800 hover:border-gray-300 dark:border-gray-700 transition-colors">
+              <div key={shop.id} className="p-4 rounded-lg border border-gray-300 hover:border-gray-300 dark:border-gray-700 transition-colors">
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <h3 className="font-heading font-semibold text-text-light-primary dark:text-text-primary">{shop.name}</h3>

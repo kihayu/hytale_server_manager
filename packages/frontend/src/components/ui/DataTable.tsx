@@ -28,7 +28,7 @@ interface DataTableProps<T> {
   bulkActions?: React.ReactNode;
 }
 
-export function DataTable<T extends Record<string, any>>({
+export function DataTable<T>({
   data,
   columns,
   keyExtractor,
@@ -48,11 +48,13 @@ export function DataTable<T extends Record<string, any>>({
   const [hiddenColumns, setHiddenColumns] = useState<Set<string>>(new Set());
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [pageSize, setPageSize] = useState(initialItemsPerPage);
+  const [prevData, setPrevData] = useState(data);
 
-  // Clear selection when data changes
-  useEffect(() => {
+  // Clear selection when data reference changes (state-during-render pattern)
+  if (prevData !== data) {
+    setPrevData(data);
     setSelectedIds(new Set());
-  }, [data]);
+  }
 
   // Notify parent of selection changes
   useEffect(() => {
@@ -69,8 +71,9 @@ export function DataTable<T extends Record<string, any>>({
     const lowerQuery = searchQuery.toLowerCase();
     return data.filter((item) =>
       columns.some((col) => {
-        const value = item[col.key];
+        const value = (item as Record<string, unknown>)[col.key];
         if (value === null || value === undefined) return false;
+        if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'boolean' && typeof value !== 'bigint') return false;
         return String(value).toLowerCase().includes(lowerQuery);
       })
     );
@@ -81,8 +84,8 @@ export function DataTable<T extends Record<string, any>>({
     if (!sortColumn) return filteredData;
 
     return [...filteredData].sort((a, b) => {
-      const aVal = a[sortColumn];
-      const bVal = b[sortColumn];
+      const aVal = (a as Record<string, unknown>)[sortColumn];
+      const bVal = (b as Record<string, unknown>)[sortColumn];
 
       if (aVal === null || aVal === undefined) return 1;
       if (bVal === null || bVal === undefined) return -1;
@@ -92,7 +95,8 @@ export function DataTable<T extends Record<string, any>>({
         comparison = aVal.localeCompare(bVal);
       } else if (typeof aVal === 'number' && typeof bVal === 'number') {
         comparison = aVal - bVal;
-      } else {
+      } else if ((typeof aVal === 'string' || typeof aVal === 'number' || typeof aVal === 'boolean' || typeof aVal === 'bigint') &&
+                 (typeof bVal === 'string' || typeof bVal === 'number' || typeof bVal === 'boolean' || typeof bVal === 'bigint')) {
         comparison = String(aVal).localeCompare(String(bVal));
       }
 
@@ -176,8 +180,8 @@ export function DataTable<T extends Record<string, any>>({
       .map((item) =>
         visibleColumns
           .map((col) => {
-            const value = item[col.key];
-            const str = String(value ?? '');
+            const value = (item as Record<string, unknown>)[col.key];
+            const str = (value === null || value === undefined || typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'boolean' && typeof value !== 'bigint') ? '' : String(value);
             // Escape quotes and wrap in quotes if contains comma
             return str.includes(',') ? `"${str.replace(/"/g, '""')}"` : str;
           })
@@ -355,7 +359,7 @@ export function DataTable<T extends Record<string, any>>({
                         key={column.key}
                         className={`px-4 py-3 text-sm text-text-light-primary dark:text-text-primary ${column.className || ''}`}
                       >
-                        {column.render ? column.render(item) : item[column.key]}
+                        {column.render ? column.render(item) : (() => { const v = (item as Record<string, unknown>)[column.key]; return (v === null || v === undefined || (typeof v !== 'string' && typeof v !== 'number' && typeof v !== 'boolean' && typeof v !== 'bigint')) ? '' : String(v); })()}
                       </td>
                     ))}
                   </tr>

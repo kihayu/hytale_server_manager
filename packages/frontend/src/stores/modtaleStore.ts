@@ -17,7 +17,7 @@ export const useModtaleStore = create<ModtaleStore>()(
         set({ apiKey: key });
       },
       clearApiKey: () => {
-        setModtaleApiKey('');
+        void setModtaleApiKey('');
         set({ apiKey: '' });
       },
     }),
@@ -26,7 +26,7 @@ export const useModtaleStore = create<ModtaleStore>()(
       onRehydrateStorage: () => (state) => {
         // Initialize API key on backend on app load
         if (state?.apiKey) {
-          setModtaleApiKey(state.apiKey);
+          void setModtaleApiKey(state.apiKey);
         }
       },
     }

@@ -24,7 +24,7 @@ export const ProviderSelector = ({
   // Load providers on mount
   useEffect(() => {
     if (providers.length === 0) {
-      loadProviders();
+      void loadProviders();
     }
   }, [providers.length, loadProviders]);
 
@@ -129,7 +129,7 @@ export const ProviderSelectorCompact = ({
 
   useEffect(() => {
     if (providers.length === 0) {
-      loadProviders();
+      void loadProviders();
     }
   }, [providers.length, loadProviders]);
 

@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge, StatusIndicator, DataTable, ConfirmDialog, type Column } from '../../components/ui';
 import { Play, Square, RotateCw, Eye, Plus, Trash2, Network, List, LayoutGrid, Skull } from 'lucide-react';
 import { useToast } from '../../stores/toastStore';
 import api from '../../services/api';
-import websocket from '../../services/websocket';
+import websocket, { type ServerStatusData, type ServerMetricsData } from '../../services/websocket';
 import { CreateServerModal, type ServerFormData } from '../../components/modals/CreateServerModal';
 import { CreateNetworkModal } from '../../components/modals/CreateNetworkModal';
 import { ManageNetworkServersModal } from '../../components/modals/ManageNetworkServersModal';
@@ -22,6 +22,16 @@ import {
   useRemoveServerFromNetwork,
 } from '../../hooks/api/useNetworks';
 import type { NetworkStatus, AggregatedMetrics, CreateNetworkDto, NetworkWithMembers } from '../../types';
+
+interface ServerApiResponse {
+  id: string;
+  name: string;
+  address: string;
+  port: number;
+  version: string;
+  maxPlayers: number;
+  status: Server['status'];
+}
 
 interface Server {
   id: string;
@@ -46,6 +56,8 @@ export const ServersPage = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const [servers, setServers] = useState<Server[]>([]);
+  const serversRef = useRef(servers);
+  serversRef.current = servers;
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showCreateNetworkModal, setShowCreateNetworkModal] = useState(false);
@@ -83,47 +95,48 @@ export const ServersPage = () => {
           ]);
           setNetworkStatuses(prev => ({ ...prev, [network.id]: status }));
           setNetworkMetrics(prev => ({ ...prev, [network.id]: metrics }));
-        } catch (error) {
+        } catch (error: unknown) {
           console.error(`Error fetching network data for ${network.id}:`, error);
         }
       }
     };
 
     if (networks.length > 0) {
-      fetchNetworkData();
+      void fetchNetworkData();
       // Refresh network data periodically
-      const interval = setInterval(fetchNetworkData, 30000);
+      const interval = setInterval(() => void fetchNetworkData(), 30000);
       return () => clearInterval(interval);
     }
   }, [networks]);
 
   // Fetch servers on mount
-  useEffect(() => {
-    fetchServers();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { void fetchServers(); }, []);
+
+  const serverIds = servers.map(s => s.id).join(',');
 
   // Connect to WebSocket for real-time updates
   useEffect(() => {
     const socket = websocket.connectToServers();
 
     // Subscribe to all servers for real-time updates
-    servers.forEach((server) => {
+    serversRef.current.forEach((server) => {
       socket.emit('subscribe', { serverId: server.id });
     });
 
     // Listen for status updates
-    socket.on('server:status', (data: any) => {
+    socket.on('server:status', (data: ServerStatusData) => {
       setServers((prev) =>
         prev.map((s) =>
           s.id === data.serverId
-            ? { ...s, status: data.status.status, currentPlayers: data.status.playerCount }
+            ? { ...s, status: data.status.status as Server['status'], currentPlayers: data.status.playerCount }
             : s
         )
       );
     });
 
     // Listen for metrics updates
-    socket.on('server:metrics', (data: any) => {
+    socket.on('server:metrics', (data: ServerMetricsData) => {
       setServers((prev) =>
         prev.map((s) =>
           s.id === data.serverId
@@ -141,11 +154,11 @@ export const ServersPage = () => {
     });
 
     return () => {
-      servers.forEach((server) => {
+      serversRef.current.forEach((server) => {
         socket.emit('unsubscribe', { serverId: server.id });
       });
     };
-  }, [servers.map(s => s.id).join(',')]);
+  }, [serverIds]);
 
   const fetchServers = async () => {
     try {
@@ -153,7 +166,7 @@ export const ServersPage = () => {
       const data = await api.getServers();
 
       // Transform backend data to match frontend structure
-      const transformedServers = data.map((server: any) => ({
+      const transformedServers = (data as ServerApiResponse[]).map((server) => ({
         id: server.id,
         name: server.name,
         address: server.address,
@@ -195,12 +208,12 @@ export const ServersPage = () => {
                   : s
               )
             );
-          } catch (error) {
+          } catch (error: unknown) {
             console.error(`Error fetching metrics for server ${server.id}:`, error);
           }
         }
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching servers:', error);
       toast.error(t('servers.toast.load_failed.title'), t('servers.toast.load_failed.description'));
     } finally {
@@ -217,8 +230,8 @@ export const ServersPage = () => {
       setServers((prev) =>
         prev.map((s) => (s.id === server.id ? { ...s, status: 'starting' } : s))
       );
-    } catch (error: any) {
-      toast.error(t('servers.toast.start_failed.title'), error.message || t('servers.toast.generic_error'));
+    } catch (error: unknown) {
+      toast.error(t('servers.toast.start_failed.title'), (error as Error).message || t('servers.toast.generic_error'));
     }
   };
 
@@ -231,8 +244,8 @@ export const ServersPage = () => {
       setServers((prev) =>
         prev.map((s) => (s.id === server.id ? { ...s, status: 'stopping' } : s))
       );
-    } catch (error: any) {
-      toast.error(t('servers.toast.stop_failed.title'), error.message || t('servers.toast.generic_error'));
+    } catch (error: unknown) {
+      toast.error(t('servers.toast.stop_failed.title'), (error as Error).message || t('servers.toast.generic_error'));
     }
   };
 
@@ -240,8 +253,8 @@ export const ServersPage = () => {
     try {
       await api.restartServer(server.id);
       toast.info(t('servers.toast.restarting.title'), t('servers.toast.restarting.description', { name: server.name }));
-    } catch (error: any) {
-      toast.error(t('servers.toast.restart_failed.title'), error.message || t('servers.toast.generic_error'));
+    } catch (error: unknown) {
+      toast.error(t('servers.toast.restart_failed.title'), (error as Error).message || t('servers.toast.generic_error'));
     }
   };
 
@@ -254,8 +267,8 @@ export const ServersPage = () => {
       setServers((prev) =>
         prev.map((s) => (s.id === server.id ? { ...s, status: 'stopped' } : s))
       );
-    } catch (error: any) {
-      toast.error(t('servers.toast.kill_failed.title'), error.message || t('servers.toast.generic_error'));
+    } catch (error: unknown) {
+      toast.error(t('servers.toast.kill_failed.title'), (error as Error).message || t('servers.toast.generic_error'));
     }
   };
 
@@ -270,17 +283,17 @@ export const ServersPage = () => {
       const newServer = await api.createServer<Server>(data);
       toast.success(t('servers.toast.created.title'), t('servers.toast.created.description', { name: newServer.name }));
       await fetchServers(); // Refresh the list
-      refetchUngrouped(); // Refresh ungrouped servers
-    } catch (error: any) {
-      toast.error(t('servers.toast.create_failed.title'), error.message || t('servers.toast.generic_error'));
+      void refetchUngrouped(); // Refresh ungrouped servers
+    } catch (error: unknown) {
+      toast.error(t('servers.toast.create_failed.title'), (error as Error).message || t('servers.toast.generic_error'));
       throw error; // Re-throw to keep modal open
     }
   };
 
   const handleCreateNetwork = async (data: CreateNetworkDto) => {
     await createNetworkMutation.mutateAsync(data);
-    refetchNetworks();
-    refetchUngrouped();
+    void refetchNetworks();
+    void refetchUngrouped();
   };
 
   const handleDeleteServer = async () => {
@@ -292,9 +305,9 @@ export const ServersPage = () => {
       toast.success(t('servers.toast.deleted.title'), t('servers.toast.deleted.description', { name: serverToDelete.name }));
       setServers((prev) => prev.filter((s) => s.id !== serverToDelete.id));
       setServerToDelete(null);
-      refetchUngrouped();
-    } catch (error: any) {
-      toast.error(t('servers.toast.delete_failed.title'), error.message || t('servers.toast.generic_error'));
+      void refetchUngrouped();
+    } catch (error: unknown) {
+      toast.error(t('servers.toast.delete_failed.title'), (error as Error).message || t('servers.toast.generic_error'));
     } finally {
       setDeleting(false);
     }
@@ -305,7 +318,7 @@ export const ServersPage = () => {
     startNetworkMutation.mutate(networkId, {
       onSuccess: () => {
         // Refresh network status
-        api.getNetworkStatus<NetworkStatus>(networkId).then(status => {
+        void api.getNetworkStatus<NetworkStatus>(networkId).then(status => {
           setNetworkStatuses(prev => ({ ...prev, [networkId]: status }));
         });
       },
@@ -315,7 +328,7 @@ export const ServersPage = () => {
   const handleStopNetwork = (networkId: string) => {
     stopNetworkMutation.mutate(networkId, {
       onSuccess: () => {
-        api.getNetworkStatus<NetworkStatus>(networkId).then(status => {
+        void api.getNetworkStatus<NetworkStatus>(networkId).then(status => {
           setNetworkStatuses(prev => ({ ...prev, [networkId]: status }));
         });
       },
@@ -325,7 +338,7 @@ export const ServersPage = () => {
   const handleRestartNetwork = (networkId: string) => {
     restartNetworkMutation.mutate(networkId, {
       onSuccess: () => {
-        api.getNetworkStatus<NetworkStatus>(networkId).then(status => {
+        void api.getNetworkStatus<NetworkStatus>(networkId).then(status => {
           setNetworkStatuses(prev => ({ ...prev, [networkId]: status }));
         });
       },
@@ -335,8 +348,8 @@ export const ServersPage = () => {
   const handleDeleteNetwork = (networkId: string) => {
     deleteNetworkMutation.mutate(networkId, {
       onSuccess: () => {
-        refetchNetworks();
-        refetchUngrouped();
+        void refetchNetworks();
+        void refetchUngrouped();
       },
     });
   };
@@ -537,7 +550,7 @@ export const ServersPage = () => {
                 variant="ghost"
                 size="sm"
                 icon={<Square size={14} />}
-                onClick={() => handleStop(server)}
+                onClick={() => void handleStop(server)}
               >
                 {t('servers.actions.stop')}
               </Button>
@@ -545,7 +558,7 @@ export const ServersPage = () => {
                 variant="ghost"
                 size="sm"
                 icon={<RotateCw size={14} />}
-                onClick={() => handleRestart(server)}
+                onClick={() => void handleRestart(server)}
               >
                 {t('servers.actions.restart')}
               </Button>
@@ -555,7 +568,7 @@ export const ServersPage = () => {
               variant="ghost"
               size="sm"
               icon={<Play size={14} />}
-              onClick={() => handleStart(server)}
+              onClick={() => void handleStart(server)}
             >
               {t('servers.actions.start')}
             </Button>
@@ -564,7 +577,7 @@ export const ServersPage = () => {
               variant="ghost"
               size="sm"
               icon={<Skull size={14} />}
-              onClick={() => handleKill(server)}
+              onClick={() => void handleKill(server)}
               className="text-danger hover:bg-danger/10"
               title={t('servers.tooltips.force_kill')}
             >
@@ -579,7 +592,7 @@ export const ServersPage = () => {
             variant="ghost"
             size="sm"
             icon={<Eye size={14} />}
-            onClick={() => navigate(`/servers/${server.id}`)}
+            onClick={() => void navigate(`/servers/${server.id}`)}
           >
             {t('servers.actions.details')}
           </Button>
@@ -607,7 +620,7 @@ export const ServersPage = () => {
       label: t('servers.columns.server'),
       render: (server) => (
         <div>
-          <p className="font-medium text-text-light-primary dark:text-text-primary cursor-pointer hover:text-accent-primary" onClick={() => navigate(`/servers/${server.id}`)}>{server.name}</p>
+          <p className="font-medium text-text-light-primary dark:text-text-primary cursor-pointer hover:text-accent-primary" onClick={() => void navigate(`/servers/${server.id}`)}>{server.name}</p>
           <p className="text-xs text-text-light-muted dark:text-text-muted">{server.address}:{server.port}</p>
         </div>
       ),
@@ -637,7 +650,7 @@ export const ServersPage = () => {
                   variant="ghost"
                   size="sm"
                   icon={<Square size={14} />}
-                  onClick={() => fullServer && handleStop(fullServer)}
+                  onClick={() => fullServer && void handleStop(fullServer)}
                 >
                   {t('servers.actions.stop')}
                 </Button>
@@ -645,7 +658,7 @@ export const ServersPage = () => {
                   variant="ghost"
                   size="sm"
                   icon={<RotateCw size={14} />}
-                  onClick={() => fullServer && handleRestart(fullServer)}
+                  onClick={() => fullServer && void handleRestart(fullServer)}
                 >
                   {t('servers.actions.restart')}
                 </Button>
@@ -655,7 +668,7 @@ export const ServersPage = () => {
                 variant="ghost"
                 size="sm"
                 icon={<Play size={14} />}
-                onClick={() => fullServer && handleStart(fullServer)}
+                onClick={() => fullServer && void handleStart(fullServer)}
               >
                 {t('servers.actions.start')}
               </Button>
@@ -664,7 +677,7 @@ export const ServersPage = () => {
                 variant="ghost"
                 size="sm"
                 icon={<Skull size={14} />}
-                onClick={() => fullServer && handleKill(fullServer)}
+                onClick={() => fullServer && void handleKill(fullServer)}
                 className="text-danger hover:bg-danger/10"
                 title={t('servers.tooltips.force_kill')}
               >
@@ -679,7 +692,7 @@ export const ServersPage = () => {
               variant="ghost"
               size="sm"
               icon={<Eye size={14} />}
-              onClick={() => navigate(`/servers/${server.id}`)}
+              onClick={() => void navigate(`/servers/${server.id}`)}
             >
               {t('servers.actions.details')}
             </Button>
@@ -776,7 +789,7 @@ export const ServersPage = () => {
                   network={network}
                   status={networkStatuses[network.id]}
                   metrics={networkMetrics[network.id]}
-                  servers={servers}
+                  servers={servers as unknown as Parameters<typeof NetworkCard>[0]['servers']}
                   expanded={expandedNetworks.has(network.id)}
                   onToggleExpand={() => toggleNetworkExpand(network.id)}
                   onStartNetwork={handleStartNetwork}
@@ -784,7 +797,7 @@ export const ServersPage = () => {
                   onRestartNetwork={handleRestartNetwork}
                   onDeleteNetwork={handleDeleteNetwork}
                   onManageServers={handleManageServers}
-                  onServerAction={handleServerAction}
+                  onServerAction={(serverId, action) => void handleServerAction(serverId, action)}
                   isLoading={isAnyNetworkLoading}
                 />
               ))}
@@ -873,7 +886,7 @@ export const ServersPage = () => {
       <ConfirmDialog
         isOpen={!!serverToDelete}
         onClose={() => setServerToDelete(null)}
-        onConfirm={handleDeleteServer}
+        onConfirm={() => void handleDeleteServer()}
         title={t('servers.delete_dialog.title')}
         message={t('servers.delete_dialog.message', { name: serverToDelete?.name ?? '' })}
         confirmLabel={t('common.delete')}

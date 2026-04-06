@@ -38,17 +38,17 @@ export const ServerWorldsPage = () => {
 
   useEffect(() => {
     if (serverId) {
-      loadServer();
-      loadWorlds();
+      void loadServer();
+      void loadWorlds();
     }
-  }, [serverId]);
+  }, [serverId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadServer = async () => {
     if (!serverId) return;
     try {
       const data = await api.getServer<Server>(serverId);
       setServer(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to load server:', err);
     }
   };
@@ -61,8 +61,8 @@ export const ServerWorldsPage = () => {
     try {
       const data = await api.listWorlds<World>(serverId);
       setWorlds(data);
-    } catch (err: any) {
-      setError(err.message || t('servers.worlds.toast.load_failed'));
+    } catch (err: unknown) {
+      setError((err as Error).message || t('servers.worlds.toast.load_failed'));
     } finally {
       setLoading(false);
     }
@@ -78,9 +78,9 @@ export const ServerWorldsPage = () => {
     try {
       await api.deleteWorld(serverId, worldId);
       toast.success(t('servers.worlds.toast.deleted.title'), t('servers.worlds.toast.deleted.description', { name: worldName }));
-      loadWorlds();
-    } catch (err: any) {
-      toast.error(t('servers.worlds.toast.delete_failed.title'), err.message || t('common.error'));
+      void loadWorlds();
+    } catch (err: unknown) {
+      toast.error(t('servers.worlds.toast.delete_failed.title'), (err as Error).message || t('common.error'));
     }
   };
 
@@ -135,7 +135,7 @@ export const ServerWorldsPage = () => {
           <Button
             variant="secondary"
             icon={<RefreshCw size={16} className={loading ? 'animate-spin' : ''} />}
-            onClick={loadWorlds}
+            onClick={() => void loadWorlds()}
             disabled={loading}
           >
             {t('common.refresh')}
@@ -217,7 +217,7 @@ export const ServerWorldsPage = () => {
                       variant="danger"
                       size="sm"
                       icon={<Trash2 size={16} />}
-                      onClick={() => handleDeleteWorld(world.id, world.name)}
+                      onClick={() => void handleDeleteWorld(world.id, world.name)}
                       title={t('servers.worlds.actions.delete')}
                     />
                   </div>
@@ -250,7 +250,7 @@ export const ServerWorldsPage = () => {
           serverStatus={server?.status || 'stopped'}
           isOpen={!!configModalWorld}
           onClose={() => setConfigModalWorld(null)}
-          onSaved={loadWorlds}
+          onSaved={() => void loadWorlds()}
         />
       )}
     </div>

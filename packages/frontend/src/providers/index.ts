@@ -6,4 +6,5 @@
  * @module providers
  */
 
-export { QueryProvider, getQueryClient, useQueryClient } from './QueryProvider';
+export { QueryProvider } from './QueryProvider';
+export { getQueryClient, useQueryClient } from './queryClient';

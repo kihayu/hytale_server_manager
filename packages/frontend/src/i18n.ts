@@ -7,7 +7,7 @@ import en from './locales/en.json';
 import es from './locales/es.json';
 import ptBR from './locales/pt-br.json';
 
-i18n
+void i18n
     .use(new ICU())
     .use(LanguageDetector)
     .use(initReactI18next)

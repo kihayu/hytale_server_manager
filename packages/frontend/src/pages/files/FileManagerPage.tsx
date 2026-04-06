@@ -86,13 +86,13 @@ export const FileManagerPage = () => {
   }, [selectedServer]);
 
   useEffect(() => {
-    fetchServers();
+    void fetchServers();
   }, [fetchServers]);
 
   useEffect(() => {
     if (selectedServer) {
-      fetchFiles();
-      fetchDiskUsage();
+      void fetchFiles();
+      void fetchDiskUsage();
     }
   }, [selectedServer, currentPath, fetchFiles, fetchDiskUsage]);
 
@@ -112,7 +112,7 @@ export const FileManagerPage = () => {
 
   const clearSearch = () => {
     setSearchQuery('');
-    fetchFiles();
+    void fetchFiles();
   };
 
   const navigate = (path: string) => {
@@ -151,7 +151,7 @@ export const FileManagerPage = () => {
       await fetchFiles();
     } catch (error: unknown) {
       let message = t('files.alert.unexpected_error');
-      let typeLabel = item.type === 'directory' ? t('files.types.directory') : t('files.types.file');
+      const typeLabel = item.type === 'directory' ? t('files.types.directory') : t('files.types.file');
       if (error instanceof ApiError || error instanceof AuthError || error instanceof Error) {
         message = error.message;
       } else if (typeof error === 'string') {
@@ -326,7 +326,7 @@ export const FileManagerPage = () => {
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                onKeyDown={(e) => { if (e.key === 'Enter') void handleSearch(); }}
                 placeholder={t('files.search.placeholder')}
                 className="w-64"
               />
@@ -334,7 +334,7 @@ export const FileManagerPage = () => {
                 variant="secondary"
                 size="sm"
                 icon={<Search size={16} />}
-                onClick={handleSearch}
+                onClick={() => void handleSearch()}
                 loading={searching}
               >
                 {t('files.actions.search')}
@@ -432,7 +432,7 @@ export const FileManagerPage = () => {
                                 variant="ghost"
                                 size="sm"
                                 icon={<Trash2 size={14} />}
-                                onClick={() => handleDelete(item)}
+                                onClick={() => void handleDelete(item)}
                               />
                             </div>
                           </td>
@@ -455,7 +455,7 @@ export const FileManagerPage = () => {
             setShowEditor(false);
             setEditingFile(null);
           }}
-          onSave={fetchFiles}
+          onSave={() => void fetchFiles()}
           serverId={selectedServer}
           file={editingFile}
         />
@@ -465,7 +465,7 @@ export const FileManagerPage = () => {
       <CreateItemModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
-        onCreated={handleItemCreated}
+        onCreated={() => void handleItemCreated()}
         serverId={selectedServer}
         currentPath={currentPath}
         type={createType}
@@ -475,7 +475,7 @@ export const FileManagerPage = () => {
       <UploadFileModal
         isOpen={showUploadModal}
         onClose={() => setShowUploadModal(false)}
-        onSuccess={fetchFiles}
+        onSuccess={() => void fetchFiles()}
         serverId={selectedServer}
         currentPath={currentPath}
       />

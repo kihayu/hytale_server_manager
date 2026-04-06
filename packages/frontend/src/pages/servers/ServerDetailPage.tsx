@@ -111,8 +111,8 @@ export const ServerDetailPage = () => {
   // Fetch server data on mount
   useEffect(() => {
     if (!id) return;
-    fetchServer();
-  }, [id]);
+    void fetchServer();
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Subscribe to real-time updates
   useEffect(() => {
@@ -120,18 +120,24 @@ export const ServerDetailPage = () => {
 
     const unsubscribe = websocket.subscribeToServer(id, {
       onStatus: (data) => {
-        setStatus(data.status);
-        setServer(prev => prev ? { ...prev, status: data.status.status } : null);
+        setStatus(prev => prev
+          ? { ...prev, status: data.status.status, playerCount: data.status.playerCount }
+          : null
+        );
+        setServer(prev => prev ? { ...prev, status: data.status.status as Server['status'] } : null);
       },
       onMetrics: (data) => {
-        setMetrics(data.metrics);
+        setMetrics(prev => prev
+          ? { ...prev, ...data.metrics }
+          : { ...data.metrics, diskUsage: 0, timestamp: new Date().toISOString() }
+        );
       },
     });
 
     return () => {
       unsubscribe();
     };
-  }, [id, server?.id]);
+  }, [id, server?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchServer = async () => {
     if (!id) return;
@@ -164,16 +170,16 @@ export const ServerDetailPage = () => {
         uptime: metricsData.uptime,
         timestamp: metricsData.timestamp?.toString() ?? new Date().toISOString(),
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching server:', err);
-      setError(err.message || 'Failed to load server');
-      toast.error(t('servers.toast.load_failed.title'), err.message);
+      setError((err as Error).message || 'Failed to load server');
+      toast.error(t('servers.toast.load_failed.title'), (err as Error).message);
     } finally {
       setLoading(false);
     }
 
     // Also fetch installed mods
-    fetchMods();
+    void fetchMods();
   };
 
   const fetchMods = async () => {
@@ -183,7 +189,7 @@ export const ServerDetailPage = () => {
     try {
       const mods = await api.getServerMods<InstalledMod>(id);
       setInstalledMods(mods);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error fetching mods:', err);
       // Don't show error toast for mods - just log it
     } finally {
@@ -199,8 +205,8 @@ export const ServerDetailPage = () => {
       await api.uninstallMod(id, modId);
       setInstalledMods(prev => prev.filter(m => m.id !== modId));
       toast.success(t('servers.toast.mod_uninstalled.title'), t('servers.toast.mod_uninstalled.description', { mod: modName }));
-    } catch (err: any) {
-      toast.error(t('servers.toast.mod_uninstalled_failed.title'), err.message);
+    } catch (err: unknown) {
+      toast.error(t('servers.toast.mod_uninstalled_failed.title'), (err as Error).message);
     } finally {
       setUninstallingMod(null);
     }
@@ -220,8 +226,8 @@ export const ServerDetailPage = () => {
         setInstalledMods(prev => prev.map(m => m.id === mod.id ? { ...m, enabled: true } : m));
         toast.success(t('servers.toast.mod_enabled.title'), t('servers.toast.mod_enabled.description', { mod: mod.projectTitle }));
       }
-    } catch (err: any) {
-      toast.error(t('servers.toast.mod_toggle_failed.title'), err.message);
+    } catch (err: unknown) {
+      toast.error(t('servers.toast.mod_toggle_failed.title'), (err as Error).message);
     } finally {
       setTogglingMod(null);
     }
@@ -245,8 +251,8 @@ export const ServerDetailPage = () => {
       } else {
         toast.success(t('servers.toast.no_updates.title'), t('servers.toast.no_updates.description'));
       }
-    } catch (err: any) {
-      toast.error(t('servers.toast.check_updates_failed.title'), err.message);
+    } catch (err: unknown) {
+      toast.error(t('servers.toast.check_updates_failed.title'), (err as Error).message);
     } finally {
       setCheckingUpdates(false);
     }
@@ -267,8 +273,8 @@ export const ServerDetailPage = () => {
         return next;
       });
       toast.success(t('servers.toast.mod_update_success.title'), t('servers.toast.mod_update_success.description', { mod: mod.projectTitle, version: status.latestVersion }));
-    } catch (err: any) {
-      toast.error(t('servers.toast.mod_update_failed.title'), err.message);
+    } catch (err: unknown) {
+      toast.error(t('servers.toast.mod_update_failed.title'), (err as Error).message);
     } finally {
       setUpdatingMod(null);
     }
@@ -290,8 +296,8 @@ export const ServerDetailPage = () => {
       // Refresh mods and clear update statuses
       setUpdateStatuses({});
       await fetchMods();
-    } catch (err: any) {
-      toast.error(t('servers.toast.update_all_failed.title'), err.message);
+    } catch (err: unknown) {
+      toast.error(t('servers.toast.update_all_failed.title'), (err as Error).message);
     } finally {
       setUpdatingAll(false);
     }
@@ -306,8 +312,8 @@ export const ServerDetailPage = () => {
       await api.startServer(id);
       toast.success(t('servers.toast.starting.title'), t('servers.toast.starting.description', { name: server?.name }));
       setServer(prev => prev ? { ...prev, status: 'starting' } : null);
-    } catch (err: any) {
-      toast.error(t('servers.toast.start_failed.title'), err.message);
+    } catch (err: unknown) {
+      toast.error(t('servers.toast.start_failed.title'), (err as Error).message);
     }
   };
 
@@ -318,8 +324,8 @@ export const ServerDetailPage = () => {
       await api.stopServer(id);
       toast.warning(t('servers.toast.stopping.title'), t('servers.toast.stopping.description', { name: server?.name }));
       setServer(prev => prev ? { ...prev, status: 'stopping' } : null);
-    } catch (err: any) {
-      toast.error(t('servers.toast.stop_failed.title'), err.message);
+    } catch (err: unknown) {
+      toast.error(t('servers.toast.stop_failed.title'), (err as Error).message);
     }
   };
 
@@ -329,8 +335,8 @@ export const ServerDetailPage = () => {
     try {
       await api.restartServer(id);
       toast.info(t('servers.toast.restarting.title'), t('servers.toast.restarting.description', { name: server?.name }));
-    } catch (err: any) {
-      toast.error(t('servers.toast.restart_failed.title'), err.message);
+    } catch (err: unknown) {
+      toast.error(t('servers.toast.restart_failed.title'), (err as Error).message);
     }
   };
 
@@ -398,15 +404,15 @@ export const ServerDetailPage = () => {
         <div className="flex flex-col sm:flex-row gap-2">
           {server.status === 'running' ? (
             <div className="flex gap-2">
-              <Button variant="danger" icon={<Square size={18} />} className="flex-1 sm:flex-initial" onClick={handleStop}>
+              <Button variant="danger" icon={<Square size={18} />} className="flex-1 sm:flex-initial" onClick={() => void handleStop()}>
                 {t('servers.detail.actions.stop')}
               </Button>
-              <Button variant="secondary" icon={<RotateCw size={18} />} className="flex-1 sm:flex-initial" onClick={handleRestart}>
+              <Button variant="secondary" icon={<RotateCw size={18} />} className="flex-1 sm:flex-initial" onClick={() => void handleRestart()}>
                 {t('servers.detail.actions.restart')}
               </Button>
             </div>
           ) : server.status === 'stopped' ? (
-            <Button variant="success" icon={<Play size={18} />} className="w-full sm:w-auto" onClick={handleStart}>
+            <Button variant="success" icon={<Play size={18} />} className="w-full sm:w-auto" onClick={() => void handleStart()}>
               {t('servers.detail.actions.start')}
             </Button>
           ) : (
@@ -414,10 +420,10 @@ export const ServerDetailPage = () => {
               {t(`servers.status.${server.status}`, { defaultValue: server.status })}...
             </Button>
           )}
-          <Button variant="ghost" icon={<Globe size={18} />} className="w-full sm:w-auto" onClick={() => navigate(`/servers/${id}/worlds`)}>
+          <Button variant="ghost" icon={<Globe size={18} />} className="w-full sm:w-auto" onClick={() => void navigate(`/servers/${id}/worlds`)}>
             {t('servers.detail.actions.worlds')}
           </Button>
-          <Button variant="ghost" icon={<Settings size={18} />} className="w-full sm:w-auto" onClick={() => navigate(`/servers/${id}/settings`)}>
+          <Button variant="ghost" icon={<Settings size={18} />} className="w-full sm:w-auto" onClick={() => void navigate(`/servers/${id}/settings`)}>
             {t('servers.detail.actions.settings')}
           </Button>
         </div>
@@ -591,7 +597,7 @@ export const ServerDetailPage = () => {
                 variant="ghost"
                 size="sm"
                 icon={<RefreshCw size={16} className={modsLoading ? 'animate-spin' : ''} />}
-                onClick={fetchMods}
+                onClick={() => void fetchMods()}
                 disabled={modsLoading}
               >
                 {t('common.refresh')}
@@ -602,7 +608,7 @@ export const ServerDetailPage = () => {
                     variant="secondary"
                     size="sm"
                     icon={<RefreshCw size={16} className={checkingUpdates ? 'animate-spin' : ''} />}
-                    onClick={checkForUpdates}
+                    onClick={() => void checkForUpdates()}
                     disabled={checkingUpdates}
                   >
                     {checkingUpdates ? t('servers.detail.mods.checking_updates') : t('servers.detail.mods.check_updates')}
@@ -612,7 +618,7 @@ export const ServerDetailPage = () => {
                       variant="primary"
                       size="sm"
                       icon={<ArrowUpCircle size={16} />}
-                      onClick={handleUpdateAll}
+                      onClick={() => void handleUpdateAll()}
                       disabled={updatingAll}
                     >
                       {updatingAll ? t('servers.detail.mods.updating_all') : t('servers.detail.mods.update_all', { count: updatesAvailableCount })}
@@ -624,7 +630,7 @@ export const ServerDetailPage = () => {
                 variant="primary"
                 size="sm"
                 icon={<Plus size={16} />}
-                onClick={() => navigate('/mods')}
+                onClick={() => void navigate('/mods')}
               >
                 {t('servers.detail.mods.browse')}
               </Button>
@@ -643,7 +649,7 @@ export const ServerDetailPage = () => {
               <Button
                 variant="secondary"
                 icon={<Plus size={16} />}
-                onClick={() => navigate('/mods')}
+                onClick={() => void navigate('/mods')}
               >
                 {t('servers.detail.mods.browse_install')}
               </Button>
@@ -702,7 +708,7 @@ export const ServerDetailPage = () => {
                           variant="success"
                           size="sm"
                           icon={<ArrowUpCircle size={14} />}
-                          onClick={() => handleUpdateMod(mod)}
+                          onClick={() => void handleUpdateMod(mod)}
                           disabled={updatingMod === mod.id}
                         >
                           {updatingMod === mod.id ? t('servers.detail.mods.updating') : t('servers.detail.mods.update')}
@@ -712,7 +718,7 @@ export const ServerDetailPage = () => {
                         variant={mod.enabled ? 'secondary' : 'ghost'}
                         size="sm"
                         icon={<Power size={14} />}
-                        onClick={() => handleToggleMod(mod)}
+                        onClick={() => void handleToggleMod(mod)}
                         disabled={togglingMod === mod.id}
                         title={mod.enabled ? t('servers.detail.mods.disable') : t('servers.detail.mods.enable')}
                       >
@@ -748,7 +754,7 @@ export const ServerDetailPage = () => {
                         variant="danger"
                         size="sm"
                         icon={<Trash2 size={14} />}
-                        onClick={() => handleUninstallMod(mod.id, mod.projectTitle)}
+                        onClick={() => void handleUninstallMod(mod.id, mod.projectTitle)}
                         disabled={uninstallingMod === mod.id}
                         title={t('servers.detail.mods.uninstall_title')}
                       >
@@ -771,19 +777,19 @@ export const ServerDetailPage = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
-            <Button variant="secondary" icon={<Terminal size={18} />} className="w-full" onClick={() => navigate('/console')}>
+            <Button variant="secondary" icon={<Terminal size={18} />} className="w-full" onClick={() => void navigate('/console')}>
               {t('servers.detail.quick.console')}
             </Button>
-            <Button variant="secondary" icon={<Globe size={18} />} className="w-full" onClick={() => navigate(`/servers/${id}/worlds`)}>
+            <Button variant="secondary" icon={<Globe size={18} />} className="w-full" onClick={() => void navigate(`/servers/${id}/worlds`)}>
               {t('servers.detail.quick.worlds')}
             </Button>
-            <Button variant="secondary" icon={<Database size={18} />} className="w-full" onClick={() => navigate('/backups')}>
+            <Button variant="secondary" icon={<Database size={18} />} className="w-full" onClick={() => void navigate('/backups')}>
               {t('servers.detail.quick.backups')}
             </Button>
-            <Button variant="secondary" icon={<Package size={18} />} className="w-full" onClick={() => navigate('/mods')}>
+            <Button variant="secondary" icon={<Package size={18} />} className="w-full" onClick={() => void navigate('/mods')}>
               {t('servers.detail.quick.mods')}
             </Button>
-            <Button variant="secondary" icon={<Users size={18} />} className="w-full" onClick={() => navigate('/players')}>
+            <Button variant="secondary" icon={<Users size={18} />} className="w-full" onClick={() => void navigate('/players')}>
               {t('servers.detail.quick.players')}
             </Button>
             <Button variant="secondary" icon={<ArrowUp size={18} />} className="w-full" onClick={() => setShowUpdateModal(true)}>

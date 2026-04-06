@@ -110,9 +110,9 @@ export const ServerSettingsPage = () => {
   // Load server data
   useEffect(() => {
     if (!id) return;
-    loadServer();
-    loadFtpStatus();
-  }, [id]);
+    void loadServer();
+    void loadFtpStatus();
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadServer = async () => {
     if (!id) return;
@@ -140,7 +140,7 @@ export const ServerSettingsPage = () => {
       let exclusions: string[] = [];
       if (serverData.backupExclusions) {
         try {
-          exclusions = JSON.parse(serverData.backupExclusions);
+          exclusions = JSON.parse(serverData.backupExclusions) as string[];
         } catch (e) {
           console.error('Failed to parse backup exclusions:', e);
         }
@@ -158,7 +158,7 @@ export const ServerSettingsPage = () => {
       let adapterConfig: { jarFile?: string; assetsPath?: string; javaPath?: string } = {};
       if (serverData.adapterConfig) {
         try {
-          adapterConfig = JSON.parse(serverData.adapterConfig);
+          adapterConfig = JSON.parse(serverData.adapterConfig) as { jarFile?: string; assetsPath?: string; javaPath?: string };
         } catch (e) {
           console.error('Failed to parse adapter config:', e);
         }
@@ -172,9 +172,9 @@ export const ServerSettingsPage = () => {
         assetsPath: adapterConfig.assetsPath || '../Assets.zip',
         javaPath: adapterConfig.javaPath || 'java',
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to load server:', err);
-      setError(err.message || 'Failed to load server');
+      setError((err as Error).message || 'Failed to load server');
     } finally {
       setLoading(false);
     }
@@ -184,7 +184,7 @@ export const ServerSettingsPage = () => {
     try {
       const status = await api.get<FtpStatus>('/settings/ftp/status');
       setFtpStatus(status);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load FTP status:', err);
     }
   };
@@ -201,8 +201,8 @@ export const ServerSettingsPage = () => {
       });
       toast.success(t('servers.settings.storage.toast.saved.title'), t('servers.settings.storage.toast.saved.description'));
       setHasChanges(false);
-    } catch (err: any) {
-      toast.error(t('servers.settings.storage.toast.error.title'), err.message);
+    } catch (err: unknown) {
+      toast.error(t('servers.settings.storage.toast.error.title'), (err as Error).message);
     } finally {
       setStorageSaving(false);
     }
@@ -308,8 +308,8 @@ export const ServerSettingsPage = () => {
 
       toast.success(t('servers.settings.toast.saved.title'), t('servers.settings.toast.saved.description'));
       setHasChanges(false);
-    } catch (err: any) {
-      toast.error(t('servers.settings.toast.error.title'), err.message || t('servers.settings.toast.error.fallback'));
+    } catch (err: unknown) {
+      toast.error(t('servers.settings.toast.error.title'), (err as Error).message || t('servers.settings.toast.error.fallback'));
     } finally {
       setSaving(false);
     }
@@ -335,7 +335,7 @@ export const ServerSettingsPage = () => {
     let exclusions: string[] = [];
     if (server.backupExclusions) {
       try {
-        exclusions = JSON.parse(server.backupExclusions);
+        exclusions = JSON.parse(server.backupExclusions) as string[];
       } catch (e) {
         console.error('Failed to parse backup exclusions:', e);
       }
@@ -352,7 +352,7 @@ export const ServerSettingsPage = () => {
     let adapterConfig: { jarFile?: string; assetsPath?: string; javaPath?: string } = {};
     if (server.adapterConfig) {
       try {
-        adapterConfig = JSON.parse(server.adapterConfig);
+        adapterConfig = JSON.parse(server.adapterConfig) as { jarFile?: string; assetsPath?: string; javaPath?: string };
       } catch (e) {
         console.error('Failed to parse adapter config:', e);
       }
@@ -388,11 +388,11 @@ export const ServerSettingsPage = () => {
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
           {hasChanges && (
-            <Button variant="ghost" icon={<RotateCw size={18} />} onClick={handleReset} disabled={saving} className="w-full sm:w-auto">
+            <Button variant="ghost" icon={<RotateCw size={18} />} onClick={() => void handleReset()} disabled={saving} className="w-full sm:w-auto">
               {t('servers.settings.reset')}
             </Button>
           )}
-          <Button variant="primary" icon={<Save size={18} />} onClick={handleSave} disabled={saving || !hasChanges} className="w-full sm:w-auto">
+          <Button variant="primary" icon={<Save size={18} />} onClick={() => void handleSave()} disabled={saving || !hasChanges} className="w-full sm:w-auto">
             {saving ? t('common.saving') : t('common.save_changes')}
           </Button>
         </div>
@@ -407,7 +407,7 @@ export const ServerSettingsPage = () => {
             className={`px-4 py-2.5 sm:py-2 rounded-lg whitespace-nowrap transition-colors text-sm sm:text-base ${
               activeTab === tab.id
                 ? 'bg-accent-primary text-white'
-                : 'bg-white dark:bg-gray-100 dark:bg-primary-bg-secondary text-text-light-muted dark:text-text-muted hover:bg-gray-200 dark:bg-gray-800 hover:text-text-light-primary dark:text-text-primary'
+                : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted hover:bg-gray-200 hover:text-text-light-primary dark:text-text-primary'
             }`}
           >
             {tab.label}
@@ -665,7 +665,7 @@ export const ServerSettingsPage = () => {
                   <Button
                     variant="primary"
                     icon={<Save size={18} />}
-                    onClick={handleStorageSave}
+                    onClick={() => void handleStorageSave()}
                     disabled={storageSaving}
                   >
                     {storageSaving ? t('common.saving') : t('servers.settings.storage.save')}

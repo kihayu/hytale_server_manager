@@ -194,8 +194,8 @@ export function useCreateNetwork(
       return result;
     },
     onSuccess: (newNetwork) => {
-      queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: networkKeys.ungrouped() });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.ungrouped() });
       queryClient.setQueryData(networkKeys.detail(newNetwork.id), newNetwork);
       toast.success('Network created', `${newNetwork.name} has been created successfully`);
       logger.info('Network created:', newNetwork.id);
@@ -224,7 +224,7 @@ export function useUpdateNetwork(
       return result;
     },
     onSuccess: (updatedNetwork) => {
-      queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
       queryClient.setQueryData(networkKeys.detail(updatedNetwork.id), updatedNetwork);
       toast.success('Network updated');
     },
@@ -252,8 +252,8 @@ export function useDeleteNetwork(
     },
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: networkKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: networkKeys.ungrouped() });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.ungrouped() });
       toast.success('Network deleted');
       logger.info('Network deleted:', id);
     },
@@ -279,9 +279,9 @@ export function useAddServerToNetwork(
       return api.addServerToNetwork(networkId, serverId, role);
     },
     onSuccess: (_, { networkId }) => {
-      queryClient.invalidateQueries({ queryKey: networkKeys.detail(networkId) });
-      queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: networkKeys.ungrouped() });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.detail(networkId) });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.ungrouped() });
       toast.success('Server added to network');
     },
     onError: (error) => {
@@ -305,9 +305,9 @@ export function useRemoveServerFromNetwork(
       return api.removeServerFromNetwork(networkId, serverId);
     },
     onSuccess: (_, { networkId }) => {
-      queryClient.invalidateQueries({ queryKey: networkKeys.detail(networkId) });
-      queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: networkKeys.ungrouped() });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.detail(networkId) });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.ungrouped() });
       toast.success('Server removed from network');
     },
     onError: (error) => {
@@ -332,8 +332,8 @@ export function useStartNetwork(
       return api.startNetwork(networkId);
     },
     onSuccess: (result, networkId) => {
-      queryClient.invalidateQueries({ queryKey: networkKeys.status(networkId) });
-      queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.status(networkId) });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
 
       const successCount = result.results.filter(r => r.success).length;
       const totalCount = result.results.length;
@@ -366,8 +366,8 @@ export function useStopNetwork(
       return api.stopNetwork(networkId);
     },
     onSuccess: (result, networkId) => {
-      queryClient.invalidateQueries({ queryKey: networkKeys.status(networkId) });
-      queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.status(networkId) });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
 
       const successCount = result.results.filter(r => r.success).length;
       const totalCount = result.results.length;
@@ -400,8 +400,8 @@ export function useRestartNetwork(
       return api.restartNetwork(networkId);
     },
     onSuccess: (result, networkId) => {
-      queryClient.invalidateQueries({ queryKey: networkKeys.status(networkId) });
-      queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.status(networkId) });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.lists() });
 
       const successCount = result.results.filter(r => r.success).length;
       const totalCount = result.results.length;
@@ -434,7 +434,7 @@ export function useCreateNetworkBackup(
       return api.createNetworkBackup<{ id: string; name: string }>(networkId, description);
     },
     onSuccess: (result, { networkId }) => {
-      queryClient.invalidateQueries({ queryKey: networkKeys.backups(networkId) });
+      void queryClient.invalidateQueries({ queryKey: networkKeys.backups(networkId) });
       toast.success('Network backup started', `Backup ${result.name} is being created`);
     },
     onError: (error) => {

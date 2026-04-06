@@ -3,6 +3,57 @@ import { env } from '../config';
 
 const WS_BASE_URL = env.websocket.url || env.api.baseUrl;
 
+// WebSocket event payload types
+interface ServerEventBase {
+  serverId: string;
+}
+
+export interface ServerStatusData extends ServerEventBase {
+  status: { status: string; playerCount: number };
+}
+
+export interface ServerMetricsData extends ServerEventBase {
+  metrics: { cpuUsage: number; memoryUsage: number; memoryTotal: number; tps: number; uptime: number };
+}
+
+export interface ConsoleLogData extends ServerEventBase {
+  log: { timestamp: string; level: string; message: string; source?: string };
+}
+
+export interface ConsoleHistoricalLogsData extends ServerEventBase {
+  logs: Array<{ id?: string; timestamp: string; level: string; message: string; source?: string }>;
+}
+
+export interface ConsoleCommandResponseData extends ServerEventBase {
+  response: { success: boolean; output?: string; error?: string };
+}
+
+export interface ServerUpdateStartedData extends ServerEventBase {
+  sessionId: string;
+  [key: string]: unknown;
+}
+
+export interface ServerUpdateProgressData extends ServerEventBase {
+  sessionId: string;
+  status: string;
+  progress: number;
+  message?: string;
+  [key: string]: unknown;
+}
+
+export interface ServerUpdateFailedData extends ServerEventBase {
+  error?: string;
+  [key: string]: unknown;
+}
+
+export interface ServerUpdateEventData extends ServerEventBase {
+  [key: string]: unknown;
+}
+
+export interface UpdatesAvailableData {
+  [key: string]: unknown;
+}
+
 class WebSocketService {
   private baseUrl: string;
   private serversSocket: Socket | null = null;
@@ -51,8 +102,8 @@ class WebSocketService {
   }
 
   subscribeToServer(serverId: string, callbacks: {
-    onStatus?: (data: any) => void;
-    onMetrics?: (data: any) => void;
+    onStatus?: (data: ServerStatusData) => void;
+    onMetrics?: (data: ServerMetricsData) => void;
   }): () => void {
     const socket = this.connectToServers();
 
@@ -67,13 +118,13 @@ class WebSocketService {
     }
 
     if (callbacks.onStatus) {
-      socket.on('server:status', (data: any) => {
+      socket.on('server:status', (data: ServerStatusData) => {
         if (data.serverId === serverId) callbacks.onStatus!(data);
       });
     }
 
     if (callbacks.onMetrics) {
-      socket.on('server:metrics', (data: any) => {
+      socket.on('server:metrics', (data: ServerMetricsData) => {
         if (data.serverId === serverId) callbacks.onMetrics!(data);
       });
     }
@@ -122,9 +173,9 @@ class WebSocketService {
   }
 
   subscribeToConsole(serverId: string, callbacks: {
-    onLog?: (data: any) => void;
-    onHistoricalLogs?: (data: any) => void;
-    onCommandResponse?: (data: any) => void;
+    onLog?: (data: ConsoleLogData) => void;
+    onHistoricalLogs?: (data: ConsoleHistoricalLogsData) => void;
+    onCommandResponse?: (data: ConsoleCommandResponseData) => void;
   }): () => void {
     const socket = this.connectToConsole();
 
@@ -140,19 +191,19 @@ class WebSocketService {
     }
 
     if (callbacks.onLog) {
-      socket.on('log', (data: any) => {
+      socket.on('log', (data: ConsoleLogData) => {
         if (data.serverId === serverId) callbacks.onLog!(data);
       });
     }
 
     if (callbacks.onHistoricalLogs) {
-      socket.on('logs:history', (data: any) => {
+      socket.on('logs:history', (data: ConsoleHistoricalLogsData) => {
         if (data.serverId === serverId) callbacks.onHistoricalLogs!(data);
       });
     }
 
     if (callbacks.onCommandResponse) {
-      socket.on('commandResponse', (data: any) => {
+      socket.on('commandResponse', (data: ConsoleCommandResponseData) => {
         if (data.serverId === serverId) callbacks.onCommandResponse!(data);
       });
     }
@@ -211,13 +262,13 @@ class WebSocketService {
   }
 
   subscribeToServerUpdates(serverId: string | null, callbacks: {
-    onStarted?: (data: any) => void;
-    onProgress?: (data: any) => void;
-    onCompleted?: (data: any) => void;
-    onFailed?: (data: any) => void;
-    onCancelled?: (data: any) => void;
-    onRollbackCompleted?: (data: any) => void;
-    onUpdatesAvailable?: (data: any) => void;
+    onStarted?: (data: ServerUpdateStartedData) => void;
+    onProgress?: (data: ServerUpdateProgressData) => void;
+    onCompleted?: (data: ServerUpdateEventData) => void;
+    onFailed?: (data: ServerUpdateFailedData) => void;
+    onCancelled?: (data: ServerUpdateEventData) => void;
+    onRollbackCompleted?: (data: ServerUpdateEventData) => void;
+    onUpdatesAvailable?: (data: UpdatesAvailableData) => void;
   }): () => void {
     const socket = this.connectToServerUpdates();
 
@@ -232,37 +283,37 @@ class WebSocketService {
     }
 
     if (callbacks.onStarted) {
-      socket.on('update:started', (data: any) => {
+      socket.on('update:started', (data: ServerUpdateStartedData) => {
         if (!serverId || data.serverId === serverId) callbacks.onStarted!(data);
       });
     }
 
     if (callbacks.onProgress) {
-      socket.on('update:progress', (data: any) => {
+      socket.on('update:progress', (data: ServerUpdateProgressData) => {
         if (!serverId || data.serverId === serverId) callbacks.onProgress!(data);
       });
     }
 
     if (callbacks.onCompleted) {
-      socket.on('update:completed', (data: any) => {
+      socket.on('update:completed', (data: ServerUpdateEventData) => {
         if (!serverId || data.serverId === serverId) callbacks.onCompleted!(data);
       });
     }
 
     if (callbacks.onFailed) {
-      socket.on('update:failed', (data: any) => {
+      socket.on('update:failed', (data: ServerUpdateFailedData) => {
         if (!serverId || data.serverId === serverId) callbacks.onFailed!(data);
       });
     }
 
     if (callbacks.onCancelled) {
-      socket.on('update:cancelled', (data: any) => {
+      socket.on('update:cancelled', (data: ServerUpdateEventData) => {
         if (!serverId || data.serverId === serverId) callbacks.onCancelled!(data);
       });
     }
 
     if (callbacks.onRollbackCompleted) {
-      socket.on('update:rollback-completed', (data: any) => {
+      socket.on('update:rollback-completed', (data: ServerUpdateEventData) => {
         if (!serverId || data.serverId === serverId) callbacks.onRollbackCompleted!(data);
       });
     }

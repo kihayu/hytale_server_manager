@@ -98,10 +98,10 @@ export const SettingsPage = () => {
   const [providerError, setProviderError] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    loadSettings();
-    loadFtpSettings();
-    loadProviders();
-  }, []);
+    void loadSettings();
+    void loadFtpSettings();
+    void loadProviders();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Scroll to hash section (e.g., #security)
   useEffect(() => {
@@ -129,8 +129,8 @@ export const SettingsPage = () => {
         ...data,
         enabledEvents: data.enabledEvents ?? [],
       });
-    } catch (err: any) {
-      setError(err.message || t('settings.discord.errors.load'));
+    } catch (err: unknown) {
+      setError((err as Error).message || t('settings.discord.errors.load'));
     } finally {
       setLoading(false);
     }
@@ -144,7 +144,7 @@ export const SettingsPage = () => {
       ]);
       setFtpSettings(settings);
       setFtpStatus(status);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to load FTP settings:', err);
       setFtpError(t('settings.ftp.errors.load'));
     }
@@ -171,8 +171,8 @@ export const SettingsPage = () => {
         setFtpError(result.message);
         setFtpStatus({ enabled: true, connected: false, message: result.message });
       }
-    } catch (err: any) {
-      setFtpError(err.message || t('settings.ftp.errors.test'));
+    } catch (err: unknown) {
+      setFtpError((err as Error).message || t('settings.ftp.errors.test'));
     } finally {
       setFtpTesting(false);
     }
@@ -185,8 +185,8 @@ export const SettingsPage = () => {
     try {
       await api.updateDiscordSettings(settings);
       setSuccess(t('settings.discord.success.saved'));
-    } catch (err: any) {
-      setError(err.message || t('settings.discord.errors.save'));
+    } catch (err: unknown) {
+      setError((err as Error).message || t('settings.discord.errors.save'));
     } finally {
       setSaving(false);
     }
@@ -199,8 +199,8 @@ export const SettingsPage = () => {
     try {
       await api.testDiscordNotification();
       setSuccess(t('settings.discord.success.test'));
-    } catch (err: any) {
-      setError(err.message || t('settings.discord.errors.test'));
+    } catch (err: unknown) {
+      setError((err as Error).message || t('settings.discord.errors.test'));
     } finally {
       setTesting(false);
     }
@@ -218,7 +218,7 @@ export const SettingsPage = () => {
       await configureProvider(providerId, apiKey);
       setProviderSuccess(prev => ({ ...prev, [providerId]: t('settings.mods.saved') }));
       setProviderApiKeys(prev => ({ ...prev, [providerId]: '' })); // Clear the input after success
-    } catch (err) {
+    } catch (err: unknown) {
       setProviderError(prev => ({
         ...prev,
         [providerId]: err instanceof Error ? err.message : t('settings.mods.save_error'),
@@ -250,9 +250,9 @@ export const SettingsPage = () => {
         newPassword: '',
         confirmPassword: '',
       });
-    } catch (err) {
+    } catch (err: unknown) {
       const message = err instanceof AuthError
-        ? err.message
+        ? (err as Error).message
         : 'Failed to change password';
       setPasswordError(message);
     } finally {
@@ -371,7 +371,7 @@ export const SettingsPage = () => {
                         <Button
                           variant="primary"
                           size="sm"
-                          onClick={() => handleProviderSave(provider.id)}
+                          onClick={() => void handleProviderSave(provider.id)}
                           disabled={!providerApiKeys[provider.id]?.trim() || providerSaving[provider.id]}
                         >
                           {providerSaving[provider.id] ? t('settings.mods.saving') : t('settings.mods.save')}
@@ -520,7 +520,7 @@ export const SettingsPage = () => {
             <div className="flex gap-3 pt-4 border-t">
               <Button
                 variant="primary"
-                onClick={handlePasswordChange}
+                onClick={() => void handlePasswordChange()}
                 disabled={passwordSaving || !isPasswordFormValid()}
               >
                 <Lock size={16} className="mr-2" />
@@ -632,7 +632,7 @@ export const SettingsPage = () => {
             <div className="flex gap-3 pt-4 border-t">
               <Button
                 variant="primary"
-                onClick={handleSave}
+                onClick={() => void handleSave()}
                 disabled={saving || !settings.enabled}
               >
                 <Save size={16} className="mr-2" />
@@ -640,7 +640,7 @@ export const SettingsPage = () => {
               </Button>
               <Button
                 variant="secondary"
-                onClick={handleTest}
+                onClick={() => void handleTest()}
                 disabled={testing || !settings.enabled || !settings.webhookUrl}
               >
                 <Bell size={16} className="mr-2" />
@@ -770,7 +770,7 @@ export const SettingsPage = () => {
             <div className="flex gap-3 pt-4 border-t">
               <Button
                 variant="secondary"
-                onClick={handleFtpTest}
+                onClick={() => void handleFtpTest()}
                 disabled={ftpTesting || !ftpSettings.host || !ftpSettings.username || !ftpSettings.password}
               >
                 <Server size={16} className="mr-2" />

@@ -79,7 +79,7 @@ export const AlertsSummaryWidget = ({
               </Badge>
             )}
           </CardTitle>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/alerts')}>
+          <Button variant="ghost" size="sm" onClick={() => void navigate('/alerts')}>
             {t('common.view_all')}
             <ArrowRight size={14} className="ml-1" />
           </Button>
@@ -113,7 +113,7 @@ export const AlertsSummaryWidget = ({
               <div
                 key={alert.id}
                 className="flex items-start gap-2 p-2 bg-white dark:bg-primary-bg-secondary rounded border border-gray-200 dark:border-gray-800 cursor-pointer hover:border-accent-primary/50 transition-colors"
-                onClick={() => navigate('/alerts')}
+                onClick={() => void navigate('/alerts')}
               >
                 {getSeverityIcon(alert.severity)}
                 <div className="flex-1 min-w-0">

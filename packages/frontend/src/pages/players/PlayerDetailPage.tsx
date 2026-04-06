@@ -35,7 +35,7 @@ export const PlayerDetailPage = () => {
             {t('players.detail.description')}
           </p>
           <button
-            onClick={() => navigate('/players')}
+            onClick={() => void navigate('/players')}
             className="px-4 py-2 bg-accent-primary text-black rounded-lg font-medium hover:bg-accent-primary/90 transition-colors"
           >
             {t('players.detail.back')}

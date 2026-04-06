@@ -20,11 +20,28 @@ interface ScheduledTask {
   backupLimit: number;
 }
 
+interface TaskSubmitData {
+  name: string;
+  type: string;
+  cronExpression: string;
+  taskData?: Record<string, string>;
+  enabled?: boolean;
+  backupLimit?: number;
+}
+
+interface TaskUpdateData {
+  name?: string;
+  cronExpression?: string;
+  taskData?: Record<string, string>;
+  enabled?: boolean;
+  backupLimit?: number;
+}
+
 interface CreateTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (serverId: string, data: any) => Promise<void>;
-  onUpdate?: (taskId: string, data: any) => Promise<void>;
+  onSubmit: (serverId: string, data: TaskSubmitData) => Promise<void>;
+  onUpdate?: (taskId: string, data: TaskUpdateData) => Promise<void>;
   servers: Server[];
   editTask?: ScheduledTask | null;
 }
@@ -70,7 +87,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
       // Parse taskData
       if (editTask.taskData) {
         try {
-          const data = JSON.parse(editTask.taskData);
+          const data = JSON.parse(editTask.taskData) as { command?: string; description?: string };
           if (data.command) setCommand(data.command);
           if (data.description) setDescription(data.description);
         } catch {
@@ -88,7 +105,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
         setCustomCron(editTask.cronExpression);
       }
     }
-  }, [editTask]);
+  }, [editTask]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = async () => {
     if (!serverId) {
@@ -117,7 +134,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
     setError('');
 
     try {
-      const taskData: any = {};
+      const taskData: Record<string, string> = {};
 
       if (type === 'command') {
         taskData.command = command;
@@ -146,9 +163,9 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
       }
 
       handleClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(isEditMode ? 'Error updating task:' : 'Error creating task:', err);
-      setError(err.message || t(isEditMode ? 'automation.modals.create_task.errors.update' : 'automation.modals.create_task.errors.create'));
+      setError((err as Error).message || t(isEditMode ? 'automation.modals.create_task.errors.update' : 'automation.modals.create_task.errors.create'));
     } finally {
       setLoading(false);
     }
@@ -228,7 +245,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
           </label>
           <select
             value={type}
-            onChange={(e) => setType(e.target.value as any)}
+            onChange={(e) => setType(e.target.value as 'backup' | 'restart' | 'start' | 'stop' | 'command')}
             disabled={isEditMode}
             className={`w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary ${isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
           >
@@ -380,7 +397,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, 
         <Button variant="ghost" onClick={handleClose} disabled={loading}>
           {t('common.cancel')}
         </Button>
-        <Button variant="primary" onClick={handleSubmit} loading={loading} disabled={loading || !serverId || !name}>
+        <Button variant="primary" onClick={() => void handleSubmit()} loading={loading} disabled={loading || !serverId || !name}>
           {loading
             ? isEditMode
               ? t('common.saving')

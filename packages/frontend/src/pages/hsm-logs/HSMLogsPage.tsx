@@ -47,9 +47,9 @@ export const HSMLogsPage = () => {
 
   // Initial fetch and polling
   useEffect(() => {
-    fetchLogs();
+    void fetchLogs();
 
-    const interval = setInterval(fetchLogs, POLL_INTERVAL);
+    const interval = setInterval(() => void fetchLogs(), POLL_INTERVAL);
     return () => clearInterval(interval);
   }, [fetchLogs]);
 
@@ -88,7 +88,7 @@ export const HSMLogsPage = () => {
 
   const handleRefresh = () => {
     setIsLoading(true);
-    fetchLogs();
+    void fetchLogs();
   };
 
   const getLogLevelColor = (level: string) => {

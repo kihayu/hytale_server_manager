@@ -25,7 +25,7 @@ interface Server {
   id: string;
   name: string;
   status: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface NetworkCardProps {

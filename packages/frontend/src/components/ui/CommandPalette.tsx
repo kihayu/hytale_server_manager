@@ -91,6 +91,12 @@ export const CommandPalette = () => {
     ).slice(0, 10);
   }, [query, allItems]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleSelect = (result: SearchResult) => {
+    void navigate(result.path);
+    closeSearch();
+  };
+
   // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -121,20 +127,17 @@ export const CommandPalette = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, results, selectedIndex, closeSearch]);
+  }, [isOpen, results, selectedIndex, closeSearch, handleSelect]);
 
-  // Reset state when opened
-  useEffect(() => {
+  // Reset state when opened (state-during-render pattern to avoid cascading renders)
+  const [prevIsOpenCmd, setPrevIsOpenCmd] = useState(isOpen);
+  if (prevIsOpenCmd !== isOpen) {
+    setPrevIsOpenCmd(isOpen);
     if (isOpen) {
       setQuery('');
       setSelectedIndex(0);
     }
-  }, [isOpen]);
-
-  const handleSelect = (result: SearchResult) => {
-    navigate(result.path);
-    closeSearch();
-  };
+  }
 
   const categoryColors = {
     page: 'text-accent-primary',

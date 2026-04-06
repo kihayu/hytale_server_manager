@@ -44,7 +44,7 @@ export const ModsPage = () => {
   const [sortBy, setSortBy] = useState<'downloads' | 'rating' | 'updated'>('downloads');
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<UnifiedProject | null>(null);
-  const [servers, setServers] = useState<any[]>([]);
+  const [servers, setServers] = useState<{ id: string; name: string }[]>([]);
   const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
   const [localSearchQuery, setLocalSearchQuery] = useState('');
   const CARD_PAGE_SIZE = 9;
@@ -61,30 +61,31 @@ export const ModsPage = () => {
     return mapping[classification] || 'plugin';
   };
 
+  const fetchServers = async () => {
+    try {
+      const data = await api.getServers<{ id: string; name: string }>();
+      setServers(data);
+    } catch (error: unknown) {
+      console.error('Error fetching servers:', error);
+    }
+  };
+
   // Fetch servers on mount and set page size for card view
   useEffect(() => {
-    fetchServers();
-    loadProviders();
+    void fetchServers();
+    void loadProviders();
     setSearchPageSize(CARD_PAGE_SIZE);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Clear classification (to not filter by MODPACK from other page) and trigger search
   useEffect(() => {
     if (isProviderConfigured) {
       // Clear classification to show all mods (not just modpacks)
       setSearchClassification(null);
-      search();
+      void search();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProvider, isProviderConfigured]);
-
-  const fetchServers = async () => {
-    try {
-      const data = await api.getServers();
-      setServers(data);
-    } catch (error) {
-      console.error('Error fetching servers:', error);
-    }
-  };
 
   // Get projects from search results
   const allProjects = useMemo(() => {
@@ -178,7 +179,7 @@ export const ModsPage = () => {
 
   const handleSearch = () => {
     setStoreSearchQuery(localSearchQuery);
-    search();
+    void search();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -240,10 +241,10 @@ export const ModsPage = () => {
 
       // Remove from queue after a short delay so user can see completion
       setTimeout(() => removeFromQueue(queueId), 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error installing mod:', error);
-      updateStatus(queueId, 'failed', error.message);
-      toast.error(t('mods.toast.failed.title'), error.message || t('mods.toast.failed.description'));
+      updateStatus(queueId, 'failed', (error as Error).message);
+      toast.error(t('mods.toast.failed.title'), (error as Error).message || t('mods.toast.failed.description'));
 
       // Remove failed items after showing error
       setTimeout(() => removeFromQueue(queueId), 5000);
@@ -438,7 +439,7 @@ export const ModsPage = () => {
                     onChange={(e) => {
                       const val = e.target.value;
                       setSearchClassification(val === 'all' ? null : val as UnifiedClassification);
-                      search();
+                      void search();
                     }}
                     className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
                   >
@@ -539,7 +540,7 @@ export const ModsPage = () => {
               <Button
                 variant="primary"
                 icon={<Settings size={18} />}
-                onClick={() => navigate('/settings')}
+                onClick={() => void navigate('/settings')}
               >
                 {t('mods.actions.configure_providers')}
               </Button>
@@ -568,7 +569,7 @@ export const ModsPage = () => {
                 </h3>
                 <p className="text-sm text-text-light-muted dark:text-text-muted mt-1">{searchError}</p>
               </div>
-              <Button variant="secondary" onClick={() => search()}>
+              <Button variant="secondary" onClick={() => void search()}>
                 {t('mods.actions.retry')}
               </Button>
             </div>
@@ -677,9 +678,9 @@ export const ModsPage = () => {
                       variant="ghost"
                       size="sm"
                       icon={<ChevronLeft size={16} />}
-                      onClick={async () => {
+                      onClick={() => {
                         setSearchPage(Math.max(1, cardPage - 1));
-                        await search();
+                        void search();
                       }}
                       disabled={cardPage === 1}
                     >
@@ -692,9 +693,9 @@ export const ModsPage = () => {
                       variant="ghost"
                       size="sm"
                       icon={<ChevronRight size={16} />}
-                      onClick={async () => {
+                      onClick={() => {
                         setSearchPage(Math.min(totalCardPages, cardPage + 1));
-                        await search();
+                        void search();
                       }}
                       disabled={cardPage === totalCardPages}
                     >
@@ -731,7 +732,7 @@ export const ModsPage = () => {
         isOpen={showInstallModal}
         onClose={() => setShowInstallModal(false)}
         project={selectedProject}
-        onInstall={handleInstall}
+        onInstall={(...args) => void handleInstall(...args)}
       />
     </div>
   );

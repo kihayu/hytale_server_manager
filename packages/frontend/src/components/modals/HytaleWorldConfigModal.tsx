@@ -201,9 +201,9 @@ export const HytaleWorldConfigModal = ({
   // Load config when modal opens
   useEffect(() => {
     if (isOpen && world) {
-      loadConfig();
+      void loadConfig();
     }
-  }, [isOpen, world]);
+  }, [isOpen, world]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadConfig = async () => {
     setLoading(true);
@@ -214,8 +214,8 @@ export const HytaleWorldConfigModal = ({
       setConfig(data);
       setJsonText(JSON.stringify(data, null, 2));
       setHasChanges(false);
-    } catch (err: any) {
-      setError(err.message || t('servers.world_config.toast.load_failed'));
+    } catch (err: unknown) {
+      setError((err as Error).message || t('servers.world_config.toast.load_failed'));
     } finally {
       setLoading(false);
     }
@@ -225,12 +225,12 @@ export const HytaleWorldConfigModal = ({
   const switchToFormView = () => {
     if (viewMode === 'json') {
       try {
-        const parsed = JSON.parse(jsonText);
+        const parsed = JSON.parse(jsonText) as HytaleWorldConfig;
         setConfig(parsed);
         setJsonError(null);
         setViewMode('form');
-      } catch (err: any) {
-        setJsonError(t('servers.world_config.json.invalid', { error: err.message }));
+      } catch (err: unknown) {
+        setJsonError(t('servers.world_config.json.invalid', { error: (err as Error).message }));
       }
     }
   };
@@ -285,10 +285,10 @@ export const HytaleWorldConfigModal = ({
     // If in JSON mode, parse the JSON first
     if (viewMode === 'json') {
       try {
-        configToSave = JSON.parse(jsonText);
+        configToSave = JSON.parse(jsonText) as HytaleWorldConfig;
         setJsonError(null);
-      } catch (err: any) {
-        setJsonError(t('servers.world_config.json.invalid', { error: err.message }));
+      } catch (err: unknown) {
+        setJsonError(t('servers.world_config.json.invalid', { error: (err as Error).message }));
         return;
       }
     }
@@ -302,8 +302,8 @@ export const HytaleWorldConfigModal = ({
       setHasChanges(false);
       onSaved?.();
       onClose();
-    } catch (err: any) {
-      toast.error(t('servers.world_config.toast.save_failed.title'), err.message || t('common.error'));
+    } catch (err: unknown) {
+      toast.error(t('servers.world_config.toast.save_failed.title'), (err as Error).message || t('common.error'));
     } finally {
       setSaving(false);
     }
@@ -368,7 +368,7 @@ export const HytaleWorldConfigModal = ({
       ) : error ? (
         <div className="text-center py-12">
           <p className="text-red-500 mb-4">{error}</p>
-          <Button variant="secondary" onClick={loadConfig}>
+          <Button variant="secondary" onClick={() => void loadConfig()}>
             {t('common.retry')}
           </Button>
         </div>
@@ -576,7 +576,7 @@ export const HytaleWorldConfigModal = ({
         </Button>
         <Button
           variant="primary"
-          onClick={handleSave}
+          onClick={() => void handleSave()}
           disabled={isDisabled || saving || !hasChanges}
         >
           {saving ? t('common.saving') : t('common.save_changes')}

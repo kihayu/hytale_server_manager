@@ -79,7 +79,7 @@ export const ServerHealthCards = ({ servers, loading }: ServerHealthCardsProps) 
             <div
               key={server.id}
               className="p-3 bg-white dark:bg-primary-bg-secondary rounded-lg border border-gray-200 dark:border-gray-800 hover:border-accent-primary/50 transition-colors cursor-pointer"
-              onClick={() => navigate(`/servers/${server.id}`)}
+              onClick={() => void navigate(`/servers/${server.id}`)}
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">

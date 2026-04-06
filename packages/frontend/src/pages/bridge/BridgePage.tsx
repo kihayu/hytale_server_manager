@@ -29,17 +29,18 @@ export const BridgePage = () => {
   };
 
   const getEventMessage = (event: typeof mockServerEvents[number]) => {
+    const d = event.data as Record<string, string>;
     switch (event.type) {
       case 'player_join':
-        return t('bridge.events.player_join', { username: event.data.username });
+        return t('bridge.events.player_join', { username: d.username });
       case 'player_leave':
-        return t('bridge.events.player_leave', { username: event.data.username });
+        return t('bridge.events.player_leave', { username: d.username });
       case 'chat':
-        return t('bridge.events.chat', { username: event.data.username, message: event.data.message });
+        return t('bridge.events.chat', { username: d.username, message: d.message });
       case 'achievement':
-        return t('bridge.events.achievement', { username: event.data.username, achievement: event.data.achievement });
+        return t('bridge.events.achievement', { username: d.username, achievement: d.achievement });
       case 'alert':
-        return event.data.message;
+        return d.message;
       default:
         return event.type;
     }
@@ -154,10 +155,10 @@ export const BridgePage = () => {
                     </Badge>
                     <div>
                       <p className="text-sm text-text-light-primary dark:text-text-primary">
-                        {getEventMessage(event as typeof mockServerEvents[number])}
+                        {getEventMessage(event)}
                       </p>
-                      {event.data.server && (
-                        <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">{event.data.server}</p>
+                      {(event.data as Record<string, string>).server && (
+                        <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">{(event.data as Record<string, string>).server}</p>
                       )}
                     </div>
                   </div>

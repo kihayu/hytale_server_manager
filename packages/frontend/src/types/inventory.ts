@@ -68,7 +68,7 @@ export interface PlayerActivity {
   type: ActivityType;
   timestamp: Date;
   description: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   location?: {
     x: number;
     y: number;

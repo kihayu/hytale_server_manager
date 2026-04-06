@@ -31,7 +31,7 @@ export const Header = () => {
   const { t, i18n } = useTranslation();
 
   const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
+    void i18n.changeLanguage(lng);
   };
 
   const getRelativeTime = (dateString: string) => {
@@ -77,11 +77,11 @@ export const Header = () => {
 
   // Fetch alerts on mount and periodically
   useEffect(() => {
-    fetchAlerts();
+    void fetchAlerts();
 
     // Refresh alerts every 60 seconds
     const interval = setInterval(() => {
-      fetchAlerts();
+      void fetchAlerts();
     }, 60000);
 
     return () => clearInterval(interval);
@@ -90,7 +90,7 @@ export const Header = () => {
   // Fetch alerts when dropdown opens
   useEffect(() => {
     if (showNotifications) {
-      fetchAlerts();
+      void fetchAlerts();
     }
   }, [showNotifications, fetchAlerts]);
 
@@ -107,12 +107,12 @@ export const Header = () => {
   };
 
   const handleLogout = () => {
-    logout();
-    navigate('/login');
+    void logout();
+    void navigate('/login');
   };
 
   return (
-    <header className="hidden lg:flex h-16 bg-white dark:bg-gray-100 dark:bg-primary-bg-secondary border-b border-gray-300 dark:border-gray-800 px-4 lg:px-6 items-center justify-between sticky top-0 z-40">
+    <header className="hidden lg:flex h-16 bg-white dark:bg-primary-bg-secondary border-b border-gray-300 dark:border-gray-800 px-4 lg:px-6 items-center justify-between sticky top-0 z-40">
       {/* Search */}
       <div className="flex-1 max-w-md">
         <div className="relative">
@@ -135,7 +135,7 @@ export const Header = () => {
         <div className="relative" ref={notificationsRef}>
           <button
             onClick={() => setShowNotifications(!showNotifications)}
-            className="relative p-2.5 text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:text-text-primary hover:bg-gray-200 dark:bg-gray-800 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+            className="relative p-2.5 text-text-light-muted hover:text-text-light-primary dark:text-text-primary hover:bg-gray-200 dark:bg-gray-800 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
             aria-label={t('header.notifications')}
           >
             <Bell size={20} />
@@ -158,7 +158,7 @@ export const Header = () => {
                   <h3 className="font-heading font-semibold">{t('header.notifications')}</h3>
                   {unreadCount > 0 && (
                     <button
-                      onClick={handleMarkAllAsRead}
+                      onClick={() => void handleMarkAllAsRead()}
                       disabled={isMarkingRead}
                       className="text-xs text-accent-primary hover:underline disabled:opacity-50 flex items-center gap-1"
                     >

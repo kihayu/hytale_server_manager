@@ -120,7 +120,7 @@ export const TaskGroupModal = ({
         setCustomCron(editGroup.cronExpression);
       }
     }
-  }, [editGroup]);
+  }, [editGroup]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = async () => {
     if (!name.trim()) {
@@ -165,10 +165,10 @@ export const TaskGroupModal = ({
       }
 
       handleClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(isEditMode ? 'Error updating task group:' : 'Error creating task group:', err);
       setError(
-        err.message ||
+        (err as Error).message ||
           t(isEditMode ? 'automation.modals.task_group.errors.update' : 'automation.modals.task_group.errors.create')
       );
     } finally {
@@ -495,7 +495,7 @@ export const TaskGroupModal = ({
         </Button>
         <Button
           variant="primary"
-          onClick={handleSubmit}
+          onClick={() => void handleSubmit()}
           loading={loading}
           disabled={loading || !name || selectedTaskIds.length === 0}
         >

@@ -28,7 +28,7 @@ interface LocalServer {
   id: string;
   name: string;
   status: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface NetworkServerRowProps {
@@ -128,7 +128,7 @@ export const NetworkServerRow = ({
           <div className="flex items-center gap-2 flex-wrap">
             <span
               className="font-medium text-text-light-primary dark:text-text-primary truncate cursor-pointer hover:text-accent-primary transition-colors"
-              onClick={() => navigate(`/servers/${member.serverId}`)}
+              onClick={() => void navigate(`/servers/${member.serverId}`)}
             >
               {member.server.name}
             </span>
@@ -213,7 +213,7 @@ export const NetworkServerRow = ({
           variant="ghost"
           size="sm"
           icon={<Terminal size={14} />}
-          onClick={() => navigate(`/console/${member.serverId}`)}
+          onClick={() => void navigate(`/console/${member.serverId}`)}
           disabled={!isRunning}
           title={t('networks.row.actions.console')}
         />
@@ -221,7 +221,7 @@ export const NetworkServerRow = ({
           variant="ghost"
           size="sm"
           icon={<Settings size={14} />}
-          onClick={() => navigate(`/servers/${member.serverId}`)}
+          onClick={() => void navigate(`/servers/${member.serverId}`)}
           title={t('networks.row.actions.settings')}
         />
         <Button

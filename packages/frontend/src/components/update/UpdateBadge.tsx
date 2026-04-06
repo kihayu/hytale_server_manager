@@ -11,10 +11,10 @@ export const UpdateBadge = () => {
 
   useEffect(() => {
     // Check for updates on mount
-    checkForUpdates();
+    void checkForUpdates();
 
     // Check periodically (every 4 hours)
-    const interval = setInterval(() => checkForUpdates(), 4 * 60 * 60 * 1000);
+    const interval = setInterval(() => void checkForUpdates(), 4 * 60 * 60 * 1000);
     return () => clearInterval(interval);
   }, [checkForUpdates]);
 

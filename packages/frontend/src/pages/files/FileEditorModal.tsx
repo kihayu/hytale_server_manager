@@ -33,9 +33,9 @@ export const FileEditorModal = ({ isOpen, onClose, onSave, serverId, file }: Fil
 
   useEffect(() => {
     if (isOpen && file) {
-      loadFileContent();
+      void loadFileContent();
     }
-  }, [isOpen, file]);
+  }, [isOpen, file]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setHasChanges(content !== originalContent);
@@ -49,9 +49,9 @@ export const FileEditorModal = ({ isOpen, onClose, onSave, serverId, file }: Fil
       const response = await api.readFile(serverId, file.path);
       setContent(response.content);
       setOriginalContent(response.content);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error reading file:', err);
-      setError(err.message || t('files.editor.load_error'));
+      setError((err as Error).message || t('files.editor.load_error'));
     } finally {
       setLoading(false);
     }
@@ -66,9 +66,9 @@ export const FileEditorModal = ({ isOpen, onClose, onSave, serverId, file }: Fil
       setOriginalContent(content);
       onSave();
       handleClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error saving file:', err);
-      setError(err.message || t('files.editor.save_error'));
+      setError((err as Error).message || t('files.editor.save_error'));
     } finally {
       setSaving(false);
     }
@@ -162,7 +162,7 @@ export const FileEditorModal = ({ isOpen, onClose, onSave, serverId, file }: Fil
         <Button
           variant="primary"
           icon={<Save size={16} />}
-          onClick={handleSave}
+          onClick={() => void handleSave()}
           loading={saving}
           disabled={saving || !hasChanges || loading}
         >

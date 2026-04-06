@@ -108,7 +108,8 @@ describe('Server Hooks', () => {
 
   describe('useServers', () => {
     it('should fetch servers successfully', async () => {
-      vi.mocked(api.getServers).mockResolvedValueOnce(mockServers);
+      const mockedApi = vi.mocked(api);
+      mockedApi.getServers.mockResolvedValueOnce(mockServers);
 
       const { result } = renderHook(() => useServers(), {
         wrapper: createWrapper(),
@@ -122,12 +123,13 @@ describe('Server Hooks', () => {
       });
 
       expect(result.current.data).toEqual(mockServers);
-      expect(api.getServers).toHaveBeenCalledTimes(1);
+      expect(mockedApi.getServers).toHaveBeenCalledTimes(1);
     });
 
     it('should handle fetch error', async () => {
       const error = new Error('Failed to fetch');
-      vi.mocked(api.getServers).mockRejectedValueOnce(error);
+      const mockedApi = vi.mocked(api);
+      mockedApi.getServers.mockRejectedValueOnce(error);
 
       const { result } = renderHook(() => useServers(), {
         wrapper: createWrapper(),
@@ -143,7 +145,8 @@ describe('Server Hooks', () => {
 
   describe('useServer', () => {
     it('should fetch a single server', async () => {
-      vi.mocked(api.getServer).mockResolvedValueOnce(mockServers[0]);
+      const mockedApi = vi.mocked(api);
+      mockedApi.getServer.mockResolvedValueOnce(mockServers[0]);
 
       const { result } = renderHook(() => useServer('srv-001'), {
         wrapper: createWrapper(),
@@ -154,22 +157,24 @@ describe('Server Hooks', () => {
       });
 
       expect(result.current.data).toEqual(mockServers[0]);
-      expect(api.getServer).toHaveBeenCalledWith('srv-001');
+      expect(mockedApi.getServer).toHaveBeenCalledWith('srv-001');
     });
 
     it('should not fetch when id is empty', () => {
+      const mockedApi = vi.mocked(api);
       const { result } = renderHook(() => useServer(''), {
         wrapper: createWrapper(),
       });
 
       expect(result.current.isLoading).toBe(false);
-      expect(api.getServer).not.toHaveBeenCalled();
+      expect(mockedApi.getServer).not.toHaveBeenCalled();
     });
   });
 
   describe('useStartServer', () => {
     it('should start a server successfully', async () => {
-      vi.mocked(api.startServer).mockResolvedValueOnce({ message: 'Server starting' });
+      const mockedApi = vi.mocked(api);
+      mockedApi.startServer.mockResolvedValueOnce({ message: 'Server starting' });
 
       const { result } = renderHook(() => useStartServer(), {
         wrapper: createWrapper(),
@@ -181,12 +186,13 @@ describe('Server Hooks', () => {
         expect(result.current.isSuccess).toBe(true);
       });
 
-      expect(api.startServer).toHaveBeenCalledWith('srv-001');
+      expect(mockedApi.startServer).toHaveBeenCalledWith('srv-001');
     });
 
     it('should handle start error', async () => {
       const error = new Error('Failed to start');
-      vi.mocked(api.startServer).mockRejectedValueOnce(error);
+      const mockedApi = vi.mocked(api);
+      mockedApi.startServer.mockRejectedValueOnce(error);
 
       const { result } = renderHook(() => useStartServer(), {
         wrapper: createWrapper(),
@@ -202,7 +208,8 @@ describe('Server Hooks', () => {
 
   describe('useStopServer', () => {
     it('should stop a server successfully', async () => {
-      vi.mocked(api.stopServer).mockResolvedValueOnce({ message: 'Server stopping' });
+      const mockedApi = vi.mocked(api);
+      mockedApi.stopServer.mockResolvedValueOnce({ message: 'Server stopping' });
 
       const { result } = renderHook(() => useStopServer(), {
         wrapper: createWrapper(),
@@ -214,7 +221,7 @@ describe('Server Hooks', () => {
         expect(result.current.isSuccess).toBe(true);
       });
 
-      expect(api.stopServer).toHaveBeenCalledWith('srv-001');
+      expect(mockedApi.stopServer).toHaveBeenCalledWith('srv-001');
     });
   });
 });

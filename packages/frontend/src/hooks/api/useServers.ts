@@ -179,7 +179,7 @@ export function useCreateServer(
     },
     onSuccess: (newServer) => {
       // Invalidate and refetch servers list
-      queryClient.invalidateQueries({ queryKey: serverKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: serverKeys.lists() });
 
       // Add the new server to cache
       queryClient.setQueryData(serverKeys.detail(newServer.id), newServer);
@@ -239,7 +239,7 @@ export function useUpdateServer(
       logger.error('Server update failed:', error);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: serverKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: serverKeys.lists() });
       toast.success('Server updated');
     },
     ...options,
@@ -266,7 +266,7 @@ export function useDeleteServer(
     onSuccess: (_, id) => {
       // Remove from cache
       queryClient.removeQueries({ queryKey: serverKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: serverKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: serverKeys.lists() });
 
       toast.success('Server deleted');
       logger.info('Server deleted:', id);
@@ -316,7 +316,7 @@ export function useStartServer(
       logger.error('Server start failed:', error);
     },
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: serverKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: serverKeys.detail(id) });
       toast.success('Server starting');
     },
     ...options,
@@ -358,7 +358,7 @@ export function useStopServer(
       toast.error('Failed to stop server', error.message);
     },
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: serverKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: serverKeys.detail(id) });
       toast.warning('Server stopping');
     },
     ...options,
@@ -383,7 +383,7 @@ export function useRestartServer(
       return api.restartServer(id);
     },
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: serverKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: serverKeys.detail(id) });
       toast.info('Server restarting');
     },
     onError: (error) => {
@@ -411,7 +411,7 @@ export function useKillServer(
       return api.killServer(id);
     },
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: serverKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: serverKeys.detail(id) });
       toast.warning('Server killed');
     },
     onError: (error) => {
@@ -430,7 +430,7 @@ export function usePrefetchServer() {
   const queryClient = useQueryClient();
 
   return (id: string) => {
-    queryClient.prefetchQuery({
+    void queryClient.prefetchQuery({
       queryKey: serverKeys.detail(id),
       queryFn: () => api.getServer(id),
       staleTime: 30 * 1000,

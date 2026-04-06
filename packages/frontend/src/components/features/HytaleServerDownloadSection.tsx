@@ -59,7 +59,7 @@ export const HytaleServerDownloadSection = ({
 
   // Fetch status on mount
   useEffect(() => {
-    fetchStatus();
+    void fetchStatus();
   }, [fetchStatus]);
 
   // Update version when game version is fetched
@@ -105,20 +105,20 @@ export const HytaleServerDownloadSection = ({
     setLocalError(null);
     try {
       await installBinary();
-    } catch (err: any) {
-      setLocalError(err.message || t('hytale_downloader.install.error'));
+    } catch (err: unknown) {
+      setLocalError((err as Error).message || t('hytale_downloader.install.error'));
     } finally {
       setIsInstalling(false);
     }
-  }, [installBinary]);
+  }, [installBinary, t]);
 
   const handleCheckVersion = useCallback(async () => {
     clearError();
     setLocalError(null);
     try {
       await checkVersion(selectedPatchline);
-    } catch (err: any) {
-      setLocalError(err.message || t('hytale_downloader.download.errors.check_version'));
+    } catch (err: unknown) {
+      setLocalError((err as Error).message || t('hytale_downloader.download.errors.check_version'));
     }
   }, [checkVersion, selectedPatchline, clearError, t]);
 
@@ -129,8 +129,8 @@ export const HytaleServerDownloadSection = ({
     if (status?.binaryInstalled && status?.isAuthenticated && !isCheckingVersion) {
       clearError();
       setLocalError(null);
-      checkVersion(newPatchline).catch((err: any) => {
-        setLocalError(err.message || t('hytale_downloader.download.errors.check_version'));
+      checkVersion(newPatchline).catch((err) => {
+        setLocalError((err as Error).message || t('hytale_downloader.download.errors.check_version'));
       });
     }
   }, [status, isCheckingVersion, checkVersion, clearError, t]);
@@ -145,13 +145,13 @@ export const HytaleServerDownloadSection = ({
     setLocalError(null);
     try {
       await startDownload(serverPath, selectedPatchline);
-    } catch (err: any) {
-      setLocalError(err.message || t('hytale_downloader.download.errors.start'));
+    } catch (err: unknown) {
+      setLocalError((err as Error).message || t('hytale_downloader.download.errors.start'));
     }
   }, [startDownload, serverPath, selectedPatchline, clearError, t]);
 
   const handleOAuthSuccess = useCallback(() => {
-    fetchStatus();
+    void fetchStatus();
     setShowOAuthModal(false);
   }, [fetchStatus]);
 
@@ -175,7 +175,7 @@ export const HytaleServerDownloadSection = ({
             <Button
               variant="primary"
               size="sm"
-              onClick={handleInstallBinary}
+              onClick={() => void handleInstallBinary()}
               disabled={isInstalling}
             >
               {isInstalling ? (
@@ -299,7 +299,7 @@ export const HytaleServerDownloadSection = ({
           <Button
             variant="secondary"
             size="sm"
-            onClick={handleCheckVersion}
+            onClick={() => void handleCheckVersion()}
             disabled={isCheckingVersion}
           >
             {isCheckingVersion ? (
@@ -312,7 +312,7 @@ export const HytaleServerDownloadSection = ({
           <Button
             variant="primary"
             size="sm"
-            onClick={handleStartDownload}
+            onClick={() => void handleStartDownload()}
             disabled={isStartingDownload || !serverPath}
           >
             {isStartingDownload ? (

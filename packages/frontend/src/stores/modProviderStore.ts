@@ -11,7 +11,7 @@ import * as modProviderApi from '../services/modProviderApi';
 
 interface ModProviderState {
   // Provider selection
-  selectedProvider: string | 'all';
+  selectedProvider: string;
   providers: ProviderInfo[];
   providersLoading: boolean;
   providersError: string | null;
@@ -33,7 +33,7 @@ interface ModProviderState {
   searchError: string | null;
 
   // Actions - Provider management
-  setSelectedProvider: (provider: string | 'all') => void;
+  setSelectedProvider: (provider: string) => void;
   loadProviders: () => Promise<void>;
   configureProvider: (providerId: string, apiKey: string) => Promise<void>;
 
@@ -78,7 +78,7 @@ export const useModProviderStore = create<ModProviderState>()(
       searchError: null,
 
       // Actions - Provider management
-      setSelectedProvider: (provider: string | 'all') => {
+      setSelectedProvider: (provider: string) => {
         set({
           selectedProvider: provider,
           searchResults: null,

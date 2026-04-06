@@ -53,7 +53,7 @@ export const ActivityFeedWidget = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchRecentActivity();
+    void fetchRecentActivity();
   }, []);
 
   const fetchRecentActivity = async () => {
@@ -76,7 +76,7 @@ export const ActivityFeedWidget = () => {
             <Activity size={18} />
             {t('dashboard.activity.title')}
           </CardTitle>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/activity')}>
+          <Button variant="ghost" size="sm" onClick={() => void navigate('/activity')}>
             {t('common.view_all')}
             <ArrowRight size={14} className="ml-1" />
           </Button>

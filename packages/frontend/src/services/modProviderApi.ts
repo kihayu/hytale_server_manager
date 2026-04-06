@@ -62,21 +62,19 @@ async function fetchApi<T>(
     const errorText = await response.text();
     console.error('[ModProvider API] Error response:', errorText);
 
-    let error: any;
+    let error: { statusCode?: number; message?: string } = {
+      message: `HTTP ${response.status}: ${response.statusText}`,
+      statusCode: response.status,
+    };
     try {
-      error = JSON.parse(errorText);
+      error = JSON.parse(errorText) as { statusCode?: number; message?: string };
     } catch {
-      error = {
-        error: 'Unknown Error',
-        message: `HTTP ${response.status}: ${response.statusText}`,
-        statusCode: response.status,
-      };
+      // Keep the default error shape
     }
     throw new ModProviderApiError(error.statusCode || response.status, error.message || errorText);
   }
 
-  const data = await response.json();
-  return data;
+  return response.json() as Promise<T>;
 }
 
 /**

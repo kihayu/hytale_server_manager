@@ -48,8 +48,8 @@ export const QuickActionsPanel = ({ runningCount, stoppedCount, onRefresh }: Qui
       }
 
       onRefresh();
-    } catch (error: any) {
-      toast.error(t('dashboard.quick_actions.toast.failed_title'), error.message);
+    } catch (error: unknown) {
+      toast.error(t('dashboard.quick_actions.toast.failed_title'), (error as Error).message);
     } finally {
       setLoading(null);
     }
@@ -66,7 +66,7 @@ export const QuickActionsPanel = ({ runningCount, stoppedCount, onRefresh }: Qui
             variant="secondary"
             className="w-full justify-start"
             icon={loading === 'start-all' ? <RefreshCw size={16} className="animate-spin" /> : <Play size={16} />}
-            onClick={() => handleAction('start-all')}
+            onClick={() => void handleAction('start-all')}
             disabled={loading !== null || stoppedCount === 0}
           >
             {t('dashboard.quick_actions.start_all')}
@@ -81,7 +81,7 @@ export const QuickActionsPanel = ({ runningCount, stoppedCount, onRefresh }: Qui
             variant="secondary"
             className="w-full justify-start"
             icon={loading === 'stop-all' ? <RefreshCw size={16} className="animate-spin" /> : <Square size={16} />}
-            onClick={() => handleAction('stop-all')}
+            onClick={() => void handleAction('stop-all')}
             disabled={loading !== null || runningCount === 0}
           >
             {t('dashboard.quick_actions.stop_all')}
@@ -96,7 +96,7 @@ export const QuickActionsPanel = ({ runningCount, stoppedCount, onRefresh }: Qui
             variant="secondary"
             className="w-full justify-start"
             icon={loading === 'restart-all' ? <RefreshCw size={16} className="animate-spin" /> : <RotateCcw size={16} />}
-            onClick={() => handleAction('restart-all')}
+            onClick={() => void handleAction('restart-all')}
             disabled={loading !== null || runningCount === 0}
           >
             {t('dashboard.quick_actions.restart_all')}

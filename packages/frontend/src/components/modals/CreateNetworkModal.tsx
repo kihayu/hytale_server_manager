@@ -372,7 +372,7 @@ export const CreateNetworkModal = ({
             </Button>
             <Button
               variant="primary"
-              onClick={handleSubmit}
+              onClick={() => void handleSubmit()}
               disabled={loading}
             >
               {loading ? t('common.creating') : t('networks.create.submit')}

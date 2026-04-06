@@ -58,8 +58,8 @@ export const UsersPage = () => {
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    void fetchUsers();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchUsers = async () => {
     try {
@@ -67,8 +67,8 @@ export const UsersPage = () => {
       setError(null);
       const data = await api.getUsers<User>();
       setUsers(data);
-    } catch (err: any) {
-      setError(err.message || t('users.errors.load'));
+    } catch (err: unknown) {
+      setError((err as Error).message || t('users.errors.load'));
     } finally {
       setLoading(false);
     }
@@ -128,9 +128,9 @@ export const UsersPage = () => {
         setSuccess(t('users.toast.created'));
       }
       closeModal();
-      fetchUsers();
-    } catch (err: any) {
-      setFormError(err.message || t('users.errors.save'));
+      void fetchUsers();
+    } catch (err: unknown) {
+      setFormError((err as Error).message || t('users.errors.save'));
     } finally {
       setSaving(false);
     }
@@ -142,9 +142,9 @@ export const UsersPage = () => {
       await api.deleteUser(userId);
       setSuccess(t('users.toast.deleted'));
       setDeleteConfirm(null);
-      fetchUsers();
-    } catch (err: any) {
-      setError(err.message || t('users.errors.delete'));
+      void fetchUsers();
+    } catch (err: unknown) {
+      setError((err as Error).message || t('users.errors.delete'));
     } finally {
       setDeleting(false);
     }
@@ -267,7 +267,7 @@ export const UsersPage = () => {
                                   <Button
                                     variant="danger"
                                     size="sm"
-                                    onClick={() => handleDelete(user.id)}
+                                    onClick={() => void handleDelete(user.id)}
                                     disabled={deleting}
                                   >
                                     {deleting ? '...' : <Check size={14} />}
@@ -317,7 +317,7 @@ export const UsersPage = () => {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">{t('users.form.username')}</label>
                 <Input

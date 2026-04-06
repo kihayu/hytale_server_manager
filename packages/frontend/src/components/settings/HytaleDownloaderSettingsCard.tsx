@@ -47,7 +47,7 @@ export const HytaleDownloaderSettingsCard = () => {
 
   // Fetch status on mount
   useEffect(() => {
-    fetchStatus();
+    void fetchStatus();
   }, [fetchStatus]);
 
   const handleInstall = useCallback(async () => {
@@ -58,8 +58,8 @@ export const HytaleDownloaderSettingsCard = () => {
     try {
       await installBinary();
       setLocalSuccess(t('settings.downloader.install_success'));
-    } catch (err: any) {
-      setLocalError(err.message || t('settings.downloader.install_failed'));
+    } catch (err: unknown) {
+      setLocalError((err as Error).message || t('settings.downloader.install_failed'));
     } finally {
       setIsInstalling(false);
     }
@@ -73,8 +73,8 @@ export const HytaleDownloaderSettingsCard = () => {
     try {
       await updateBinary();
       setLocalSuccess(t('settings.downloader.update_success'));
-    } catch (err: any) {
-      setLocalError(err.message || t('settings.downloader.update_failed'));
+    } catch (err: unknown) {
+      setLocalError((err as Error).message || t('settings.downloader.update_failed'));
     } finally {
       setIsInstalling(false);
     }
@@ -92,8 +92,8 @@ export const HytaleDownloaderSettingsCard = () => {
     try {
       await clearCredentials();
       setLocalSuccess(t('settings.downloader.disconnect_success'));
-    } catch (err: any) {
-      setLocalError(err.message || t('settings.downloader.disconnect_failed'));
+    } catch (err: unknown) {
+      setLocalError((err as Error).message || t('settings.downloader.disconnect_failed'));
     } finally {
       setIsClearingCredentials(false);
     }
@@ -102,7 +102,7 @@ export const HytaleDownloaderSettingsCard = () => {
   const handleOAuthSuccess = useCallback(() => {
     setLocalSuccess(t('settings.downloader.connect_success'));
     setShowOAuthModal(false);
-    fetchStatus();
+    void fetchStatus();
   }, [fetchStatus, t]);
 
   const handleRefreshToken = useCallback(async () => {
@@ -112,8 +112,8 @@ export const HytaleDownloaderSettingsCard = () => {
     try {
       await refreshToken();
       setLocalSuccess(t('settings.downloader.refresh_success'));
-    } catch (err: any) {
-      setLocalError(err.message || t('settings.downloader.refresh_failed'));
+    } catch (err: unknown) {
+      setLocalError((err as Error).message || t('settings.downloader.refresh_failed'));
     }
   }, [refreshToken, t]);
 
@@ -126,8 +126,8 @@ export const HytaleDownloaderSettingsCard = () => {
     try {
       await setAutoRefresh(newEnabled, 1800); // 30 minutes
       setLocalSuccess(newEnabled ? t('settings.downloader.auto_refresh_enabled') : t('settings.downloader.auto_refresh_disabled'));
-    } catch (err: any) {
-      setLocalError(err.message || t('settings.downloader.auto_refresh_failed'));
+    } catch (err: unknown) {
+      setLocalError((err as Error).message || t('settings.downloader.auto_refresh_failed'));
     }
   }, [setAutoRefresh, status?.autoRefresh?.enabled, t]);
 
@@ -213,7 +213,7 @@ export const HytaleDownloaderSettingsCard = () => {
                     <Button
                       variant="secondary"
                       size="sm"
-                      onClick={handleUpdate}
+                      onClick={() => void handleUpdate()}
                       disabled={isInstalling}
                     >
                       {isInstalling ? (
@@ -231,7 +231,7 @@ export const HytaleDownloaderSettingsCard = () => {
                     </p>
                     <Button
                       variant="primary"
-                      onClick={handleInstall}
+                      onClick={() => void handleInstall()}
                       disabled={isInstalling}
                     >
                       {isInstalling ? (
@@ -312,7 +312,7 @@ export const HytaleDownloaderSettingsCard = () => {
                             </span>
                           </div>
                           <button
-                            onClick={handleToggleAutoRefresh}
+                            onClick={() => void handleToggleAutoRefresh()}
                             disabled={isUpdatingAutoRefresh}
                             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${status.autoRefresh?.enabled
                               ? 'bg-accent-primary'
@@ -330,7 +330,7 @@ export const HytaleDownloaderSettingsCard = () => {
                           <Button
                             variant="secondary"
                             size="sm"
-                            onClick={handleRefreshToken}
+                            onClick={() => void handleRefreshToken()}
                             disabled={isRefreshingToken}
                             className="flex-1"
                           >
@@ -358,7 +358,7 @@ export const HytaleDownloaderSettingsCard = () => {
                       <Button
                         variant="secondary"
                         size="sm"
-                        onClick={handleClearCredentials}
+                        onClick={() => void handleClearCredentials()}
                         disabled={isClearingCredentials}
                         className="text-red-500 hover:text-red-400"
                       >

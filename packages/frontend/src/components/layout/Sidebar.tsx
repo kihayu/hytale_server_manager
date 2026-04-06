@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import {
   LayoutDashboard,
   Server,
@@ -63,7 +63,7 @@ const comingSoonItems: NavigationItem[] = [
 export const Sidebar = () => {
   const { t } = useTranslation();
   const { sidebarCollapsed, toggleSidebar, mobileMenuOpen, closeMobileMenu } = useAppStore();
-  const { hasPermission, hasAllPermissions, hasAnyPermission } = usePermissions();
+  const { hasAllPermissions, hasAnyPermission } = usePermissions();
   const location = useLocation();
 
   // Close mobile menu when route changes
@@ -86,8 +86,8 @@ export const Sidebar = () => {
     });
   };
 
-  const visibleItems = useMemo(() => filterItems(navigationItems), [hasPermission, hasAllPermissions, hasAnyPermission]);
-  const visibleComingSoon = useMemo(() => filterItems(comingSoonItems), [hasPermission, hasAllPermissions, hasAnyPermission]);
+  const visibleItems = filterItems(navigationItems);
+  const visibleComingSoon = filterItems(comingSoonItems);
 
   const renderNavItem = (item: NavigationItem, isComingSoon = false) => (
     <li key={item.path}>

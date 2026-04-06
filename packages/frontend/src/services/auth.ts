@@ -182,15 +182,15 @@ class AuthService {
       });
 
       if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'Setup failed' }));
+        const error = await response.json().catch(() => ({ message: 'Setup failed' })) as { message?: string };
         throw new AuthError(
-          error.message || 'Setup failed',
+          error.message ?? 'Setup failed',
           'SERVER_ERROR',
           response.status
         );
       }
 
-      return response.json();
+      return response.json() as Promise<{ message: string }>;
     } catch (error) {
       if (error instanceof AuthError) {
         throw error;
@@ -226,24 +226,24 @@ class AuthService {
       });
 
       if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'Login failed' }));
+        const error = await response.json().catch(() => ({ message: 'Login failed' })) as { message?: string };
 
         if (response.status === 401) {
           throw new AuthError(
-            error.message || 'Invalid email or password',
+            error.message ?? 'Invalid email or password',
             'INVALID_CREDENTIALS',
             401
           );
         }
 
         throw new AuthError(
-          error.message || 'Login failed',
+          error.message ?? 'Login failed',
           'SERVER_ERROR',
           response.status
         );
       }
 
-      const data: AuthResponse = await response.json();
+      const data: AuthResponse = await response.json() as AuthResponse;
 
       // Tokens are stored in httpOnly cookies by the server
       // Also store access token in localStorage for WebSocket authentication
@@ -347,7 +347,7 @@ class AuthService {
         throw new AuthError('Token refresh failed', 'SERVER_ERROR', response.status);
       }
 
-      const data: AuthResponse = await response.json();
+      const data = await response.json() as AuthResponse;
 
       // Tokens are stored in httpOnly cookies by the server
       // Also store access token in localStorage for WebSocket authentication
@@ -375,7 +375,7 @@ class AuthService {
    * @param token - Token to validate
    * @returns Validation result
    */
-  async validateToken(token: string): Promise<TokenValidation> {
+  validateToken(token: string): TokenValidation {
     try {
       // Decode without verification (verification happens server-side)
       const decoded = jose.decodeJwt(token) as JWTPayload;
@@ -450,13 +450,15 @@ class AuthService {
 
     logger.debug(`Scheduling token refresh in ${refreshIn / 1000} seconds`);
 
-    this.refreshTimer = setTimeout(async () => {
-      try {
-        await this.refreshAccessToken();
-      } catch (error) {
-        logger.error('Automatic token refresh failed:', error);
-        // Token refresh failed - user will need to login again on next API call
-      }
+    this.refreshTimer = setTimeout(() => {
+      void (async () => {
+        try {
+          await this.refreshAccessToken();
+        } catch (error) {
+          logger.error('Automatic token refresh failed:', error);
+          // Token refresh failed - user will need to login again on next API call
+        }
+      })();
     }, refreshIn);
   }
 
@@ -553,18 +555,18 @@ class AuthService {
       });
 
       if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'Password change failed' }));
+        const error = await response.json().catch(() => ({ message: 'Password change failed' })) as { message?: string };
 
         if (response.status === 401) {
           throw new AuthError(
-            error.message || 'Current password is incorrect',
+            error.message ?? 'Current password is incorrect',
             'INVALID_CREDENTIALS',
             401
           );
         }
 
         throw new AuthError(
-          error.message || 'Password change failed',
+          error.message ?? 'Password change failed',
           'SERVER_ERROR',
           response.status
         );
