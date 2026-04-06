@@ -65,7 +65,7 @@ RUN npm install --omit=dev
 RUN npx prisma generate
 
 # Create data directories
-RUN mkdir -p /app/data/db /app/data/servers /app/data/backups /app/data/logs /app/data/certs && \
+RUN mkdir -p /app/data/db /app/data/servers /app/data/backups /app/data/logs /app/data/certs /app/servers /app/logs && \
     chown -R hsm:hsm /app
 
 # Copy entrypoint script

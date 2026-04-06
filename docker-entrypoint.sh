@@ -22,10 +22,12 @@ if [ "$(id -u hsm)" != "$PUID" ]; then
 fi
 
 # Ensure data directories exist
-mkdir -p /app/data/db /app/data/servers /app/data/backups /app/data/logs /app/data/certs
+mkdir -p /app/data/db /app/data/servers /app/data/backups /app/data/logs /app/data/certs /app/servers /app/logs
 
 # Fix ownership of data directories
 chown -R hsm:hsm /app/data
+chown -R hsm:hsm /app/servers
+chown -R hsm:hsm /app/logs
 chown hsm:hsm /app
 
 # Generate secrets if not provided
