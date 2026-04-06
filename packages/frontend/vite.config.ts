@@ -10,14 +10,19 @@ export default defineConfig({
     sourcemap: false,
   },
   server: {
+    host: '0.0.0.0',
+    port: process.env.VITE_PORT ? parseInt(process.env.VITE_PORT) : 5173,
+    allowedHosts: process.env.VITE_ALLOWED_HOSTS
+      ? process.env.VITE_ALLOWED_HOSTS.split(',')
+      : [],
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:3001',
+        target: process.env.VITE_PROXY_TARGET ?? 'http://127.0.0.1:3001',
         changeOrigin: true,
         secure: false,
       },
       '/socket.io': {
-        target: 'http://127.0.0.1:3001',
+        target: process.env.VITE_PROXY_TARGET ?? 'http://127.0.0.1:3001',
         changeOrigin: true,
         ws: true,
       },
