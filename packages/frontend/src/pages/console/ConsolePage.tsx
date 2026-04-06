@@ -187,9 +187,9 @@ export const ConsolePage = () => {
           <button
             key={server.id}
             onClick={() => setSelectedServer(server.id)}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedServer === server.id
+            className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${selectedServer === server.id
                 ? 'bg-accent-primary text-black'
-                : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted hover:text-text-light-primary dark:text-text-primary'
+                : 'bg-white dark:bg-primary-bg-secondary text-text-light-muted hover:text-text-light-primary dark:text-text-primary dark:hover:text-text-primary dark:hover:bg-primary-bg-secondary-hover'
               }`}
           >
             {server.name}

@@ -121,7 +121,7 @@ export const Header = () => {
             disabled
             type="search"
             placeholder={t('common.search_placeholder')}
-            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary placeholder-text-muted text-base focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary min-h-[44px]"
+            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary placeholder-text-muted text-base focus:outline-hidden focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary min-h-11"
           />
         </div>
       </div>
@@ -135,7 +135,7 @@ export const Header = () => {
         <div className="relative" ref={notificationsRef}>
           <button
             onClick={() => setShowNotifications(!showNotifications)}
-            className="relative p-2.5 text-text-light-muted hover:text-text-light-primary dark:text-text-primary hover:bg-gray-200 dark:bg-gray-800 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+            className="relative p-2.5 text-text-light-muted hover:text-text-light-primary dark:text-text-primary hover:bg-gray-200 dark:bg-gray-800 rounded-lg transition-colors min-h-11 min-w-11 flex items-center justify-center"
             aria-label={t('header.notifications')}
           >
             <Bell size={20} />
@@ -241,7 +241,7 @@ export const Header = () => {
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2.5 text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+          className="p-2.5 text-text-light-muted dark:text-text-muted hover:text-text-light-primary dark:hover:text-text-primary hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors min-h-11 min-w-11 flex items-center justify-center"
           aria-label={theme === 'dark' ? t('header.theme_toggle.light') : t('header.theme_toggle.dark')}
         >
           <AnimatePresence mode="wait" initial={false}>
