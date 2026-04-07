@@ -3,10 +3,12 @@ import fs from 'fs-extra';
 import path from 'path';
 import { IServerAdapter } from '../adapters/IServerAdapter';
 import { JavaServerAdapter } from '../adapters/JavaServerAdapter';
+import { RemoteAdapter } from '../adapters/RemoteAdapter';
 import { ServerConfig, ServerStatus, ServerMetrics } from '../types';
 import logger from '../utils/logger';
 import config from '../config';
 import { DiscordNotificationService } from './DiscordNotificationService';
+import { NodeService } from './NodeService';
 import { RconService } from './RconService';
 import { LogTailService } from './LogTailService';
 
@@ -14,14 +16,30 @@ export class ServerService {
   private prisma: PrismaClient;
   private adapters: Map<string, IServerAdapter> = new Map();
   private discordService?: DiscordNotificationService;
+  private nodeService?: NodeService;
   private rconService: RconService;
   private logTailService: LogTailService;
+  private metricsFlushTimers: Map<string, ReturnType<typeof setInterval>> = new Map();
 
   constructor(prisma: PrismaClient, discordService?: DiscordNotificationService) {
     this.prisma = prisma;
     this.discordService = discordService;
     this.rconService = new RconService();
     this.logTailService = new LogTailService();
+  }
+
+  /**
+   * Set the NodeService (called from App after both are constructed)
+   */
+  setNodeService(nodeService: NodeService): void {
+    this.nodeService = nodeService;
+  }
+
+  /**
+   * Check if a server is owned by another node
+   */
+  private isOwnedByAnotherNode(server: PrismaServer): boolean {
+    return !!server.nodeId && server.nodeId !== config.nodeId;
   }
 
   /**
@@ -40,6 +58,18 @@ export class ServerService {
 
     if (!server) {
       throw new Error(`Server ${serverId} not found`);
+    }
+
+    // For servers owned by another node, return a RemoteAdapter if the node is alive
+    if (this.isOwnedByAnotherNode(server)) {
+      if (this.nodeService && server.nodeId) {
+        const ownerNode = await this.nodeService.getNode(server.nodeId);
+        if (ownerNode && this.nodeService.isAlive(ownerNode)) {
+          return new RemoteAdapter(serverId, ownerNode.address, this.prisma);
+        }
+      }
+      // Node is dead or NodeService not available — fall through to orphan recovery
+      throw new Error(`Server ${serverId} is owned by node '${server.nodeId}' which is unreachable (this node: '${config.nodeId}')`);
     }
 
     // Create appropriate adapter based on type
@@ -331,12 +361,19 @@ export class ServerService {
     try {
       await adapter.start();
 
+      // Only claim node ownership for local adapters (not RemoteAdapter)
+      const isLocal = !(adapter instanceof RemoteAdapter);
       await this.prisma.server.update({
         where: { id: serverId },
-        data: { status: 'running' },
+        data: { status: 'running', ...(isLocal ? { nodeId: config.nodeId } : {}) },
       });
 
-      logger.info(`Started server: ${serverId}`);
+      logger.info(`Started server: ${serverId}${isLocal ? ` (owned by node: ${config.nodeId})` : ''}`);
+
+      // Start periodic metrics flush to DB for cross-node reads
+      if (isLocal) {
+        this.startMetricsFlush(serverId);
+      }
 
       // Send Discord notification
       if (this.discordService) {
@@ -345,7 +382,7 @@ export class ServerService {
         });
       }
     } catch (error) {
-      // Reset status to stopped on failure
+      // Reset status to stopped on failure, including clearing nodeId
       logger.error(`Failed to start server ${serverId}:`, error);
 
       await this.prisma.server.update({
@@ -354,6 +391,7 @@ export class ServerService {
           status: 'stopped',
           pid: null,
           startedAt: null,
+          nodeId: null,
         },
       });
 
@@ -382,13 +420,14 @@ export class ServerService {
 
       await this.prisma.server.update({
         where: { id: serverId },
-        data: { status: 'stopped' },
+        data: { status: 'stopped', nodeId: null, metricsJson: null, playersOnline: 0 },
       });
 
-      // Clear adapter cache so next start reads fresh settings from DB
+      // Stop metrics flush and clear adapter cache
+      this.stopMetricsFlush(serverId);
       this.adapters.delete(serverId);
 
-      logger.info(`Stopped server: ${serverId}`);
+      logger.info(`Stopped server: ${serverId} (node ownership cleared)`);
 
       // Send Discord notification
       if (this.discordService) {
@@ -423,6 +462,12 @@ export class ServerService {
     });
 
     const adapter = await this.getAdapter(serverId);
+    const isLocal = !(adapter instanceof RemoteAdapter);
+
+    // Stop metrics flush during restart cycle
+    if (isLocal) {
+      this.stopMetricsFlush(serverId);
+    }
 
     // Stop the server
     await adapter.stop();
@@ -439,11 +484,16 @@ export class ServerService {
     // Start the server
     await adapter.start();
 
-    // Update status to 'running'
+    // Update status to 'running' — only reassert ownership for local adapters
     await this.prisma.server.update({
       where: { id: serverId },
-      data: { status: 'running' },
+      data: { status: 'running', ...(isLocal ? { nodeId: config.nodeId } : {}) },
     });
+
+    // Restart metrics flush
+    if (isLocal) {
+      this.startMetricsFlush(serverId);
+    }
 
     logger.info(`Restarted server: ${serverId}`);
 
@@ -462,9 +512,11 @@ export class ServerService {
     const adapter = await this.getAdapter(serverId);
     await adapter.kill();
 
+    this.stopMetricsFlush(serverId);
+
     await this.prisma.server.update({
       where: { id: serverId },
-      data: { status: 'stopped' },
+      data: { status: 'stopped', nodeId: null, metricsJson: null, playersOnline: 0 },
     });
 
     logger.info(`Killed server: ${serverId}`);
@@ -474,6 +526,21 @@ export class ServerService {
    * Get server status
    */
   async getServerStatus(serverId: string): Promise<ServerStatus> {
+    // For foreign-owned servers, return DB status instead of querying adapter
+    const server = await this.prisma.server.findUnique({ where: { id: serverId } });
+    if (!server) throw new Error(`Server ${serverId} not found`);
+
+    if (this.isOwnedByAnotherNode(server)) {
+      return {
+        serverId: server.id,
+        status: server.status as ServerStatus['status'],
+        playerCount: server.playersOnline,
+        maxPlayers: server.maxPlayers,
+        version: server.version,
+        uptime: server.startedAt ? Math.floor((Date.now() - server.startedAt.getTime()) / 1000) : 0,
+      };
+    }
+
     const adapter = await this.getAdapter(serverId);
     return adapter.getStatus();
   }
@@ -482,6 +549,40 @@ export class ServerService {
    * Get server metrics
    */
   async getServerMetrics(serverId: string): Promise<ServerMetrics> {
+    // For foreign-owned servers, return last stored metrics from DB
+    const server = await this.prisma.server.findUnique({ where: { id: serverId } });
+    if (!server) throw new Error(`Server ${serverId} not found`);
+
+    if (this.isOwnedByAnotherNode(server)) {
+      // Try reading from the metricsJson column first (flushed by the owning node)
+      if (server.metricsJson) {
+        try {
+          const m = JSON.parse(server.metricsJson);
+          return {
+            cpuUsage: m.cpuUsage ?? 0,
+            memoryUsage: m.memoryUsage ?? 0,
+            memoryTotal: m.memoryTotal ?? 0,
+            diskUsage: m.diskUsage ?? 0,
+            tps: m.tps ?? 0,
+            uptime: server.startedAt ? Math.floor((Date.now() - server.startedAt.getTime()) / 1000) : 0,
+            timestamp: m.timestamp ? new Date(m.timestamp) : new Date(),
+          };
+        } catch {
+          // fall through to empty metrics
+        }
+      }
+
+      return {
+        cpuUsage: 0,
+        memoryUsage: 0,
+        memoryTotal: 0,
+        diskUsage: 0,
+        tps: 0,
+        uptime: server.startedAt ? Math.floor((Date.now() - server.startedAt.getTime()) / 1000) : 0,
+        timestamp: new Date(),
+      };
+    }
+
     const adapter = await this.getAdapter(serverId);
     return adapter.getMetrics();
   }
@@ -502,26 +603,85 @@ export class ServerService {
   }
 
   /**
+   * Get a LOCAL adapter for a server, bypassing the remote check.
+   * Used by internal routes so that the owner node can execute commands
+   * received from other nodes.
+   */
+  async getLocalAdapter(serverId: string): Promise<IServerAdapter> {
+    if (this.adapters.has(serverId)) {
+      return this.adapters.get(serverId)!;
+    }
+
+    const server = await this.prisma.server.findUnique({ where: { id: serverId } });
+    if (!server) throw new Error(`Server ${serverId} not found`);
+
+    // Intentionally skip the isOwnedByAnotherNode check — this method is for
+    // the owner node to use when processing internal API requests.
+
+    // Create adapter using existing logic
+    const adapterConfig = server.adapterConfig ? JSON.parse(server.adapterConfig) : {};
+
+    switch (server.adapterType) {
+      case 'java': {
+        let javaArgs: string[] | undefined;
+        if (server.jvmArgs) {
+          const jvmArgsList = server.jvmArgs.split(/\s+/).filter((arg: string) => arg.trim());
+          javaArgs = [...jvmArgsList, '-jar'];
+        }
+        let serverArgs: string[] | undefined;
+        if (server.serverArgs) {
+          serverArgs = server.serverArgs.split(/\s+/).filter((arg: string) => arg.trim());
+        }
+
+        const adapter = new JavaServerAdapter(
+          serverId,
+          this.prismaToConfig(server),
+          this.prisma,
+          this.rconService,
+          this.logTailService,
+          {
+            ...adapterConfig,
+            javaArgs,
+            serverArgs,
+            rconPort: server.rconPort || undefined,
+            rconPassword: server.rconPassword || undefined,
+            logFilePath: server.logFilePath || undefined,
+          }
+        );
+        this.adapters.set(serverId, adapter);
+        return adapter;
+      }
+      default:
+        throw new Error(`Unknown adapter type: ${server.adapterType}`);
+    }
+  }
+
+  /**
    * Recover orphaned servers after manager restart
    * Finds servers that were running before shutdown and reconnects to them
    */
   async recoverOrphanedServers(): Promise<void> {
     logger.info('Checking for orphaned servers to recover...');
 
-    // Find servers with running/orphaned status and a PID
+    // Find servers with running/orphaned status and a PID,
+    // but only those owned by this node or unowned (nodeId is null)
     const orphanedServers = await this.prisma.server.findMany({
       where: {
         status: { in: ['running', 'starting', 'orphaned'] },
         pid: { not: null },
+        OR: [
+          { nodeId: config.nodeId },
+          { nodeId: null },
+        ],
       },
     });
 
     if (orphanedServers.length === 0) {
-      logger.info('No orphaned servers found');
+      logger.info(`No orphaned servers found for this node (${config.nodeId})`);
       return;
     }
 
-    logger.info(`Found ${orphanedServers.length} potentially orphaned server(s)`);
+    logger.info(`Found ${orphanedServers.length} potentially orphaned server(s) for node ${config.nodeId}`);
 
     for (const server of orphanedServers) {
       try {
@@ -536,11 +696,14 @@ export class ServerService {
         if (reconnected) {
           logger.info(`Successfully reconnected to server ${server.name} (PID: ${server.pid})`);
 
-          // Update status in database
+          // Update status and claim ownership
           await this.prisma.server.update({
             where: { id: server.id },
-            data: { status: 'running' },
+            data: { status: 'running', nodeId: config.nodeId },
           });
+
+          // Resume metrics flushing for this recovered server
+          this.startMetricsFlush(server.id);
         } else {
           // Process died while manager was down
           logger.warn(`Server ${server.name} process (PID: ${server.pid}) no longer exists - marking as crashed`);
@@ -551,6 +714,7 @@ export class ServerService {
               status: 'crashed',
               pid: null,
               startedAt: null,
+              nodeId: null,
             },
           });
 
@@ -574,6 +738,7 @@ export class ServerService {
             status: 'crashed',
             pid: null,
             startedAt: null,
+            nodeId: null,
           },
         });
       }
@@ -608,7 +773,7 @@ export class ServerService {
             await adapter.stop();
             await this.prisma.server.update({
               where: { id: server.id },
-              data: { status: 'stopped', pid: null, startedAt: null },
+              data: { status: 'stopped', pid: null, startedAt: null, nodeId: null },
             });
             this.adapters.delete(server.id);
             logger.info(`Server ${server.name} stopped gracefully`);
@@ -653,7 +818,57 @@ export class ServerService {
     await this.rconService.disconnectAll();
     await this.logTailService.stopAll();
 
+    // Stop all metrics flush timers
+    for (const [sid, timer] of this.metricsFlushTimers.entries()) {
+      clearInterval(timer);
+      this.metricsFlushTimers.delete(sid);
+    }
+
     this.adapters.clear();
     logger.info('Cleanup complete - servers left running for recovery');
+  }
+
+  /**
+   * Start periodic flushing of live metrics to the DB so other nodes can read them.
+   */
+  private startMetricsFlush(serverId: string): void {
+    // Don't double-register
+    if (this.metricsFlushTimers.has(serverId)) return;
+
+    const timer = setInterval(async () => {
+      const adapter = this.adapters.get(serverId);
+      if (!adapter) {
+        this.stopMetricsFlush(serverId);
+        return;
+      }
+
+      try {
+        const metrics = await adapter.getMetrics();
+        const status = await adapter.getStatus();
+
+        await this.prisma.server.update({
+          where: { id: serverId },
+          data: {
+            metricsJson: JSON.stringify(metrics),
+            playersOnline: status.playerCount,
+          },
+        });
+      } catch {
+        // Metrics flush is best-effort — don't crash the loop
+      }
+    }, 5000); // Every 5 seconds
+
+    this.metricsFlushTimers.set(serverId, timer);
+  }
+
+  /**
+   * Stop the periodic metrics flush for a specific server.
+   */
+  private stopMetricsFlush(serverId: string): void {
+    const timer = this.metricsFlushTimers.get(serverId);
+    if (timer) {
+      clearInterval(timer);
+      this.metricsFlushTimers.delete(serverId);
+    }
   }
 }

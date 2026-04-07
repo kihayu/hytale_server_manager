@@ -286,16 +286,14 @@ echo.
 echo Waiting for server to stop...
 timeout /t 5 /nobreak > nul
 
-:: Create backup of current config and database
+:: Create backup of current config
+:: NOTE: Database backup should be done via pg_dump before running updates
 echo Creating backup...
 if exist "${installPath}\\config.json" (
     copy "${installPath}\\config.json" "${tempDir}\\config.json.backup" > nul
 )
 if exist "${installPath}\\.env" (
     copy "${installPath}\\.env" "${tempDir}\\.env.backup" > nul
-)
-if exist "${installPath}\\prisma\\data\\hytalepanel.db" (
-    copy "${installPath}\\prisma\\data\\hytalepanel.db" "${tempDir}\\hytalepanel.db.backup" > nul
 )
 
 :: Remove old files (except data, backups, config)
@@ -328,17 +326,13 @@ for /D %%D in ("${installPath}\\*") do (
 echo Installing new version...
 xcopy "${sourcePath}\\*" "${installPath}\\" /E /H /Y /Q > nul
 
-:: Restore config and database
+:: Restore config
 echo Restoring configuration...
 if exist "${tempDir}\\config.json.backup" (
     copy "${tempDir}\\config.json.backup" "${installPath}\\config.json" > nul
 )
 if exist "${tempDir}\\.env.backup" (
     copy "${tempDir}\\.env.backup" "${installPath}\\.env" > nul
-)
-if not exist "${installPath}\\prisma\\data" mkdir "${installPath}\\prisma\\data"
-if exist "${tempDir}\\hytalepanel.db.backup" (
-    copy "${tempDir}\\hytalepanel.db.backup" "${installPath}\\prisma\\data\\hytalepanel.db" > nul
 )
 
 :: Run database migrations
@@ -372,16 +366,14 @@ echo
 echo "Waiting for server to stop..."
 sleep 5
 
-# Create backup of current config and database
+# Create backup of current config
+# NOTE: Database backup should be done via pg_dump before running updates
 echo "Creating backup..."
 if [ -f "${installPath}/config.json" ]; then
     cp "${installPath}/config.json" "${tempDir}/config.json.backup"
 fi
 if [ -f "${installPath}/.env" ]; then
     cp "${installPath}/.env" "${tempDir}/.env.backup"
-fi
-if [ -f "${installPath}/prisma/data/hytalepanel.db" ]; then
-    cp "${installPath}/prisma/data/hytalepanel.db" "${tempDir}/hytalepanel.db.backup"
 fi
 
 # Remove old files (except data, backups, servers, config)
@@ -394,17 +386,13 @@ find . -maxdepth 1 -type d ! -name "." ! -name "data" ! -name "backups" ! -name 
 echo "Installing new version..."
 cp -r "${sourcePath}"/* "${installPath}/"
 
-# Restore config and database
+# Restore config
 echo "Restoring configuration..."
 if [ -f "${tempDir}/config.json.backup" ]; then
     cp "${tempDir}/config.json.backup" "${installPath}/config.json"
 fi
 if [ -f "${tempDir}/.env.backup" ]; then
     cp "${tempDir}/.env.backup" "${installPath}/.env"
-fi
-mkdir -p "${installPath}/prisma/data"
-if [ -f "${tempDir}/hytalepanel.db.backup" ]; then
-    cp "${tempDir}/hytalepanel.db.backup" "${installPath}/prisma/data/hytalepanel.db"
 fi
 
 # Run database migrations

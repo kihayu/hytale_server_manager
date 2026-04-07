@@ -10,6 +10,8 @@ import { createPrismaClient } from './lib/prisma';
 import { Server as HTTPServer, createServer as createHTTPServer } from 'http';
 import { Server as HTTPSServer, createServer as createHTTPSServer } from 'https';
 import { Server as SocketServer } from 'socket.io';
+import { createAdapter } from '@socket.io/redis-adapter';
+import Redis from 'ioredis';
 import config, { getBasePath_ } from './config';
 import logger from './utils/logger';
 import { loadOrGenerateCertificates, loadCustomCertificates, CertificateInfo } from './utils/certificates';
@@ -34,6 +36,7 @@ import { SettingsService } from './services/SettingsService';
 import { FtpStorageService } from './services/FtpStorageService';
 import { ActivityLogService } from './services/ActivityLogService';
 import { ModProviderService } from './services/ModProviderService';
+import { NodeService } from './services/NodeService';
 import { hytaleDownloaderService } from './services/HytaleDownloaderService';
 import { serverUpdateService } from './services/ServerUpdateService';
 
@@ -53,6 +56,7 @@ import activityRoutes from './routes/activity';
 import systemRoutes from './routes/system';
 import hytaleDownloaderRoutes from './routes/hytale-downloader';
 import serverUpdateRoutes from './routes/server-updates';
+import { createInternalRoutes } from './routes/internal';
 
 // WebSocket
 import { ServerEvents } from './websocket/ServerEvents';
@@ -67,6 +71,7 @@ import { apiLimiter } from './middleware/rateLimiter';
 import { configureSecurityHeaders, enforceHTTPS } from './middleware/security';
 import { authenticate } from './middleware/auth';
 import { activityLoggerMiddleware } from './middleware/activityLogger';
+import { internalAuth } from './middleware/internal';
 
 const execAsync = promisify(exec);
 
@@ -77,6 +82,8 @@ export class App {
   private prisma: PrismaClient;
   private isHttps: boolean = false;
   private certInfo?: CertificateInfo;
+  private redisPub?: Redis;
+  private redisSub?: Redis;
 
   // Services
   private serverService: ServerService;
@@ -98,6 +105,7 @@ export class App {
   private ftpService: FtpStorageService;
   private activityLogService: ActivityLogService;
   private modProviderService: ModProviderService;
+  private nodeService: NodeService;
 
   // WebSocket handlers
   private serverEvents: ServerEvents;
@@ -151,7 +159,9 @@ export class App {
     this.ftpService = new FtpStorageService();
 
     // Initialize services
+    this.nodeService = new NodeService(this.prisma);
     this.serverService = new ServerService(this.prisma, this.discordService);
+    this.serverService.setNodeService(this.nodeService);
     this.consoleService = new ConsoleService(this.prisma);
     this.modService = new ModService(this.prisma);
     this.playerService = new PlayerService(this.prisma, this.discordService);
@@ -162,6 +172,7 @@ export class App {
       this.backupService,
       this.consoleService
     );
+    this.schedulerService.setNodeService(this.nodeService);
     this.taskGroupService = new TaskGroupService(this.prisma, this.schedulerService);
     this.fileService = new FileService();
     this.metricsService = new MetricsService();
@@ -208,6 +219,32 @@ export class App {
       'HTTPS is enabled but no certificates are configured. ' +
         'Either set SSL_CERT_PATH and SSL_KEY_PATH, or enable auto-generation with HTTPS_AUTO_GENERATE=true'
     );
+  }
+
+  /**
+   * Configure Socket.IO to use the Redis adapter for cross-node pub/sub.
+   * Falls back to the default in-memory adapter if Redis is unavailable.
+   */
+  private async setupRedisAdapter(): Promise<void> {
+    try {
+      this.redisPub = new Redis(config.redisUrl, { lazyConnect: true });
+      this.redisSub = new Redis(config.redisUrl, { lazyConnect: true });
+
+      this.redisPub.on('error', (err) => logger.warn('[Redis] Pub client error:', err.message));
+      this.redisSub.on('error', (err) => logger.warn('[Redis] Sub client error:', err.message));
+
+      await Promise.all([this.redisPub.connect(), this.redisSub.connect()]);
+
+      this.io.adapter(createAdapter(this.redisPub, this.redisSub));
+      logger.info('[Redis] Socket.IO Redis adapter configured');
+    } catch (err: any) {
+      logger.warn(`[Redis] Failed to connect — falling back to in-memory adapter: ${err.message}`);
+      // Clean up partially created clients
+      this.redisPub?.disconnect();
+      this.redisSub?.disconnect();
+      this.redisPub = undefined;
+      this.redisSub = undefined;
+    }
   }
 
   /**
@@ -357,6 +394,9 @@ export class App {
     // Server Update routes (auth handled within router)
     this.express.use('/api/server-updates', serverUpdateRoutes);
 
+    // Internal routes for cross-node command routing (guarded by internalAuth)
+    this.express.use('/internal', internalAuth, createInternalRoutes(this.serverService));
+
     // Serve static frontend files in production
     if (config.nodeEnv === 'production') {
       const publicPath = path.join(getBasePath_(), 'public');
@@ -451,8 +491,14 @@ export class App {
         logger.info('[App] HTTP server created (development mode or HTTPS disabled)');
       }
 
+      // Configure Redis adapter for cross-node WebSocket pub/sub
+      await this.setupRedisAdapter();
+
       // Run database migrations before connecting
       await this.runMigrations();
+
+      // Log node ID for debugging multi-instance setups
+      logger.info(`Node ID: ${config.nodeId}`);
 
       // Connect to database
       await this.prisma.$connect();
@@ -475,6 +521,10 @@ export class App {
       // Initialize mod provider service (loads API keys and registers providers)
       await this.modProviderService.initialize();
       logger.info('Mod provider service initialized');
+
+      // Register this node in the cluster (starts heartbeat)
+      await this.nodeService.register();
+      logger.info('Node service registered');
 
       // Recover orphaned servers (servers that were running before manager restart)
       await this.serverService.recoverOrphanedServers();
@@ -558,7 +608,13 @@ export class App {
       this.serverEvents.cleanup();
       hytaleDownloaderService.cleanup();
       serverUpdateService.cleanup();
+      await this.nodeService.deregister();
       logger.info('Services cleaned up');
+
+      // Disconnect Redis clients
+      if (this.redisPub) this.redisPub.disconnect();
+      if (this.redisSub) this.redisSub.disconnect();
+      logger.info('Redis clients disconnected');
 
       // Disconnect from database
       await this.prisma.$disconnect();

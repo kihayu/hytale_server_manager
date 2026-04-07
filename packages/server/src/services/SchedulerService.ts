@@ -3,6 +3,7 @@ import cron, { ScheduledTask } from 'node-cron';
 import { ServerService } from './ServerService';
 import { BackupService } from './BackupService';
 import { ConsoleService } from './ConsoleService';
+import { NodeService } from './NodeService';
 import logger from '../utils/logger';
 
 const prisma = createPrismaClient();
@@ -12,6 +13,7 @@ export class SchedulerService {
   private serverService: ServerService;
   private backupService: BackupService;
   private consoleService: ConsoleService;
+  private nodeService: NodeService | null = null;
 
   constructor(
     serverService: ServerService,
@@ -24,10 +26,25 @@ export class SchedulerService {
   }
 
   /**
-   * Load all enabled tasks from database and schedule them
+   * Set the NodeService for leader election checks.
+   * Must be called before loadTasks() so leadership is acquired on startup.
+   */
+  setNodeService(nodeService: NodeService): void {
+    this.nodeService = nodeService;
+  }
+
+  /**
+   * Load all enabled tasks from database and schedule them.
+   * Also attempts to acquire scheduler leadership for this node.
    */
   async loadTasks(): Promise<void> {
     try {
+      // Attempt to become the scheduler leader
+      if (this.nodeService) {
+        const acquired = await this.nodeService.tryAcquireLeadership();
+        logger.info(`[Scheduler] Leadership acquired: ${acquired}`);
+      }
+
       const tasks = await prisma.scheduledTask.findMany({
         where: { enabled: true },
       });
@@ -80,9 +97,20 @@ export class SchedulerService {
   }
 
   /**
-   * Execute a scheduled task
+   * Execute a scheduled task.
+   * Skips execution silently if this node is not the scheduler leader.
    */
   async executeTask(task: any): Promise<void> {
+    // Leader election guard: only the leader node executes scheduled tasks
+    if (this.nodeService && !this.nodeService.isLeader()) {
+      // Not the leader — try to acquire in case the leader died
+      const acquired = await this.nodeService.tryAcquireLeadership();
+      if (!acquired) {
+        logger.debug(`[Scheduler] Skipping task ${task.name} — not the leader`);
+        return;
+      }
+    }
+
     logger.info(`Executing scheduled task: ${task.name} (${task.type})`);
 
     try {
