@@ -407,7 +407,7 @@ export const ServerSettingsPage = () => {
             className={`px-4 py-2.5 sm:py-2 rounded-lg whitespace-nowrap transition-colors text-sm sm:text-base ${
               activeTab === tab.id
                 ? 'bg-accent text-white'
-                : 'bg-white dark:bg-surface text-fg-muted hover:bg-gray-200 hover:text-fg-light dark:text-fg'
+                : 'bg-white dark:bg-surface dark:hover:bg-surface-hover cursor-pointer text-fg-muted hover:bg-gray-200 hover:text-fg-light dark:text-fg dark:hover:text-fg'
             }`}
           >
             {tab.label}

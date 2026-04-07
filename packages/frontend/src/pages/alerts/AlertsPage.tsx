@@ -355,7 +355,7 @@ export const AlertsPage = () => {
           onClick={() => setSelectedServer('all')}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedServer === 'all'
               ? 'bg-accent text-black'
-              : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
+              : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg cursor-pointer'
             }`}
         >
           {t('alerts.server_selector.all_servers')}
@@ -366,7 +366,7 @@ export const AlertsPage = () => {
             onClick={() => setSelectedServer(server.id)}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedServer === server.id
                 ? 'bg-accent text-black'
-                : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
+                : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg cursor-pointer'
               }`}
           >
             {server.name}

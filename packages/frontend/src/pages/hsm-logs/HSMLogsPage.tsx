@@ -159,7 +159,7 @@ export const HSMLogsPage = () => {
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
               levelFilter === option.value
                 ? 'bg-accent text-black'
-                : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
+                : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg cursor-pointer'
             }`}
           >
             {t(option.labelKey)}

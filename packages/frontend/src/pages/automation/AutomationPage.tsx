@@ -670,7 +670,7 @@ export const AutomationPage = () => {
           onClick={() => setActiveTab('tasks')}
           className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-colors ${activeTab === 'tasks'
               ? 'bg-accent text-black'
-              : 'text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
+              : 'text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg cursor-pointer'
             }`}
         >
           <Clock size={16} />
@@ -680,7 +680,7 @@ export const AutomationPage = () => {
           onClick={() => setActiveTab('groups')}
           className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-colors ${activeTab === 'groups'
               ? 'bg-accent text-black'
-              : 'text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
+              : 'text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg cursor-pointer'
             }`}
         >
           <Layers size={16} />
@@ -698,7 +698,7 @@ export const AutomationPage = () => {
               onClick={() => setSelectedServer('all')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedServer === 'all'
                   ? 'bg-accent text-black'
-                  : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
+                  : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg cursor-pointer'
                 }`}
             >
               {t('automation.server_selector.all_servers')}
@@ -709,7 +709,7 @@ export const AutomationPage = () => {
                 onClick={() => setSelectedServer(server.id)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedServer === server.id
                     ? 'bg-accent text-black'
-                    : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg'
+                    : 'bg-white dark:bg-surface text-fg-muted dark:text-fg-muted hover:text-fg-light dark:hover:text-fg cursor-pointer'
                   }`}
               >
                 {server.name}
