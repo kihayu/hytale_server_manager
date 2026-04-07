@@ -190,26 +190,28 @@ class WebSocketService {
       subscribe();
     }
 
-    if (callbacks.onLog) {
-      socket.on('log', (data: ConsoleLogData) => {
-        if (data.serverId === serverId) callbacks.onLog!(data);
-      });
-    }
+    const logHandler = callbacks.onLog
+      ? (data: ConsoleLogData) => { if (data.serverId === serverId) callbacks.onLog!(data); }
+      : null;
 
-    if (callbacks.onHistoricalLogs) {
-      socket.on('logs:history', (data: ConsoleHistoricalLogsData) => {
-        if (data.serverId === serverId) callbacks.onHistoricalLogs!(data);
-      });
-    }
+    const historyHandler = callbacks.onHistoricalLogs
+      ? (data: ConsoleHistoricalLogsData) => { if (data.serverId === serverId) callbacks.onHistoricalLogs!(data); }
+      : null;
 
-    if (callbacks.onCommandResponse) {
-      socket.on('commandResponse', (data: ConsoleCommandResponseData) => {
-        if (data.serverId === serverId) callbacks.onCommandResponse!(data);
-      });
-    }
+    const commandResponseHandler = callbacks.onCommandResponse
+      ? (data: ConsoleCommandResponseData) => { if (data.serverId === serverId) callbacks.onCommandResponse!(data); }
+      : null;
+
+    if (logHandler) socket.on('log', logHandler);
+    if (historyHandler) socket.on('logs:history', historyHandler);
+    if (commandResponseHandler) socket.on('commandResponse', commandResponseHandler);
 
     return () => {
+      socket.off('connect', subscribe);
       socket.emit('unsubscribe', { serverId });
+      if (logHandler) socket.off('log', logHandler);
+      if (historyHandler) socket.off('logs:history', historyHandler);
+      if (commandResponseHandler) socket.off('commandResponse', commandResponseHandler);
     };
   }
 
