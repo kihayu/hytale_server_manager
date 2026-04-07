@@ -115,7 +115,7 @@ export const ConsolePage = () => {
 
   // Auto-scroll to bottom when logs update
   useEffect(() => {
-    consoleEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    consoleEndRef.current?.scrollIntoView({ behavior: 'instant' });
   }, [logs]);
 
   const handleSendCommand = () => {
