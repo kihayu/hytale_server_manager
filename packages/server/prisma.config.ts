@@ -1,8 +1,9 @@
+import path from 'node:path';
 import { defineConfig } from 'prisma/config';
 
 export default defineConfig({
-  schema: './prisma/schema.prisma',
-  datasource: {
-    url: process.env.DATABASE_URL ?? 'file:./data/db/hytale-manager.db',
+  schema: path.join(__dirname, 'prisma/schema.prisma'),
+  migrate: {
+    url: process.env.DATABASE_URL ?? 'postgresql://hsm:password@localhost:5432/hytale_manager',
   },
 });

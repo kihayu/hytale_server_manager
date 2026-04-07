@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model User {
@@ -42,6 +42,13 @@ model Server {
   maxPlayers      Int
   gameMode        String
   status          String   @default("stopped") // stopped, starting, running, stopping, crashed, orphaned
+
+  // Node Ownership (multi-instance safety)
+  nodeId          String?       // Which node currently owns this server's process
+
+  // Live metrics (flushed by owning node for cross-node reads)
+  metricsJson     String?       // Last-known live metrics blob (JSON)
+  playersOnline   Int           @default(0)
 
   // Process Tracking (for persistence across manager restarts)
   pid             Int?          // Process ID when running
@@ -725,4 +732,21 @@ model ServerUpdateHistory {
   @@index([serverId])
   @@index([startedAt])
   @@index([status])
+}
+
+// ==========================================
+// Multi-Node Cluster
+// ==========================================
+
+model Node {
+  id            String   @id // UUID generated at startup (config.nodeId)
+  address       String   // Internal HTTP address: "http://hsm-node-1:8080"
+  lastHeartbeat DateTime
+  startedAt     DateTime @default(now())
+}
+
+model LeaderElection {
+  id        String   @id @default("scheduler")
+  nodeId    String
+  expiresAt DateTime
 }
