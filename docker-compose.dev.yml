@@ -1,16 +1,77 @@
+# ==========================================================================
+# Hytale Server Manager — Development Multi-Node Docker Compose
+# ==========================================================================
+#
+# Single node (default):
+#   docker compose -f docker-compose.dev.yml up
+#
+# Multi-node development:
+#   docker compose -f docker-compose.dev.yml --profile multi-node up
+#
+# ==========================================================================
+
 services:
+  # ── Shared Infrastructure ────────────────────────────────────────────
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: hsm-postgres-dev
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: hsm
+      POSTGRES_PASSWORD: hsm_dev_password
+      POSTGRES_DB: hytale_manager
+    volumes:
+      - hsm-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hsm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: hsm-redis-dev
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - hsm-redis-dev:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── HSM Server Node 1 (default) ─────────────────────────────────────
+
   server:
     image: node:24-alpine
     container_name: hsm-server-dev
     working_dir: /app
     command: sh -c "corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install && pnpm -C packages/server run prisma:generate && pnpm dev:server"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
       - NODE_ENV=development
       - PORT=8080
       - HOST=0.0.0.0
-      - DATABASE_URL=file:/app/data/db/hytalepanel.db
+      # Node identity
+      - NODE_ID=dev-node-1
+      - INTERNAL_ADDRESS=http://server:8080
+      - INTERNAL_SECRET=dev-internal-secret
+      # Shared infrastructure
+      - DATABASE_URL=postgresql://hsm:hsm_dev_password@postgres:5432/hytale_manager
+      - REDIS_URL=redis://redis:6379
+      # Paths
       - DATA_PATH=/app/data
       - SERVERS_BASE_PATH=/app/data/servers
       - BACKUPS_BASE_PATH=/app/data/backups
@@ -18,11 +79,9 @@ services:
       - CERTS_PATH=/app/data/certs
       - HTTPS_ENABLED=false
       - CORS_ORIGIN=http://localhost:3030
-      # Required secrets - generate your own before starting!
-      # Generate with: openssl rand -hex 64
+      # Shared secrets (must match all nodes)
       - JWT_SECRET=dev-jwt-secret-change-me-min-32-chars-here
       - JWT_REFRESH_SECRET=dev-refresh-secret-change-me-min-32-chars
-      # Generate with: openssl rand -hex 16
       - SETTINGS_ENCRYPTION_KEY=dev-enc-key-32ch
     volumes:
       # Mount entire monorepo so pnpm workspace resolution works
@@ -31,7 +90,6 @@ services:
       - /app/node_modules
       - /app/packages/server/node_modules
       # Shared volumes with production
-      - hsm-database:/app/data/db
       - hsm-servers:/app/data/servers
       - hsm-backups:/app/data/backups
       - hsm-logs:/app/data/logs
@@ -43,6 +101,62 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+
+  # ── HSM Server Node 2 (multi-node dev profile) ──────────────────────
+
+  server-node-2:
+    profiles: ["multi-node"]
+    image: node:24-alpine
+    container_name: hsm-server-dev-node2
+    working_dir: /app
+    command: sh -c "corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install && pnpm -C packages/server run prisma:generate && pnpm dev:server"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+    environment:
+      - NODE_ENV=development
+      - PORT=8080
+      - HOST=0.0.0.0
+      # Node identity — different from node 1
+      - NODE_ID=dev-node-2
+      - INTERNAL_ADDRESS=http://server-node-2:8080
+      - INTERNAL_SECRET=dev-internal-secret
+      # Same shared infrastructure
+      - DATABASE_URL=postgresql://hsm:hsm_dev_password@postgres:5432/hytale_manager
+      - REDIS_URL=redis://redis:6379
+      # Paths
+      - DATA_PATH=/app/data
+      - SERVERS_BASE_PATH=/app/data/servers
+      - BACKUPS_BASE_PATH=/app/data/backups
+      - LOGS_PATH=/app/data/logs
+      - CERTS_PATH=/app/data/certs
+      - HTTPS_ENABLED=false
+      - CORS_ORIGIN=http://localhost:3030
+      # Same shared secrets as node 1
+      - JWT_SECRET=dev-jwt-secret-change-me-min-32-chars-here
+      - JWT_REFRESH_SECRET=dev-refresh-secret-change-me-min-32-chars
+      - SETTINGS_ENCRYPTION_KEY=dev-enc-key-32ch
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/packages/server/node_modules
+      - hsm-servers:/app/data/servers
+      - hsm-backups:/app/data/backups
+      - hsm-logs:/app/data/logs
+      - hsm-certs:/app/data/certs
+      - hsm-downloader:/app/data/hytale-downloader
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ── Frontend ─────────────────────────────────────────────────────────
 
   frontend:
     image: node:24-alpine
@@ -65,9 +179,8 @@ services:
         condition: service_healthy
 
 volumes:
-  hsm-database:
-    external: true
-    name: hytale_server_manager_hsm-database
+  hsm-postgres:
+  hsm-redis-dev:
   hsm-servers:
     external: true
     name: hytale_server_manager_hsm-servers

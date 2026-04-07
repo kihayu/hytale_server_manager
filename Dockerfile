@@ -66,7 +66,7 @@ RUN npm install --omit=dev
 RUN npx prisma generate
 
 # Create data directories
-RUN mkdir -p /app/data/db /app/data/servers /app/data/backups /app/data/logs /app/data/certs /app/servers /app/logs && \
+RUN mkdir -p /app/data/servers /app/data/backups /app/data/logs /app/data/certs /app/servers /app/logs && \
     chown -R hsm:hsm /app
 
 # Copy entrypoint script
@@ -78,7 +78,7 @@ ENV NODE_ENV=production
 ENV HSM_BASE_PATH=/app
 ENV PORT=3001
 ENV HOST=0.0.0.0
-ENV DATABASE_URL=file:/app/data/db/hytalepanel.db
+ENV DATABASE_URL=postgresql://hsm:${POSTGRES_PASSWORD}@postgres:5432/hytale_manager
 ENV DATA_PATH=/app/data
 ENV SERVERS_BASE_PATH=/app/data/servers
 ENV BACKUPS_BASE_PATH=/app/data/backups

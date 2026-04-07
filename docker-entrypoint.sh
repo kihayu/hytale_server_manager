@@ -46,12 +46,21 @@ if [ -z "$SETTINGS_ENCRYPTION_KEY" ]; then
     export SETTINGS_ENCRYPTION_KEY=$(head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n' | head -c 32)
 fi
 
-# Run Prisma database setup as the hsm user
-echo "Setting up database..."
-gosu hsm npx prisma db push --accept-data-loss
+# Run Prisma database setup as the hsm user.
+# SKIP_DB_PUSH=true can be set for secondary nodes in multi-node deployments
+# to avoid concurrent schema pushes. Only one node needs to run this.
+if [ "${SKIP_DB_PUSH}" = "true" ]; then
+    echo "Skipping database push (SKIP_DB_PUSH=true)"
+else
+    echo "Setting up database..."
+    gosu hsm npx prisma db push --accept-data-loss
+    echo "Database ready."
+fi
 
-echo "Database ready."
 echo "Starting Hytale Server Manager..."
+if [ -n "$NODE_ID" ]; then
+    echo "Node ID: $NODE_ID"
+fi
 
 # Execute the main command as the hsm user
 exec gosu hsm "$@"

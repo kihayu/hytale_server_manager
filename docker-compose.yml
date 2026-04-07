@@ -1,52 +1,154 @@
+# ==========================================================================
+# Hytale Server Manager — Production Multi-Node Docker Compose
+# ==========================================================================
+#
+# Quick Start (single node):
+#   cp .env.example .env   # edit .env and set POSTGRES_PASSWORD + secrets
+#   docker compose up -d
+#
+# Multi-Node (scale out):
+#   docker compose --profile multi-node up -d
+#
+# ==========================================================================
+
 services:
-  hytale-server-manager:
+  # ── Shared Infrastructure ────────────────────────────────────────────
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: hsm-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hsm
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env or environment}
+      POSTGRES_DB: hytale_manager
+    volumes:
+      - hsm-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hsm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: hsm-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - hsm-redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── HSM Node 1 (default, always starts) ──────────────────────────────
+
+  hsm-node-1:
     build: .
     image: ghcr.io/nebula-codes/hytale-server-manager:latest
-    container_name: hytale-server-manager
+    container_name: hsm-node-1
     restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
-      - "3001:3001/tcp"
+      - "${HSM_NODE1_PORT:-3001}:3001/tcp"
       - "5520-5530:5520-5530/udp"
     environment:
       # User/Group ID for file permissions (use `id` command to find yours)
-      - PUID=1000
-      - PGID=1000
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
       # Set container timezone in TZ format. Using UTC as default.
-      - TZ=Etc/UTC 
+      - TZ=${TZ:-Etc/UTC}
       - NODE_ENV=production
       - PORT=3001
       - HOST=0.0.0.0
-      # Required secrets - generate your own!
-      # Generate with: openssl rand -hex 64
-      - JWT_SECRET=your-jwt-secret-here-min-32-chars-generate-with-openssl-rand
-      - JWT_REFRESH_SECRET=your-refresh-secret-here-min-32-chars-generate-openssl
-      # Generate with: openssl rand -hex 16
-      - SETTINGS_ENCRYPTION_KEY=your-32-char-encryption-key-here
-      - INSECURE_COOKIES=true
-      # CORS origin - set to your server's URL for external access
-      - CORS_ORIGIN=http://localhost:3001
-      # Rate limiting
-      - RATE_LIMIT_WINDOW=900000   # 15 minutes in milliseconds
-      - RATE_LIMIT_MAX=1000         # Max requests per window
-      # File upload limit
-      - MAX_FILE_UPLOAD_SIZE=52428800  # 50MB in bytes (default)
-      # Optional: Discord notifications (can be configured in settings)
-      # - DISCORD_ENABLED=true
-      # - DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
+      # Node identity
+      - NODE_ID=node-1
+      - INTERNAL_ADDRESS=http://hsm-node-1:3001
+      - INTERNAL_SECRET=${INTERNAL_SECRET}
+      # Database
+      - DATABASE_URL=postgresql://hsm:${POSTGRES_PASSWORD}@postgres:5432/hytale_manager
+      # Redis
+      - REDIS_URL=redis://redis:6379
+      # Shared secrets — all nodes MUST use the same values
+      - JWT_SECRET=${JWT_SECRET:?Set JWT_SECRET in .env}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET in .env}
+      - SETTINGS_ENCRYPTION_KEY=${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY in .env}
+      # Application settings
+      - INSECURE_COOKIES=${INSECURE_COOKIES:-true}
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3001}
+      - RATE_LIMIT_WINDOW=${RATE_LIMIT_WINDOW:-900000}
+      - RATE_LIMIT_MAX=${RATE_LIMIT_MAX:-1000}
+      - MAX_FILE_UPLOAD_SIZE=${MAX_FILE_UPLOAD_SIZE:-52428800}
     volumes:
-      # Database persistence
-      - hsm-database:/app/data/db
-      # Game server files
+      # Shared volumes — all nodes mount the same data
       - hsm-servers:/app/data/servers
-      # Backup storage
       - hsm-backups:/app/data/backups
-      # Application logs
       - hsm-logs:/app/data/logs
-      # SSL certificates (if using HTTPS)
       - hsm-certs:/app/data/certs
-      # Hytale downloader tool
       - hsm-downloader:/app/data/hytale-downloader
-      # Machine ID for system identification
+      - /etc/machine-id:/etc/machine-id:ro
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ── HSM Node 2 (multi-node profile) ──────────────────────────────────
+
+  hsm-node-2:
+    profiles: ["multi-node"]
+    build: .
+    image: ghcr.io/nebula-codes/hytale-server-manager:latest
+    container_name: hsm-node-2
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "${HSM_NODE2_PORT:-3002}:3001/tcp"
+      - "5531-5540:5531-5540/udp"
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-Etc/UTC}
+      - NODE_ENV=production
+      - PORT=3001
+      - HOST=0.0.0.0
+      # Node identity
+      - NODE_ID=node-2
+      - INTERNAL_ADDRESS=http://hsm-node-2:3001
+      - INTERNAL_SECRET=${INTERNAL_SECRET}
+      # Skip database push — node-1 handles schema updates
+      - SKIP_DB_PUSH=true
+      # Shared infrastructure
+      - DATABASE_URL=postgresql://hsm:${POSTGRES_PASSWORD}@postgres:5432/hytale_manager
+      - REDIS_URL=redis://redis:6379
+      # Shared secrets — MUST match node-1
+      - JWT_SECRET=${JWT_SECRET:?Set JWT_SECRET in .env}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET in .env}
+      - SETTINGS_ENCRYPTION_KEY=${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY in .env}
+      # Application settings
+      - INSECURE_COOKIES=${INSECURE_COOKIES:-true}
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3001}
+      - RATE_LIMIT_WINDOW=${RATE_LIMIT_WINDOW:-900000}
+      - RATE_LIMIT_MAX=${RATE_LIMIT_MAX:-1000}
+      - MAX_FILE_UPLOAD_SIZE=${MAX_FILE_UPLOAD_SIZE:-52428800}
+    volumes:
+      # Same shared volumes as node-1
+      - hsm-servers:/app/data/servers
+      - hsm-backups:/app/data/backups
+      - hsm-logs:/app/data/logs
+      - hsm-certs:/app/data/certs
+      - hsm-downloader:/app/data/hytale-downloader
       - /etc/machine-id:/etc/machine-id:ro
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
@@ -56,7 +158,8 @@ services:
       start_period: 40s
 
 volumes:
-  hsm-database:
+  hsm-postgres:
+  hsm-redis:
   hsm-servers:
   hsm-backups:
   hsm-logs:

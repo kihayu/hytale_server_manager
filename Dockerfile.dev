@@ -1,0 +1,44 @@
+# ==========================================
+# Development Image
+# ==========================================
+# Mirrors the production runtime (node:24-slim + Java) so game server spawning
+# works identically in dev. Source code is volume-mounted — nothing is built here.
+# Do NOT use this image in production.
+
+FROM node:24-slim AS dev
+
+# Install identical system dependencies to the production stage in Dockerfile,
+# including Java (required to spawn Hytale game server processes).
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openssl unzip gosu ca-certificates wget gnupg procps tzdata \
+    && mkdir -p /etc/apt/keyrings \
+    && wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | gpg --dearmor -o /etc/apt/keyrings/adoptium.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb $(. /etc/os-release && echo $VERSION_CODENAME) main" > /etc/apt/sources.list.d/adoptium.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends temurin-25-jre \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install pnpm — same version as the production builder stage.
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
+
+WORKDIR /app
+
+# Pre-create data directories (same layout as production).
+# These are overridden by volume mounts in docker-compose.dev.yml.
+RUN mkdir -p \
+    /app/data/servers \
+    /app/data/backups \
+    /app/data/logs \
+    /app/data/certs \
+    /app/data/hytale-downloader
+
+# Dev environment defaults — all overridable via docker-compose environment section.
+ENV NODE_ENV=development
+ENV IS_DOCKER=true
+ENV DATA_PATH=/app/data
+ENV SERVERS_BASE_PATH=/app/data/servers
+ENV BACKUPS_BASE_PATH=/app/data/backups
+ENV LOGS_PATH=/app/data/logs
+ENV CERTS_PATH=/app/data/certs
+ENV HTTPS_ENABLED=false
