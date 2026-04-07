@@ -21,7 +21,7 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_USER: hsm
-      POSTGRES_PASSWORD: hsm_dev_password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env or environment}
       POSTGRES_DB: hytale_manager
     volumes:
       - hsm-postgres:/var/lib/postgresql/data
@@ -69,7 +69,7 @@ services:
       - INTERNAL_ADDRESS=http://server:8080
       - INTERNAL_SECRET=dev-internal-secret
       # Shared infrastructure
-      - DATABASE_URL=postgresql://hsm:hsm_dev_password@postgres:5432/hytale_manager
+      - DATABASE_URL=postgresql://hsm:${POSTGRES_PASSWORD}@postgres:5432/hytale_manager
       - REDIS_URL=redis://redis:6379
       # Paths
       - DATA_PATH=/app/data
@@ -80,9 +80,9 @@ services:
       - HTTPS_ENABLED=false
       - CORS_ORIGIN=http://localhost:3030
       # Shared secrets (must match all nodes)
-      - JWT_SECRET=dev-jwt-secret-change-me-min-32-chars-here
-      - JWT_REFRESH_SECRET=dev-refresh-secret-change-me-min-32-chars
-      - SETTINGS_ENCRYPTION_KEY=dev-enc-key-32ch
+      - JWT_SECRET=${JWT_SECRET:?Set JWT_SECRET in .env}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET in .env}
+      - SETTINGS_ENCRYPTION_KEY=${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY in .env}
     volumes:
       # Mount entire monorepo so pnpm workspace resolution works
       - .:/app
@@ -126,7 +126,7 @@ services:
       - INTERNAL_ADDRESS=http://server-node-2:8080
       - INTERNAL_SECRET=dev-internal-secret
       # Same shared infrastructure
-      - DATABASE_URL=postgresql://hsm:hsm_dev_password@postgres:5432/hytale_manager
+      - DATABASE_URL=postgresql://hsm:${POSTGRES_PASSWORD}@postgres:5432/hytale_manager
       - REDIS_URL=redis://redis:6379
       # Paths
       - DATA_PATH=/app/data
@@ -137,9 +137,9 @@ services:
       - HTTPS_ENABLED=false
       - CORS_ORIGIN=http://localhost:3030
       # Same shared secrets as node 1
-      - JWT_SECRET=dev-jwt-secret-change-me-min-32-chars-here
-      - JWT_REFRESH_SECRET=dev-refresh-secret-change-me-min-32-chars
-      - SETTINGS_ENCRYPTION_KEY=dev-enc-key-32ch
+      - JWT_SECRET=${JWT_SECRET:?Set JWT_SECRET in .env}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET in .env}
+      - SETTINGS_ENCRYPTION_KEY=${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY in .env}
     volumes:
       - .:/app
       - /app/node_modules
