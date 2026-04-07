@@ -10,6 +10,8 @@
 #
 # ==========================================================================
 
+name: hytale_server_manager_dev
+
 services:
   # ── Shared Infrastructure ────────────────────────────────────────────
 
@@ -18,13 +20,15 @@ services:
     container_name: hsm-postgres-dev
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_USER: hsm
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env or environment}
+      POSTGRES_PASSWORD: hsm_dev_password
       POSTGRES_DB: hytale_manager
     volumes:
       - hsm-postgres-dev:/var/lib/postgresql/data
+    networks:
+      - hsm-dev
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U hsm"]
       interval: 10s
@@ -37,9 +41,11 @@ services:
     restart: unless-stopped
     command: redis-server --appendonly yes
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - hsm-redis-dev:/data
+    networks:
+      - hsm-dev
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -69,7 +75,7 @@ services:
       - INTERNAL_ADDRESS=http://server:8080
       - INTERNAL_SECRET=dev-internal-secret
       # Shared infrastructure
-      - DATABASE_URL=postgresql://hsm:${POSTGRES_PASSWORD}@postgres:5432/hytale_manager
+      - DATABASE_URL=postgresql://hsm:hsm_dev_password@postgres:5432/hytale_manager
       - REDIS_URL=redis://redis:6379
       # Paths
       - DATA_PATH=/app/data
@@ -80,9 +86,9 @@ services:
       - HTTPS_ENABLED=false
       - CORS_ORIGIN=http://localhost:3030
       # Shared secrets (must match all nodes)
-      - JWT_SECRET=${JWT_SECRET:?Set JWT_SECRET in .env}
-      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET in .env}
-      - SETTINGS_ENCRYPTION_KEY=${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY in .env}
+      - JWT_SECRET=dev-jwt-secret-change-me-min-32-chars-here
+      - JWT_REFRESH_SECRET=dev-refresh-secret-change-me-min-32-chars
+      - SETTINGS_ENCRYPTION_KEY=dev-enc-key-32ch
     volumes:
       # Mount entire monorepo so pnpm workspace resolution works
       - .:/app
@@ -95,6 +101,8 @@ services:
       - hsm-logs:/app/data/logs
       - hsm-certs:/app/data/certs
       - hsm-downloader:/app/data/hytale-downloader
+    networks:
+      - hsm-dev
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
       interval: 15s
@@ -126,7 +134,7 @@ services:
       - INTERNAL_ADDRESS=http://server-node-2:8080
       - INTERNAL_SECRET=dev-internal-secret
       # Same shared infrastructure
-      - DATABASE_URL=postgresql://hsm:${POSTGRES_PASSWORD}@postgres:5432/hytale_manager
+      - DATABASE_URL=postgresql://hsm:hsm_dev_password@postgres:5432/hytale_manager
       - REDIS_URL=redis://redis:6379
       # Paths
       - DATA_PATH=/app/data
@@ -137,9 +145,9 @@ services:
       - HTTPS_ENABLED=false
       - CORS_ORIGIN=http://localhost:3030
       # Same shared secrets as node 1
-      - JWT_SECRET=${JWT_SECRET:?Set JWT_SECRET in .env}
-      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET in .env}
-      - SETTINGS_ENCRYPTION_KEY=${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY in .env}
+      - JWT_SECRET=dev-jwt-secret-change-me-min-32-chars-here
+      - JWT_REFRESH_SECRET=dev-refresh-secret-change-me-min-32-chars
+      - SETTINGS_ENCRYPTION_KEY=dev-enc-key-32ch
     volumes:
       - .:/app
       - /app/node_modules
@@ -149,6 +157,8 @@ services:
       - hsm-logs:/app/data/logs
       - hsm-certs:/app/data/certs
       - hsm-downloader:/app/data/hytale-downloader
+    networks:
+      - hsm-dev
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
       interval: 15s
@@ -174,13 +184,24 @@ services:
       - .:/app
       - /app/node_modules
       - /app/packages/frontend/node_modules
+    networks:
+      - hsm-dev
     depends_on:
       server:
         condition: service_healthy
 
+networks:
+  hsm-dev:
+    external: true
+    name: hsm-dev
+
 volumes:
   hsm-postgres-dev:
+    external: true
+    name: hytale_server_manager_hsm-postgres-dev
   hsm-redis-dev:
+    external: true
+    name: hytale_server_manager_hsm-redis-dev
   hsm-servers:
     external: true
     name: hytale_server_manager_hsm-servers

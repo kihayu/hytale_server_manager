@@ -18,12 +18,16 @@ services:
     image: postgres:17-alpine
     container_name: hsm-postgres
     restart: unless-stopped
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: hsm
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env or environment}
       POSTGRES_DB: hytale_manager
     volumes:
       - hsm-postgres:/var/lib/postgresql/data
+    networks:
+      - hsm-prod
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U hsm"]
       interval: 10s
@@ -35,8 +39,12 @@ services:
     container_name: hsm-redis
     restart: unless-stopped
     command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
     volumes:
       - hsm-redis:/data
+    networks:
+      - hsm-prod
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -93,6 +101,8 @@ services:
       - hsm-certs:/app/data/certs
       - hsm-downloader:/app/data/hytale-downloader
       - /etc/machine-id:/etc/machine-id:ro
+    networks:
+      - hsm-prod
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
       interval: 30s
@@ -150,12 +160,18 @@ services:
       - hsm-certs:/app/data/certs
       - hsm-downloader:/app/data/hytale-downloader
       - /etc/machine-id:/etc/machine-id:ro
+    networks:
+      - hsm-prod
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+
+networks:
+  hsm-prod:
+    name: hsm-prod
 
 volumes:
   hsm-postgres:
