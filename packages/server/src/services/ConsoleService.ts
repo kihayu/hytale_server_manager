@@ -52,7 +52,8 @@ export class ConsoleService {
       skip: offset,
     });
 
-    return logs.map(log => ({
+    // Reverse so the result is oldest-first (chronological order for display)
+    return logs.reverse().map(log => ({
       id: log.id,
       timestamp: log.timestamp,
       level: log.level as 'info' | 'warn' | 'error' | 'debug',
