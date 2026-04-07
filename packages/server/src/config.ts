@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs-extra';
+import os from 'os';
+import crypto from 'crypto';
 
 // Load environment variables
 // Use HSM_BASE_PATH in release (set by start scripts), fall back to dev path
@@ -33,6 +35,9 @@ export interface AppConfig {
   versionName: string;
   nodeEnv: string;
   isDocker: boolean;
+  nodeId: string;
+  internalAddress: string;
+  internalSecret: string;
 
   // Server
   port: number;
@@ -45,6 +50,9 @@ export interface AppConfig {
 
   // Database
   databaseUrl: string;
+
+  // Redis
+  redisUrl: string;
 
   // Logging
   logLevel: string;
@@ -124,6 +132,9 @@ const defaults: AppConfig = {
   versionName: VERSION_NAME,
   nodeEnv: 'production',
   isDocker: process.env.IS_DOCKER === 'true',
+  nodeId: '', // Generated at startup
+  internalAddress: '', // Set via INTERNAL_ADDRESS env var
+  internalSecret: '', // Set via INTERNAL_SECRET env var
 
   // Server
   port: 3001,
@@ -135,7 +146,10 @@ const defaults: AppConfig = {
   wsPingTimeout: 5000,
 
   // Database
-  databaseUrl: 'file:./data/db/hytale-manager.db',
+  databaseUrl: 'postgresql://hsm:hsm@localhost:5432/hytale_manager',
+
+  // Redis
+  redisUrl: 'redis://localhost:6379',
 
   // Logging
   logLevel: 'info',
@@ -281,10 +295,13 @@ function loadEnvConfig(): Partial<AppConfig> {
   // Only set values that are explicitly defined in environment
   if (process.env.NODE_ENV) envConfig.nodeEnv = process.env.NODE_ENV;
   if (process.env.IS_DOCKER !== undefined) envConfig.isDocker = process.env.IS_DOCKER === 'true';
+  if (process.env.INTERNAL_ADDRESS) envConfig.internalAddress = process.env.INTERNAL_ADDRESS;
+  if (process.env.INTERNAL_SECRET) envConfig.internalSecret = process.env.INTERNAL_SECRET;
   if (process.env.PORT) envConfig.port = parseInt(process.env.PORT, 10);
   if (process.env.HOST) envConfig.host = process.env.HOST;
   if (process.env.CORS_ORIGIN) envConfig.corsOrigin = process.env.CORS_ORIGIN;
   if (process.env.DATABASE_URL) envConfig.databaseUrl = process.env.DATABASE_URL;
+  if (process.env.REDIS_URL) envConfig.redisUrl = process.env.REDIS_URL;
   if (process.env.LOG_LEVEL) envConfig.logLevel = process.env.LOG_LEVEL;
   if (process.env.JWT_SECRET) envConfig.jwtSecret = process.env.JWT_SECRET;
   if (process.env.JWT_EXPIRES_IN) envConfig.jwtExpiresIn = process.env.JWT_EXPIRES_IN;
@@ -387,9 +404,6 @@ function resolvePaths(config: AppConfig): AppConfig {
     backupsBasePath: resolvePath(config.backupsBasePath),
     logsPath: resolvePath(config.logsPath),
     certsPath: resolvePath(config.certsPath),
-    databaseUrl: config.databaseUrl.startsWith('file:')
-      ? `file:${resolvePath(config.databaseUrl.replace('file:', ''))}`
-      : config.databaseUrl,
   };
 }
 
@@ -415,7 +429,6 @@ function ensureDirectories(config: AppConfig): void {
     config.backupsBasePath,
     config.logsPath,
     config.certsPath,
-    path.dirname(config.databaseUrl.replace('file:', '')),
   ];
 
   for (const dir of dirs) {
@@ -466,6 +479,35 @@ function saveDefaultConfig(configPath: string): void {
 }
 
 /**
+ * Generate or load a stable node ID for multi-instance safety.
+ * Priority: NODE_ID env var > persisted file > generate new (hostname + random suffix).
+ */
+function getOrCreateNodeId(dataPath: string): string {
+  // 1. Environment variable override
+  if (process.env.NODE_ID) {
+    console.log(`[Config] Using NODE_ID from environment: ${process.env.NODE_ID}`);
+    return process.env.NODE_ID;
+  }
+
+  // 2. Persisted file
+  const nodeIdFile = path.join(dataPath, 'node-id');
+  if (fs.existsSync(nodeIdFile)) {
+    const id = fs.readFileSync(nodeIdFile, 'utf-8').trim();
+    if (id) {
+      console.log(`[Config] Loaded node ID from ${nodeIdFile}: ${id}`);
+      return id;
+    }
+  }
+
+  // 3. Generate new: hostname-randomsuffix
+  const id = `${os.hostname()}-${crypto.randomBytes(4).toString('hex')}`;
+  fs.ensureDirSync(dataPath);
+  fs.writeFileSync(nodeIdFile, id, 'utf-8');
+  console.log(`[Config] Generated new node ID: ${id} (saved to ${nodeIdFile})`);
+  return id;
+}
+
+/**
  * Build and validate configuration
  */
 function buildConfig(): AppConfig {
@@ -479,6 +521,9 @@ function buildConfig(): AppConfig {
   // Resolve paths
   config = resolvePaths(config);
   process.env.DATABASE_URL = config.databaseUrl;
+
+  // Generate/load stable node ID for multi-instance safety
+  config.nodeId = getOrCreateNodeId(config.dataPath);
 
   // Generate JWT secret if not set
   if (!config.jwtSecret) {

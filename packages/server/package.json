@@ -23,7 +23,6 @@
   "license": "MIT",
   "dependencies": {
     "@peculiar/x509": "^2.0.0",
-    "@prisma/adapter-better-sqlite3": "^7.6.0",
     "@prisma/client": "^7.6.0",
     "@types/archiver": "^7.0.0",
     "@types/fs-extra": "^11.0.4",
@@ -32,7 +31,6 @@
     "axios": "^1.14.0",
     "basic-ftp": "^5.2.0",
     "bcryptjs": "^3.0.3",
-    "better-sqlite3": "^12.8.0",
     "chokidar": "^3.6.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.6",
@@ -52,6 +50,8 @@
     "rcon-client": "^4.2.5",
     "reflect-metadata": "^0.2.2",
     "selfsigned": "^5.4.0",
+    "@socket.io/redis-adapter": "^8.3.0",
+    "ioredis": "^5.6.1",
     "socket.io": "^4.6.0",
     "unzipper": "^0.12.3",
     "winston": "^3.11.0",
@@ -59,7 +59,6 @@
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",
-    "@types/better-sqlite3": "^7.6.13",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.6",

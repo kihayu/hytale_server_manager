@@ -10,7 +10,7 @@ export const config = {
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
 
   // Database
-  databaseUrl: process.env.DATABASE_URL || 'file:./dev.db',
+  databaseUrl: process.env.DATABASE_URL || 'postgresql://hsm:hsm@localhost:5432/hytale_manager',
 
   // Logging
   logLevel: process.env.LOG_LEVEL || 'debug',
